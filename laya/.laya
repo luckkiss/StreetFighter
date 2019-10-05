@@ -1,21 +1,21 @@
 <project version="2.0">
-   <asynRes>img,temp,sound                                                         </asynRes>
-   <unDealRes>embed                                                         </unDealRes>
+   <asynRes>img,temp,sound                                    </asynRes>
+   <unDealRes>embed                                    </unDealRes>
    <resTypes>png,jpg   </resTypes>
-   <resExportPath>bin/h5   </resExportPath>
-   <asynResExportPath>bin/h5   </asynResExportPath>
-   <codeExportPath>src/game/ui/   </codeExportPath>
-   <codeImports><![CDATA[import laya.ui.*;import laya.display.*; ]]>   </codeImports>
+   <resExportPath>bin/res/atlas   </resExportPath>
+   <asynResExportPath>bin   </asynResExportPath>
+   <codeExportPath>src/ui   </codeExportPath>
+   <codeImports><![CDATA[import laya.ui.*;]]>   </codeImports>
    <codeImportsJS><![CDATA[var View=laya.ui.View;
 var Dialog=laya.ui.Dialog;]]>   </codeImportsJS>
    <uiType>3   </uiType>
    <uiExportPath>bin/ui.json   </uiExportPath>
-   <boxTypes>Sprite,Box,List,Tab,RadioGroup,ViewStack,Panel,Tree,Vbox,Hbox   </boxTypes>
-   <pageTypes>View,Dialog,Scene   </pageTypes>
+   <boxTypes>Sprite,Box,List,Tab,RadioGroup,ViewStack,Panel,HBox,VBox,Tree   </boxTypes>
+   <pageTypes>Scene,View,Dialog   </pageTypes>
    <shareResPath/>
-   <codeType>0   </codeType>
+   <codeType>1   </codeType>
    <resCanCompress/>
-   <resPublishQuality>80                                                         </resPublishQuality>
+   <resPublishQuality>80                                    </resPublishQuality>
    <langPath/>
    <defaultFont/>
    <codeImportsTS><![CDATA[import View=Laya.View;
@@ -25,11 +25,11 @@ import Scene=Laya.Scene;]]>   </codeImportsTS>
    <textureHeight>2048   </textureHeight>
    <picWidth>512   </picWidth>
    <picHeight>512   </picHeight>
-   <power2>true   </power2>
-   <trimempty>false   </trimempty>
-   <startScene>Main.scene   </startScene>
+   <power2>false   </power2>
+   <trimempty>true   </trimempty>
+   <startScene/>
    <engineType>2D   </engineType>
-   <scaleMode>full   </scaleMode>
+   <scaleMode>fixedheight   </scaleMode>
    <screenMode>none   </screenMode>
    <alignV>top   </alignV>
    <alignH>left   </alignH>
@@ -47,7 +47,7 @@ import Scene=Laya.Scene;]]>   </codeImportsTS>
    <ver>2.0   </ver>
    <stat>false   </stat>
    <physicsDebug>false   </physicsDebug>
-   <toJsonScene>false   </toJsonScene>
+   <toJsonScene>true   </toJsonScene>
    <compressTexture>false   </compressTexture>
    <libProjectPath/>
 </project>

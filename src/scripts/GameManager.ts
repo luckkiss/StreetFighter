@@ -1,4 +1,4 @@
-import CameraController from "./CameraController";
+// import CameraController from "./CameraController";
 import PlayerController from "./PlayerController";
 
 /**全局管理类*/
@@ -14,7 +14,7 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
     /** @prop {name:player, tips:"角色", type:Laya.Sprite3D, default:null}*/
     public player: Laya.Sprite3D;
     //#endregion
-
+    
     /** @prop {name:gamePad, tips:"按钮", type:Node, default:null}*/
     public gamePad: Laya.Node;
 
@@ -41,11 +41,6 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
             //获取角色
             this.player = scene.getChildByName("RPG-Character") as Laya.Sprite3D;  
             this.player.addComponent(PlayerController);
-
-            console.log("角色");
-
-            var text: Laya.Node = scene.getChildByName("Text");
-            console.log("text: ", (text != null));
         }));
     }
 }

@@ -31,7 +31,7 @@ export default class PlayerController extends Laya.Script3D {
         "Unarmed-Defend",           //防御9
     ];
     private animLastTime: number = 0; //动画时长
-    private is_move: boolean = false;
+    // private is_move: boolean = false;
     private posy: number = 0;
     private posz: number = 0;
 
@@ -42,7 +42,7 @@ export default class PlayerController extends Laya.Script3D {
         this.animator = this.gameObject.getComponent(Laya.Animator);
 
         this.currentMotion = 0;
-        this.is_move = false;
+        // this.is_move = false;
         this.animLastTime = 0;
         this.posy = 0;
         this.posz = 0;
@@ -67,7 +67,6 @@ export default class PlayerController extends Laya.Script3D {
 
         // 全局
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
-        Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.handleMouseOut);
     }
 
     onStart(): void {
@@ -146,36 +145,17 @@ export default class PlayerController extends Laya.Script3D {
     }
     */
 
+    handleMove(): void {
+        // 检测到攻击动画，就覆盖移动动画，停止移动
+        
+    }
+
     // 恢复待机
     handleMouseUp(): void {
-        // if(Laya.Browser.now() - this._clickTime < 1200) {
-        //     console.error("动画播放中：", this.currentMotion);
-
-        //     var waitTime: number = Laya.Browser.now() - this._clickTime;
-        //     Laya.timer.once(waitTime, this, function() {
-        //         Laya.timer.clear(this, this.playOther); //停掉单个定时函数
-        //         this.animator.play(this.motions[0]);
-        //     });
-        // } else {
-        //     // this.animator.play(this.motions[0]); //待机
-        //     console.log("正常放开");
-        // }
         if(this.currentMotion == 9) {
             console.log("松手取消防御");
             this.animator.play(this.motions[0]); //待机
         }
-    }
-
-    handleMouseOut(): void {
-        // this.is_move = false;
-        // this.posz = 0;
-        // if(this.animLastTime > 0) {
-        //     Laya.timer.once(this.animLastTime, this, function() {
-        //         this.animator.play(this.motions[0]);
-        //     });
-        // } else {
-        //     this.animator.play(this.motions[0]); //待机
-        // }
     }
 
     public playIdle () {
@@ -321,25 +301,6 @@ export default class PlayerController extends Laya.Script3D {
             console.log("========> onDefendHandler.防御");
         }
 
-        // 播完自动放待机
-        // Laya.timer.once(waitTime, this, this.playIdle);
-        // console.log("播完自动放待机：", waitTime);
-
         // 松手才取消状态
-
-        return;
-
-        /*
-        console.log(e.target.name);
-        if(this.animLastTime > 0) return;
-        this.animLastTime = 1000;
-        
-        this.animator.play(this.motions[9]); //防御
-        console.log("========> onDefendBtn.防御");
-
-        Laya.timer.once(500, this, function() {
-            this.animLastTime = 0;
-        });
-        */
     }
 }

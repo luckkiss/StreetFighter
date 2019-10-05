@@ -18,13 +18,11 @@
                 "Unarmed-Defend",
             ];
             this.animLastTime = 0;
-            this.is_move = false;
             this.posy = 0;
             this.posz = 0;
             this.gameObject = GameManager.instance.player;
             this.animator = this.gameObject.getComponent(Laya.Animator);
             this.currentMotion = 0;
-            this.is_move = false;
             this.animLastTime = 0;
             this.posy = 0;
             this.posz = 0;
@@ -39,7 +37,6 @@
             this.defendBtn = gamePad.getChildByName("Defend");
             this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
-            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.handleMouseOut);
         }
         onStart() {
             this.animator.play(this.motions[0]);
@@ -55,13 +52,13 @@
                 this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
             }
         }
+        handleMove() {
+        }
         handleMouseUp() {
             if (this.currentMotion == 9) {
                 console.log("松手取消防御");
                 this.animator.play(this.motions[0]);
             }
-        }
-        handleMouseOut() {
         }
         playIdle() {
             Laya.timer.clear(this, this.playOther);
@@ -168,7 +165,6 @@
                 this.animator.play(this.motions[this.currentMotion]);
                 console.log("========> onDefendHandler.防御");
             }
-            return;
         }
     }
 
@@ -182,10 +178,74 @@
                 this.camera = scene.getChildByName("Main Camera");
                 this.player = scene.getChildByName("RPG-Character");
                 this.player.addComponent(PlayerController);
-                console.log("角色");
-                var text = scene.getChildByName("Text");
-                console.log("text: ", (text != null));
             }));
+        }
+    }
+
+    class JoystickManager extends Laya.Script {
+        constructor() {
+            super();
+            this.speed = 0;
+            this.centerX = -1;
+            this.centerY = -1;
+            this.Horizontal = 0;
+            this.Vertical = 0;
+            JoystickManager.instance = this;
+        }
+        onAwake() {
+            this.round = this.roundNode;
+            this.direction = this.stickNode;
+            this.direction.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
+            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+            Laya.timer.frameLoop(1, this, this.outputData);
+        }
+        mouseDown(e) {
+            this.centerX = this.round.x;
+            this.centerY = this.round.y;
+            Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+        }
+        mouseMove(e) {
+            if (this.centerX >= 0 && this.centerY >= 0) {
+                let dis = this.dis(this.centerX, this.centerY, Laya.stage.mouseX, Laya.stage.mouseY);
+                if (dis > 40) {
+                    this.direction.pos(this.centerX + Math.cos(this.angle) * 40, this.centerY + Math.sin(this.angle) * 40);
+                }
+                else {
+                    this.direction.pos(Laya.stage.mouseX, Laya.stage.mouseY);
+                }
+                if (dis > 3) {
+                    this.speed = 1;
+                }
+                else {
+                    this.speed = 0;
+                }
+            }
+        }
+        mouseUp() {
+            Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+            this.speed = 0;
+            this.direction.pos(this.round.x, this.round.y);
+        }
+        mouseOut() {
+            Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+            this.speed = 0;
+            this.direction.pos(this.round.x, this.round.y);
+        }
+        outputData() {
+            if (this.speed > 0) {
+                let dx = Laya.stage.mouseX - this.centerX;
+                let dy = Laya.stage.mouseY - this.centerY;
+                this.angle = Math.atan2(dy, dx);
+                this.Horizontal = Math.cos(this.angle) * this.speed;
+                this.Vertical = Math.sin(this.angle) * this.speed;
+            }
+        }
+        dis(centerX, centerY, mouseX, mouseY) {
+            let dx = centerX - mouseX;
+            let dy = centerY - mouseY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            return distance;
         }
     }
 
@@ -194,6 +254,7 @@
         static init() {
             var reg = Laya.ClassUtils.regClass;
             reg("scripts/GameManager.ts", GameManager);
+            reg("scripts/JoystickManager.ts", JoystickManager);
         }
     }
     GameConfig.width = 1280;
