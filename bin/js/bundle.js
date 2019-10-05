@@ -9,29 +9,51 @@
             this.centerY = -1;
             this.Horizontal = 0;
             this.Vertical = 0;
+            this.myIndex = -1;
             JoystickManager.instance = this;
         }
         onAwake() {
             this.round = this.roundNode;
-            this.direction = this.stickNode;
-            this.direction.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+            this.stick = this.stickNode;
+            this.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
             Laya.timer.frameLoop(1, this, this.outputData);
         }
         mouseDown(e) {
+            this.myIndex = e.touchId;
             this.centerX = this.round.x;
             this.centerY = this.round.y;
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         }
         mouseMove(e) {
+            this.touches = e.touches;
+            var dx = 0;
+            var dy = 0;
+            if (Laya.Browser.onPC) {
+                dx = Laya.stage.mouseX;
+                dy = Laya.stage.mouseY;
+            }
+            else {
+                if (e.touchId != this.myIndex) {
+                    GameManager.instance.vConsole("无关的手指[" + e.touchId + "]");
+                    return;
+                }
+                if (e.touches.length <= this.myIndex) {
+                    GameManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
+                    Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+                    return;
+                }
+            }
+            dx = this.touches[this.myIndex].stageX;
+            dy = this.touches[this.myIndex].stageY;
             if (this.centerX >= 0 && this.centerY >= 0) {
-                let dis = this.dis(this.centerX, this.centerY, Laya.stage.mouseX, Laya.stage.mouseY);
+                let dis = this.dis(this.centerX, this.centerY, dx, dy);
                 if (dis > 40) {
-                    this.direction.pos(this.centerX + Math.cos(this.angle) * 40, this.centerY + Math.sin(this.angle) * 40);
+                    this.stick.pos(this.centerX + Math.cos(this.angle) * 40, this.centerY + Math.sin(this.angle) * 40);
                 }
                 else {
-                    this.direction.pos(Laya.stage.mouseX, Laya.stage.mouseY);
+                    this.stick.pos(dx, dy);
                 }
                 if (dis > 3) {
                     this.speed = 2;
@@ -41,23 +63,50 @@
                 }
             }
         }
-        mouseUp() {
+        mouseUp(e) {
+            if (Laya.Browser.onPC) ;
+            else {
+                if (e.touchId != this.myIndex) {
+                    return;
+                }
+            }
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             this.speed = 0;
-            this.direction.pos(this.round.x, this.round.y);
+            this.stick.pos(this.round.x, this.round.y);
+            this.myIndex = -1;
         }
-        mouseOut() {
+        mouseOut(e) {
+            if (Laya.Browser.onPC) ;
+            else {
+                if (e.touchId != this.myIndex) {
+                    return;
+                }
+            }
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             this.speed = 0;
-            this.direction.pos(this.round.x, this.round.y);
+            this.stick.pos(this.round.x, this.round.y);
+            this.myIndex = -1;
         }
         outputData() {
             if (this.speed > 0) {
-                let dx = Laya.stage.mouseX - this.centerX;
-                let dy = Laya.stage.mouseY - this.centerY;
+                let dx = 0;
+                let dy = 0;
+                if (Laya.Browser.onPC) {
+                    dx = Laya.stage.mouseX - this.centerX;
+                    dy = Laya.stage.mouseY - this.centerY;
+                }
+                else {
+                    if (this.touches.length <= this.myIndex) {
+                        return;
+                    }
+                    dx = this.touches[this.myIndex].stageX - this.centerX;
+                    dy = this.touches[this.myIndex].stageY - this.centerY;
+                }
                 this.angle = Math.atan2(dy, dx);
-                this.Horizontal = Math.cos(this.angle) * this.speed;
-                this.Vertical = Math.sin(this.angle) * this.speed;
+                var h = Math.cos(this.angle) * this.speed;
+                var v = Math.sin(this.angle) * this.speed;
+                this.Horizontal = isNaN(h) ? 0 : h;
+                this.Vertical = isNaN(v) ? 0 : v;
             }
         }
         dis(centerX, centerY, mouseX, mouseY) {
@@ -103,8 +152,7 @@
             this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.onJumpHandler);
             this.defendBtn = gamePad.getChildByName("Defend");
             this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
-            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
-            JoystickManager.instance.direction.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+            JoystickManager.instance.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
         }
         onStart() {
             this.animator.play(this.motions[0]);
@@ -120,18 +168,19 @@
                 this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
             }
         }
-        mouseDown() {
+        mouseDown(e) {
+            if (this.animLastTime > Laya.Browser.now() - this._clickTime) ;
             this.posz = 0;
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         }
-        mouseMove() {
+        mouseMove(e) {
             this.posz = JoystickManager.instance.Horizontal * 0.02;
             this.currentMotion = (this.posz > 0) ? 1 : 2;
             this.animator.play(this.motions[this.currentMotion]);
         }
-        mouseUp() {
+        mouseUp(e) {
             this.posz = 0;
             this.currentMotion = 0;
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);
@@ -139,7 +188,7 @@
             Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         }
-        mouseOut() {
+        mouseOut(e) {
             this.posz = 0;
             this.currentMotion = 0;
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);
@@ -155,12 +204,12 @@
         }
         playIdle() {
             Laya.timer.clear(this, this.playOther);
-            this.animator.play(this.motions[0]);
+            this.currentMotion = 0;
+            this.animator.play(this.motions[this.currentMotion]);
             console.log("播放待机动画");
         }
         ;
         playOther() {
-            Laya.timer.clear(this, this.playIdle);
             this.animator.play(this.motions[this.currentMotion]);
         }
         ;
@@ -172,7 +221,6 @@
                 if (this.currentMotion == 5 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
                     this.currentMotion = 6;
-                    Laya.timer.clear(this, this.playIdle);
                     Laya.timer.once(waitTime, this, this.playOther);
                     console.log("========> onFistBtn.重拳2，等待：", waitTime);
                     waitTime += this.animLastTime;
@@ -180,7 +228,6 @@
                 else if (this.currentMotion == 6 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
                     this.currentMotion = 7;
-                    Laya.timer.clear(this, this.playIdle);
                     Laya.timer.once(waitTime, this, this.playOther);
                     console.log("========> onFistBtn.重拳3");
                     waitTime += this.animLastTime;
@@ -274,6 +321,22 @@
                 this.playerA.addComponent(PlayerController);
                 this.playerB = scene.getChildByName("RPG-CharacterB");
             }));
+        }
+        onAwake() {
+            this.content = "";
+            this.logText = this.logNode;
+        }
+        vConsole(msg) {
+            if (msg == this.lastmsg) ;
+            else {
+                this.content += "\n" + msg;
+            }
+            this.logText.text = this.content;
+            this.lastmsg = msg;
+        }
+        resetConsole() {
+            this.content = "";
+            this.logText.text = this.content;
         }
     }
 

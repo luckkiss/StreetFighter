@@ -54,8 +54,8 @@ export default class PlayerController extends Laya.Script3D {
         this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
 
         // 全局
-        Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
-        JoystickManager.instance.direction.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+        JoystickManager.instance.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
     }
 
     onStart(): void {
@@ -75,21 +75,43 @@ export default class PlayerController extends Laya.Script3D {
 
     //#region 移动控制
 
-    mouseDown(): void {
+    // public myIndex: number = -1; //控制摇杆的手指
+
+    // 基于UI
+    mouseDown(e: Laya.Event): void {
+
+        if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
+
+        }
+
+        // this.myIndex = e.touchId;
         this.posz = 0;
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
         Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
     }
 
-    mouseMove(): void {
+    // 基于场景
+    mouseMove(e: Laya.Event): void {
+        // if(e.touchId != this.myIndex) {
+        //     return;
+        // }
+
         // 检测到攻击动画，就覆盖移动动画，停止移动
         this.posz = JoystickManager.instance.Horizontal * 0.02;
         this.currentMotion = (this.posz > 0)? 1 : 2;
         this.animator.play(this.motions[this.currentMotion]); //前进/后退
     }
 
-    mouseUp(): void {
+    mouseUp(e: Laya.Event): void {
+        // if(Laya.Browser.onPC) { } 
+        // else {
+        //     if(e.touchId != this.myIndex) {
+        //         return;
+        //     }
+        // }
+        // this.myIndex = -1;
+
         this.posz = 0;
         this.currentMotion = 0;
         this.animator.crossFade(this.motions[this.currentMotion], 0.2);
@@ -98,7 +120,15 @@ export default class PlayerController extends Laya.Script3D {
         Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
     }
 
-    mouseOut(): void {
+    mouseOut(e: Laya.Event): void {
+        // if(Laya.Browser.onPC) { } 
+        // else {
+        //     if(e.touchId != this.myIndex) {
+        //         return;
+        //     }
+        // }
+        // this.myIndex = -1;
+
         this.posz = 0;
         this.currentMotion = 0;
         this.animator.crossFade(this.motions[this.currentMotion], 0.2);
@@ -119,24 +149,21 @@ export default class PlayerController extends Laya.Script3D {
 
     public playIdle () {
         Laya.timer.clear(this, this.playOther); //停掉其他延迟执行的动作
-        this.animator.play(this.motions[0]);
+        this.currentMotion = 0;
+        this.animator.play(this.motions[this.currentMotion]);
         console.log("播放待机动画");
-        // this.animator.crossFade(this.motions[0], 0.1); //连击后会停住不动
     };
 
     public playOther () {
-        Laya.timer.clear(this, this.playIdle); //停掉延迟执行的待机
         this.animator.play(this.motions[this.currentMotion]);
     };
 
     // 带连击5,6,7 | 600
     onFistHandler(e: Laya.Event): void {
-
         this.animLastTime = 600; //单次出拳时长
         var waitTime: number = 0;
 
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
-
             waitTime = this.animLastTime - (Laya.Browser.now() - this._clickTime); //一定大于0
             // console.log("两次点击间隔非常小：", this.currentMotion, "，等待：", waitTime / 1000, "秒");
 
@@ -145,7 +172,7 @@ export default class PlayerController extends Laya.Script3D {
                 this._clickTime = Laya.Browser.now(); //点到了，更新时间
                 this.currentMotion = 6;
                 
-                Laya.timer.clear(this, this.playIdle); //清除拳1的播完延迟命令
+                // Laya.timer.clear(this, this.playIdle); //清除拳1的播完延迟命令
                 Laya.timer.once(waitTime, this, this.playOther); //等待拳1播完，播拳2动画
                 console.log("========> onFistBtn.重拳2，等待：", waitTime);
                 waitTime += this.animLastTime; //恢复待机的时间延长
@@ -155,7 +182,7 @@ export default class PlayerController extends Laya.Script3D {
                 this._clickTime = Laya.Browser.now();
                 this.currentMotion = 7;
 
-                Laya.timer.clear(this, this.playIdle); //停掉单个定时函数
+                // Laya.timer.clear(this, this.playIdle); //停掉单个定时函数
                 Laya.timer.once(waitTime, this, this.playOther);
                 console.log("========> onFistBtn.重拳3");
                 waitTime += this.animLastTime; //恢复待机的时间延长
