@@ -10,6 +10,8 @@
             this.Horizontal = 0;
             this.Vertical = 0;
             this.myIndex = -1;
+            this.lastX = 0;
+            this.lastY = 0;
             JoystickManager.instance = this;
         }
         onAwake() {
@@ -27,7 +29,6 @@
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         }
         mouseMove(e) {
-            this.touches = e.touches;
             var dx = 0;
             var dy = 0;
             if (Laya.Browser.onPC) {
@@ -41,9 +42,9 @@
                 }
                 if (e.touches.length <= this.myIndex) {
                     GameManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
-                    Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
                     return;
                 }
+                this.touches = e.touches;
             }
             dx = this.touches[this.myIndex].stageX;
             dy = this.touches[this.myIndex].stageY;
@@ -89,24 +90,32 @@
         }
         outputData() {
             if (this.speed > 0) {
-                let dx = 0;
-                let dy = 0;
+                var dx = 0;
+                var dy = 0;
                 if (Laya.Browser.onPC) {
                     dx = Laya.stage.mouseX - this.centerX;
                     dy = Laya.stage.mouseY - this.centerY;
                 }
                 else {
                     if (this.touches.length <= this.myIndex) {
+                        GameManager.instance.vConsole("outputData.数组越界");
                         return;
                     }
                     dx = this.touches[this.myIndex].stageX - this.centerX;
                     dy = this.touches[this.myIndex].stageY - this.centerY;
+                    if (isNaN(dx) || isNaN(dy)) {
+                        dx = this.lastX;
+                        dy = this.lastY;
+                    }
+                    else {
+                        this.lastX = dx;
+                        this.lastY = dy;
+                    }
+                    GameManager.instance.vConsole("输出：(" + dx.toFixed(2) + " * " + dy.toFixed(2) + ")           " + this.myIndex + "/" + this.touches.length);
                 }
                 this.angle = Math.atan2(dy, dx);
                 var h = Math.cos(this.angle) * this.speed;
-                var v = Math.sin(this.angle) * this.speed;
                 this.Horizontal = isNaN(h) ? 0 : h;
-                this.Vertical = isNaN(v) ? 0 : v;
             }
         }
         dis(centerX, centerY, mouseX, mouseY) {
@@ -325,6 +334,7 @@
         onAwake() {
             this.content = "";
             this.logText = this.logNode;
+            Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
         }
         vConsole(msg) {
             if (msg == this.lastmsg) ;

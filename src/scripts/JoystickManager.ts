@@ -46,7 +46,6 @@ export default class JoystickManager extends Laya.Script {
     mouseDown(e: Laya.Event): void {
         // this.touches = e.touches; //多点触控
         this.myIndex = e.touchId;
-
         this.centerX = this.round.x;
         this.centerY = this.round.y;
         // GameManager.instance.vConsole("新建触控点[" + e.touchId + "]" + this.touches[e.touchId].stageX + " * " + this.touches[e.touchId].stageY);
@@ -55,7 +54,6 @@ export default class JoystickManager extends Laya.Script {
 
     // 基于场景
     mouseMove(e: Laya.Event): void {
-        this.touches = e.touches;
         var dx: number = 0;
         var dy: number = 0;
 
@@ -70,22 +68,14 @@ export default class JoystickManager extends Laya.Script {
             }
             if(e.touches.length <= this.myIndex) {
                 GameManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
-                Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+                // Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
                 return;
             }
+            this.touches = e.touches;
         }
 
-        // try {
-            dx = this.touches[this.myIndex].stageX;
-            dy = this.touches[this.myIndex].stageY;
-        // } catch(e) {
-        //     func();
-        //     function func() {
-        //         alert('hahaha');
-        //         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
-        //         return;
-        //     }
-        // }
+        dx = this.touches[this.myIndex].stageX;
+        dy = this.touches[this.myIndex].stageY;
 
         if(this.centerX >= 0 && this.centerY >= 0) {
             //计算两点距离 如果超过一定距离 就停留在距离最大值处
@@ -115,7 +105,6 @@ export default class JoystickManager extends Laya.Script {
                 return;
             }
         }
-        // GameManager.instance.vConsole("mouseUp======> 关闭监听");
         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         this.speed = 0;
         this.stick.pos(this.round.x, this.round.y);
@@ -136,32 +125,39 @@ export default class JoystickManager extends Laya.Script {
         this.myIndex = -1;
     }
 
+    private lastX: number = 0;
+    private lastY: number = 0;
+
     // 输出位移数据
     outputData(): void {
         if(this.speed > 0) {
-            let dx: number = 0;
-            let dy: number = 0;
+            var dx: number = 0;
+            var dy: number = 0;
             if(Laya.Browser.onPC) {
                 dx = Laya.stage.mouseX - this.centerX;
                 dy = Laya.stage.mouseY - this.centerY;
             } else {
                 if(this.touches.length <= this.myIndex) {
+                    GameManager.instance.vConsole("outputData.数组越界");
                     return;
                 }
-                // try {
-                    dx = this.touches[this.myIndex].stageX - this.centerX;;
-                    dy = this.touches[this.myIndex].stageY - this.centerY;
-                    // GameManager.instance.vConsole("移动的点是：" + this.touchId + "，当前触控数：" + this.touches.length);
-                // } catch(e) {
-                //     alert("outputData: " + e.message);
-                // }
+                dx = this.touches[this.myIndex].stageX - this.centerX;
+                dy = this.touches[this.myIndex].stageY - this.centerY;
+                if(isNaN(dx) || isNaN(dy)) {
+                    dx = this.lastX;
+                    dy = this.lastY;
+                } else {
+                    this.lastX = dx;
+                    this.lastY = dy;
+                }
+                // GameManager.instance.vConsole("输出：(" + dx.toFixed(2) + " * " + dy.toFixed(2) + ")           " + this.myIndex + "/" + this.touches.length);
             }
             this.angle = Math.atan2(dy, dx);
             var h: number = Math.cos(this.angle) * this.speed;
-            var v: number = Math.sin(this.angle) * this.speed;
+            // var v: number = Math.sin(this.angle) * this.speed;
             this.Horizontal = isNaN(h)? 0 : h;
-            this.Vertical = isNaN(v)? 0 : v;
-            // GameManager.instance.vConsole("输出：" + this.Horizontal + " * " + this.Vertical);
+            // this.Vertical = isNaN(v)? 0 : v; //V不需要输出
+            // GameManager.instance.vConsole("输出：" + this.Horizontal + " * 0" + "，angle=(" + this.angle + ")");
         }
     }
 

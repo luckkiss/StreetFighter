@@ -57,7 +57,7 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
     onAwake(): void {
         this.content = "";
         this.logText = this.logNode as Laya.Text;
-        // Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
+        Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
     }
 
     private lastmsg: string;
