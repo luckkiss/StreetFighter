@@ -34,7 +34,7 @@ export default class PlayerController extends Laya.Script3D {
     constructor() {
         super();
 
-        this.gameObject = GameManager.instance.player;
+        this.gameObject = GameManager.instance.playerA;
         this.animator = this.gameObject.getComponent(Laya.Animator);
 
         this.currentMotion = 0;

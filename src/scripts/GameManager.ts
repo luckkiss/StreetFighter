@@ -11,8 +11,10 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
     public camera: Laya.Camera;
     /** @prop {name:directionLight, tips:"平行光", type:Laya.DirectionLight, default:null}*/
     public directionLight: Laya.DirectionLight;
-    /** @prop {name:player, tips:"角色", type:Laya.Sprite3D, default:null}*/
-    public player: Laya.Sprite3D;
+    /** @prop {name:playerA, tips:"角色A", type:Laya.Sprite3D, default:null}*/
+    public playerA: Laya.Sprite3D;
+    /** @prop {name:playerB, tips:"角色B", type:Laya.Sprite3D, default:null}*/
+    public playerB: Laya.Sprite3D;
     //#endregion
     
     /** @prop {name:gamePad, tips:"按钮", type:Node, default:null}*/
@@ -39,8 +41,10 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
             // this.directionLight.color = new Laya.Vector3(1, 0, 0);
 
             //获取角色
-            this.player = scene.getChildByName("RPG-Character") as Laya.Sprite3D;  
-            this.player.addComponent(PlayerController);
+            this.playerA = scene.getChildByName("RPG-CharacterA") as Laya.Sprite3D;  
+            this.playerA.addComponent(PlayerController);
+            this.playerB = scene.getChildByName("RPG-CharacterB") as Laya.Sprite3D;  
+            // this.playerB.addComponent(PlayerController);
         }));
     }
 }

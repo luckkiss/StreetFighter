@@ -87,7 +87,7 @@
             this.animLastTime = 0;
             this.posy = 0;
             this.posz = 0;
-            this.gameObject = GameManager.instance.player;
+            this.gameObject = GameManager.instance.playerA;
             this.animator = this.gameObject.getComponent(Laya.Animator);
             this.currentMotion = 0;
             this.animLastTime = 0;
@@ -270,8 +270,9 @@
                 Laya.stage.addChild(scene);
                 scene.zOrder = -1;
                 this.camera = scene.getChildByName("Main Camera");
-                this.player = scene.getChildByName("RPG-Character");
-                this.player.addComponent(PlayerController);
+                this.playerA = scene.getChildByName("RPG-CharacterA");
+                this.playerA.addComponent(PlayerController);
+                this.playerB = scene.getChildByName("RPG-CharacterB");
             }));
         }
     }
