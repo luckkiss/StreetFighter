@@ -14,10 +14,6 @@ export default class PlayerController extends Laya.Script3D {
     public jumpBtn: Laya.Image;
     public defendBtn: Laya.Image;
     
-    public leftBtn: Laya.Sprite;
-    public rightBtn: Laya.Sprite;
-
-    private currentMotion = 0;
     private motions: Array<string> = [
         "Unarmed-Idle",             //待机0
         "Unarmed-Strafe-Forward",   //前进1
@@ -30,8 +26,8 @@ export default class PlayerController extends Laya.Script3D {
         "Unarmed-Attack-Kick-L1",   //踢腿8
         "Unarmed-Defend",           //防御9
     ];
+    private currentMotion = 0;
     private animLastTime: number = 0; //动画时长
-    // private is_move: boolean = false;
     private posy: number = 0;
     private posz: number = 0;
 
@@ -42,24 +38,16 @@ export default class PlayerController extends Laya.Script3D {
         this.animator = this.gameObject.getComponent(Laya.Animator);
 
         this.currentMotion = 0;
-        // this.is_move = false;
         this.animLastTime = 0;
         this.posy = 0;
         this.posz = 0;
 
-        // Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.handleMouseMove); //事件监听
-        // Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.handleMouseDown);
-        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
-        // Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.handleMouseOut);
-
-        var gamePad: Laya.Node = GameManager.instance.gamePad;
-
         this._clickTime = 0;
+        var gamePad: Laya.Node = GameManager.instance.gamePad;
         this.fistBtn = gamePad.getChildByName("Fist") as Laya.Image;
         this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.onFistHandler);
         this.kickBtn = gamePad.getChildByName("Kick") as Laya.Image;
         this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.onKickHandler);
-
         this.jumpBtn = gamePad.getChildByName("Jump") as Laya.Image;
         this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.onJumpHandler);
         this.defendBtn = gamePad.getChildByName("Defend") as Laya.Image;
@@ -67,6 +55,7 @@ export default class PlayerController extends Laya.Script3D {
 
         // 全局
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+        JoystickManager.instance.direction.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
     }
 
     onStart(): void {
@@ -84,71 +73,41 @@ export default class PlayerController extends Laya.Script3D {
         }
     }
 
-    /* UI穿透问题
-    handleMouseDown(): void {
-        if(JoystickManager.isUI) return;
-        if(this.animLastTime > 0) return;
+    //#region 移动控制
 
+    mouseDown(): void {
         this.posz = 0;
-        this.is_move = true;
-        this.animator.play(this.motions[0]); //待机
-        console.log("### handleMouseDown.待机");
+        Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+        Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
+        Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
     }
 
-    handleMouseMove(): void {
-        if(JoystickManager.isUI) return;
-        if(this.animLastTime > 0) return;
-        
-        if(!this.is_move) return;
-        this.posz = JoystickManager.instance.Horizontal * 0.02;
-        this.animator.play(this.motions[(this.posz > 0)? 1 : 2]); //前进
-        console.log("### handleMouseMove.前进");
-        // console.log(this.gameObject.name, ": ", this.gameObject.transform.position, " + ", this.posz);
-    }
-
-    public delayAction = null;
-
-    handleMouseUp(): void {
-        this.is_move = false;
-        this.posz = 0;
-        
-        if(this.delayAction != null) {
-            console.error("上一个延迟函数没结束");
-            return;
-        }
-        // Laya.timer.clear(this.handleMouseUp, this.delayAction);
-
-        if(this.animLastTime > 0) {
-            this.delayAction = function () {
-                this.animator.play(this.motions[0]);
-                console.log("### handleMouseUp.待机1");
-                this.delayAction = null;
-            };
-            Laya.timer.once(this.animLastTime, this, this.delayAction);
-        } else {
-            this.animator.play(this.motions[0]); //待机
-            console.log("### handleMouseUp.待机2");
-            this.delayAction = null;
-        }
-    }
-
-    handleMouseOut(): void {
-        this.is_move = false;
-        this.posz = 0;
-        if(this.animLastTime > 0) {
-            Laya.timer.once(this.animLastTime, this, function() {
-                this.animator.play(this.motions[0]);
-            });
-        } else {
-            this.animator.play(this.motions[0]); //待机
-        }
-    }
-    */
-
-    handleMove(): void {
+    mouseMove(): void {
         // 检测到攻击动画，就覆盖移动动画，停止移动
-        
+        this.posz = JoystickManager.instance.Horizontal * 0.02;
+        this.currentMotion = (this.posz > 0)? 1 : 2;
+        this.animator.play(this.motions[this.currentMotion]); //前进/后退
     }
+
+    mouseUp(): void {
+        this.posz = 0;
+        this.currentMotion = 0;
+        this.animator.crossFade(this.motions[this.currentMotion], 0.2);
+        Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+        Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
+        Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+    }
+
+    mouseOut(): void {
+        this.posz = 0;
+        this.currentMotion = 0;
+        this.animator.crossFade(this.motions[this.currentMotion], 0.2);
+        Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
+        Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
+        Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+    }
+
+    //#endregion
 
     // 恢复待机
     handleMouseUp(): void {
@@ -161,6 +120,8 @@ export default class PlayerController extends Laya.Script3D {
     public playIdle () {
         Laya.timer.clear(this, this.playOther); //停掉其他延迟执行的动作
         this.animator.play(this.motions[0]);
+        console.log("播放待机动画");
+        // this.animator.crossFade(this.motions[0], 0.1); //连击后会停住不动
     };
 
     public playOther () {

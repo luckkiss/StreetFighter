@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":61,
+    "selectedBox":19,
+    "selecteID":4,
     "searchKey":"Scene,Main",
     "props":{"width":1280,"sceneColor":"#000000","name":"Main","height":720},
     "nodeParent":-1,
@@ -72,16 +72,17 @@
             "props":{"name":"Viewport"},
             "nodeParent":2,
             "label":"Viewport",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":19,
             "child":[
                 {
+                    "x":30,
                     "type":"Text",
                     "searchKey":"Text,TextUL",
-                    "props":{"text":"左上2","name":"TextUL","fontSize":50,"color":"#ff0400"},
+                    "props":{"text":"左上1","name":"TextUL","fontSize":50,"color":"#ff0400"},
                     "nodeParent":19,
                     "label":"TextUL",
                     "isOpen":true,
@@ -93,6 +94,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Text",
                     "searchKey":"Text,TextUR",
                     "props":{"y":0,"x":1180,"text":"右上","name":"TextUR","fontSize":50,"color":"#ff0400"},
@@ -107,6 +109,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Text",
                     "searchKey":"Text,TextDL",
                     "props":{"y":670,"x":0,"text":"左下","name":"TextDL","fontSize":50,"color":"#ff0400"},
@@ -121,6 +124,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Text",
                     "searchKey":"Text,TextDR",
                     "props":{"y":670,"x":1180,"text":"右下","name":"TextDR","fontSize":50,"color":"#ff0400"},

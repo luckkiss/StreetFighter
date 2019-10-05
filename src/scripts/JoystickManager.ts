@@ -30,7 +30,7 @@ export default class JoystickManager extends Laya.Script {
     onAwake(): void {
         this.round = this.roundNode as Laya.Sprite;
         this.direction = this.stickNode as Laya.Sprite;
-        
+
         this.direction.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
         Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
@@ -61,7 +61,7 @@ export default class JoystickManager extends Laya.Script {
 
             //如果距离太小 就代表没动
             if(dis > 3) {
-                this.speed = 1; //此处还可以通过距离 控制速度
+                this.speed = 2; //此处还可以通过距离 控制速度
             } else {
                 this.speed = 0;
             }
