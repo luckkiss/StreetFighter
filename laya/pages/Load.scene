@@ -1,7 +1,7 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
+    "selectedBox":5,
     "selecteID":7,
     "searchKey":"Scene,Load",
     "props":{"width":1280,"sceneColor":"#000000","name":"Load","height":720},
@@ -54,26 +54,26 @@
             "props":{"x":640,"width":600,"value":0,"skin":"comp/progress.png","sizeGrid":"0,10,0,10","height":30,"bottom":120,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"ProgressBar",
-            "isDirectory":false,
+            "isOpen":true,
+            "isDirectory":true,
             "isAniNode":true,
-            "hasChild":false,
+            "hasChild":true,
             "compId":5,
             "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Label",
-            "searchKey":"Label",
-            "props":{"y":340,"x":500,"text":"启动进度条加载","fontSize":40,"font":"Arial","color":"#ffffff"},
-            "nodeParent":2,
-            "label":"Label",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":7,
-            "child":[
-                ]
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,Percent",
+                    "props":{"x":300,"text":"0%","name":"Percent","fontSize":30,"font":"Arial","color":"#ffffff","bottom":0,"anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":5,
+                    "label":"Percent",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":7,
+                    "child":[
+                        ]
+                }]
         }],
     "animations":[
         {
