@@ -359,6 +359,7 @@
     class GameManager extends Laya.Script {
         constructor() {
             super();
+            Laya.stage.screenMode = "horizontal";
             GameManager.instance = this;
             Laya.Scene3D.load("res/unity3d/LayaScene.ls", Laya.Handler.create(this, function (scene) {
                 Laya.stage.addChild(scene);
@@ -368,6 +369,10 @@
                 this.playerA.addComponent(PlayerController);
                 this.playerB = scene.getChildByName("RPG-CharacterB");
             }));
+        }
+        onStart() {
+            var device_type = navigator.userAgent;
+            console.log(device_type);
         }
         onAwake() {
             this.content = "";
@@ -399,7 +404,7 @@
     GameConfig.width = 1280;
     GameConfig.height = 720;
     GameConfig.scaleMode = "fixedheight";
-    GameConfig.screenMode = "none";
+    GameConfig.screenMode = "horizontal";
     GameConfig.alignV = "top";
     GameConfig.alignH = "left";
     GameConfig.startScene = "Main.scene";

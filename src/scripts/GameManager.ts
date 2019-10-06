@@ -27,6 +27,7 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
     constructor() { 
         super();
 
+        // Laya.stage.screenMode = "horizontal"; //自动横屏
         GameManager.instance = this;
 
         // https://ldc2.layabox.com/doc/?nav=zh-as-4-3-1
@@ -50,6 +51,13 @@ export default class GameManager extends Laya.Script { //相当于unity的MonoBe
             this.playerB = scene.getChildByName("RPG-CharacterB") as Laya.Sprite3D;  
             // this.playerB.addComponent(PlayerController);
         }));
+    }
+
+    onStart(): void {
+        var device_type = navigator.userAgent; //获取userAgent信息
+        console.log(device_type); //Mozilla/5.0 (Windows NT 10.0
+        // var md = new MobileDetect(device_type);//初始化mobile-detect
+        // var os = md.os();//获取系统
     }
 
     //#region 做成prefab
