@@ -54,7 +54,7 @@ export default class PlayerController extends Laya.Script3D {
         this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
 
         // 全局
-        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+        Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
         JoystickManager.instance.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
     }
 
@@ -63,28 +63,32 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     onUpdate(): void {
-        if(this.gameObject.transform.position.y > 0 && this.posy == 0) {
+        if(this.gameObject.transform.position.y > 0 && this.posy == 0) { // 跳跃
             this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
             if(this.gameObject.transform.position.y < 0) {
                 this.gameObject.transform.position.y = 0;
             }
-        } else {
+        } else { // 移动
+            // if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
+            //     return;
+            // }
             this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
         }
     }
 
     //#region 移动控制
 
-    // public myIndex: number = -1; //控制摇杆的手指
+    public myIndex: number = -1; //控制摇杆的手指
 
     // 基于UI
     mouseDown(e: Laya.Event): void {
 
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
-
+            console.log("在播放其他动作");
+            return;
         }
+        this.myIndex = e.touchId;
 
-        // this.myIndex = e.touchId;
         this.posz = 0;
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
@@ -93,9 +97,17 @@ export default class PlayerController extends Laya.Script3D {
 
     // 基于场景
     mouseMove(e: Laya.Event): void {
-        // if(e.touchId != this.myIndex) {
-        //     return;
-        // }
+        if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
+            GameManager.instance.vConsole("在播放其他动作");
+            this.posz = 0;
+            return;
+        }
+        if(Laya.Browser.onPC) { }
+        else {
+            if(e.touchId != this.myIndex) {
+                return;
+            }
+        }
 
         // 检测到攻击动画，就覆盖移动动画，停止移动
         this.posz = JoystickManager.instance.Horizontal * 0.02;
@@ -104,13 +116,18 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     mouseUp(e: Laya.Event): void {
-        // if(Laya.Browser.onPC) { } 
-        // else {
-        //     if(e.touchId != this.myIndex) {
-        //         return;
-        //     }
-        // }
-        // this.myIndex = -1;
+        if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
+            console.log("在播放其他动作");
+            return;
+        }
+        if(Laya.Browser.onPC) { }
+        else {
+            if(e.touchId != this.myIndex) {
+                GameManager.instance.vConsole("离开的点是其他手指：" + e.touchId + "，摇杆的手指是：" + this.myIndex);
+                return;
+            }
+        }
+        this.myIndex = -1;
 
         this.posz = 0;
         this.currentMotion = 0;
@@ -121,13 +138,17 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     mouseOut(e: Laya.Event): void {
-        // if(Laya.Browser.onPC) { } 
-        // else {
-        //     if(e.touchId != this.myIndex) {
-        //         return;
-        //     }
-        // }
-        // this.myIndex = -1;
+        if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
+            console.log("在播放其他动作");
+            return;
+        }
+        if(Laya.Browser.onPC) { }
+        else {
+            if(e.touchId != this.myIndex) {
+                return;
+            }
+        }
+        this.myIndex = -1;
 
         this.posz = 0;
         this.currentMotion = 0;
@@ -155,6 +176,7 @@ export default class PlayerController extends Laya.Script3D {
     };
 
     public playOther () {
+        // Laya.timer.clear(this, this.playIdle); //清除拳1的播完延迟命令
         this.animator.play(this.motions[this.currentMotion]);
     };
 
@@ -172,7 +194,6 @@ export default class PlayerController extends Laya.Script3D {
                 this._clickTime = Laya.Browser.now(); //点到了，更新时间
                 this.currentMotion = 6;
                 
-                // Laya.timer.clear(this, this.playIdle); //清除拳1的播完延迟命令
                 Laya.timer.once(waitTime, this, this.playOther); //等待拳1播完，播拳2动画
                 console.log("========> onFistBtn.重拳2，等待：", waitTime);
                 waitTime += this.animLastTime; //恢复待机的时间延长
@@ -182,7 +203,6 @@ export default class PlayerController extends Laya.Script3D {
                 this._clickTime = Laya.Browser.now();
                 this.currentMotion = 7;
 
-                // Laya.timer.clear(this, this.playIdle); //停掉单个定时函数
                 Laya.timer.once(waitTime, this, this.playOther);
                 console.log("========> onFistBtn.重拳3");
                 waitTime += this.animLastTime; //恢复待机的时间延长

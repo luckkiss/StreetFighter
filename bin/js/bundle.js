@@ -37,7 +37,6 @@
             }
             else {
                 if (e.touchId != this.myIndex) {
-                    GameManager.instance.vConsole("无关的手指[" + e.touchId + "]");
                     return;
                 }
                 if (e.touches.length <= this.myIndex) {
@@ -71,10 +70,10 @@
                     return;
                 }
             }
+            this.myIndex = -1;
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             this.speed = 0;
             this.stick.pos(this.round.x, this.round.y);
-            this.myIndex = -1;
         }
         mouseOut(e) {
             if (Laya.Browser.onPC) ;
@@ -83,10 +82,10 @@
                     return;
                 }
             }
+            this.myIndex = -1;
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             this.speed = 0;
             this.stick.pos(this.round.x, this.round.y);
-            this.myIndex = -1;
         }
         outputData() {
             if (this.speed > 0) {
@@ -111,7 +110,6 @@
                         this.lastX = dx;
                         this.lastY = dy;
                     }
-                    GameManager.instance.vConsole("输出：(" + dx.toFixed(2) + " * " + dy.toFixed(2) + ")           " + this.myIndex + "/" + this.touches.length);
                 }
                 this.angle = Math.atan2(dy, dx);
                 var h = Math.cos(this.angle) * this.speed;
@@ -145,6 +143,7 @@
             this.animLastTime = 0;
             this.posy = 0;
             this.posz = 0;
+            this.myIndex = -1;
             this.gameObject = GameManager.instance.playerA;
             this.animator = this.gameObject.getComponent(Laya.Animator);
             this.currentMotion = 0;
@@ -161,6 +160,7 @@
             this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.onJumpHandler);
             this.defendBtn = gamePad.getChildByName("Defend");
             this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
+            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
             JoystickManager.instance.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
         }
         onStart() {
@@ -178,18 +178,45 @@
             }
         }
         mouseDown(e) {
-            if (this.animLastTime > Laya.Browser.now() - this._clickTime) ;
+            if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
+                console.log("在播放其他动作");
+                return;
+            }
+            this.myIndex = e.touchId;
             this.posz = 0;
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         }
         mouseMove(e) {
+            if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
+                GameManager.instance.vConsole("在播放其他动作");
+                this.posz = 0;
+                return;
+            }
+            if (Laya.Browser.onPC) ;
+            else {
+                if (e.touchId != this.myIndex) {
+                    return;
+                }
+            }
             this.posz = JoystickManager.instance.Horizontal * 0.02;
             this.currentMotion = (this.posz > 0) ? 1 : 2;
             this.animator.play(this.motions[this.currentMotion]);
         }
         mouseUp(e) {
+            if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
+                console.log("在播放其他动作");
+                return;
+            }
+            if (Laya.Browser.onPC) ;
+            else {
+                if (e.touchId != this.myIndex) {
+                    GameManager.instance.vConsole("离开的点是其他手指：" + e.touchId + "，摇杆的手指是：" + this.myIndex);
+                    return;
+                }
+            }
+            this.myIndex = -1;
             this.posz = 0;
             this.currentMotion = 0;
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);
@@ -198,6 +225,17 @@
             Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         }
         mouseOut(e) {
+            if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
+                console.log("在播放其他动作");
+                return;
+            }
+            if (Laya.Browser.onPC) ;
+            else {
+                if (e.touchId != this.myIndex) {
+                    return;
+                }
+            }
+            this.myIndex = -1;
             this.posz = 0;
             this.currentMotion = 0;
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);

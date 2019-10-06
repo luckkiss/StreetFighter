@@ -63,7 +63,7 @@ export default class JoystickManager extends Laya.Script {
         } else {
 
             if(e.touchId != this.myIndex) {
-                GameManager.instance.vConsole("无关的手指[" + e.touchId + "]");
+                // GameManager.instance.vConsole("无关的手指[" + e.touchId + "]");
                 return;
             }
             if(e.touches.length <= this.myIndex) {
@@ -105,10 +105,11 @@ export default class JoystickManager extends Laya.Script {
                 return;
             }
         }
+        this.myIndex = -1;
+
         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         this.speed = 0;
         this.stick.pos(this.round.x, this.round.y);
-        this.myIndex = -1;
     }
 
     // 基于场景
@@ -119,10 +120,11 @@ export default class JoystickManager extends Laya.Script {
                 return;
             }
         }
+        this.myIndex = -1;
+
         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         this.speed = 0;
         this.stick.pos(this.round.x, this.round.y);
-        this.myIndex = -1;
     }
 
     private lastX: number = 0;
