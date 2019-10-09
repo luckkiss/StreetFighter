@@ -1,5 +1,6 @@
 import GameConfig from "./GameConfig";
 import LoadView from "./scripts/LoadView";
+import JoystickView from "./scripts/JoystickView";
 // import UIManager from "./UIManager";
 
 class Main {
@@ -40,6 +41,8 @@ class Main {
 			{url:"ui.json",  type:Laya.Loader.JSON},
 			{url:"res/atlas/comp.atlas",  type:Laya.Loader.ATLAS},
 			{url:"res/atlas/comp.png",  type:Laya.Loader.IMAGE},
+			{url:"res/atlas/ui.atlas",  type:Laya.Loader.ATLAS},
+			{url:"res/atlas/ui.png",  type:Laya.Loader.IMAGE},
         ];
 		Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
 	}
@@ -50,6 +53,7 @@ class Main {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
 		this.loadView = new LoadView(); //加载模式/内嵌模式
 		Laya.stage.addChild(this.loadView);
+
 	}
 }
 //激活启动类
