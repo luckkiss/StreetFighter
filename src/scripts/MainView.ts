@@ -29,7 +29,6 @@ export default class MainView extends ui.MainUI {
         // 添加摇杆
         this.joystick = new JoystickView(); //加载模式/内嵌模式
         Laya.stage.addChild(this.joystick);
-        // joystick.pos(50, 430);
 
         // 添加3D场景
         // https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1

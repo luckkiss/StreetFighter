@@ -91,6 +91,55 @@
         REG("ui.MainUI", MainUI);
     })(ui || (ui = {}));
 
+    class WebSocketClient extends Laya.Script {
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new WebSocketClient();
+            }
+            return this.instance;
+        }
+        constructor() {
+            super();
+        }
+        initSocket() {
+            this.byte = new Laya.Byte();
+            this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
+            this.socket = new Laya.Socket();
+            this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
+            var url = "ws://192.168.1.101:3001";
+            this.socket.connectByUrl(url);
+            this.socket.on(Laya.Event.OPEN, this, this.openHandler);
+            this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
+            this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
+            this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
+        }
+        openHandler(event = null) {
+            console.log("正确建立连接；");
+        }
+        receiveHandler(msg = null) {
+            console.log("接收到数据触发函数:", msg);
+        }
+        closeHandler(e = null) {
+            console.log("关闭事件");
+        }
+        errorHandler(e = null) {
+            console.log("连接出错");
+        }
+        sendMatch() {
+            if (!this.socket.connected) {
+                console.error("已经断开连接.");
+                return;
+            }
+            var msgClients = {
+                "type": "message",
+                "data": "hello",
+            };
+            this.socket.send(JSON.stringify(msgClients));
+        }
+        setUserData() {
+        }
+    }
+
     class JoystickView extends ui.JoystickUI {
         constructor() {
             super();
@@ -479,26 +528,31 @@
     }
 
     class LobbyView extends ui.LobbyUI {
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new LobbyView();
-            }
-            return this.instance;
-        }
         constructor() {
             super();
+            this.client = null;
             this.createView(Laya.View.uiMap["Lobby"]);
             this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.onSign);
             this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.onMatch);
             Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
             Laya.SoundManager.autoStopMusic = true;
             console.log("播放音乐");
+            this.client = WebSocketClient.getInstance();
+            console.log("client: ", this.client != null);
+            this.client.initSocket();
+        }
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new LobbyView();
+            }
+            return this.instance;
         }
         onSign() {
             console.log("签到.");
         }
         onMatch() {
             console.log("开始匹配...");
+            this.client.sendMatch();
             Laya.timer.once(1000, this, this.onEnterGame);
         }
         onEnterGame() {

@@ -1,4 +1,5 @@
 import {ui} from "../ui/layaMaxUI";
+import WebSocketClient from "../WebSocketClient";
 import MainView from "./MainView";
 
 export default class LobbyView extends ui.LobbyUI {
@@ -10,7 +11,9 @@ export default class LobbyView extends ui.LobbyUI {
 	}
 	/*界面实例*/
     private static instance: LobbyView;
-	
+    
+    private client: WebSocketClient = null;
+
     constructor() {
         super();
 		this.createView(Laya.View.uiMap["Lobby"]);
@@ -20,6 +23,11 @@ export default class LobbyView extends ui.LobbyUI {
         Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
         Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
         console.log("播放音乐");
+        
+        // 添加WebSocket
+        this.client = WebSocketClient.getInstance();
+        console.log("client: ", this.client != null);
+        this.client.initSocket();
     }
 
     private onSign(): void {
@@ -28,6 +36,7 @@ export default class LobbyView extends ui.LobbyUI {
 
     private onMatch(): void {
         console.log("开始匹配...");
+        this.client.sendMatch();
         Laya.timer.once(1000, this, this.onEnterGame);
     }
 
