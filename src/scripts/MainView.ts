@@ -5,16 +5,16 @@ import TestScript from "./TestScript";
 import LobbyView from "./LobbyView";
     
 export default class MainView extends ui.MainUI {
-    public static getInstance(): MainView {
-        if(this.instance == null) {
-            this.instance = new MainView();
-        }
-        return this.instance;
-	}
+    // public static getInstance(): MainView {
+    //     if(this.instance == null) {
+    //         this.instance = new MainView();
+    //     }
+    //     return this.instance;
+	// }
 	/*界面实例*/
-    private static instance: MainView;
+    public static instance: MainView;
     
-    // private joystick: JoystickView;
+    private joystick: JoystickView;
 
     /*3D场景*/
     public scene3d: Laya.Scene3D;
@@ -23,11 +23,12 @@ export default class MainView extends ui.MainUI {
     
     constructor() {
         super();
-		this.createView(Laya.View.uiMap["Main"]);
+        this.createView(Laya.View.uiMap["Main"]);
+        MainView.instance = this;
 
         // 添加摇杆
-        var joystick: JoystickView = new JoystickView(); //加载模式/内嵌模式
-        Laya.stage.addChild(joystick);
+        this.joystick = new JoystickView(); //加载模式/内嵌模式
+        Laya.stage.addChild(this.joystick);
         // joystick.pos(50, 430);
 
         // 添加3D场景
@@ -37,6 +38,7 @@ export default class MainView extends ui.MainUI {
         this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             Laya.stage.removeChild(this.scene3d);
             Laya.stage.removeChild(this.playerA);
+            Laya.stage.removeChild(this.joystick);
             Laya.stage.removeChild(this);
             var lobbyView = new LobbyView(); //加载模式/内嵌模式
             Laya.stage.addChild(lobbyView);
@@ -57,10 +59,9 @@ export default class MainView extends ui.MainUI {
         console.log("3D精灵加载完成");
         if(this.playerA == null) {
             this.playerA = this.scene3d.addChild(sp) as Laya.Sprite3D;
-            // this.playerA.addComponent(PlayerController);
-            // this.playerA.addComponent(TestScript);
-            var script: TestScript = this.playerA.addComponent(TestScript);
-            script.InitData(this.playerA);
+            this.playerA.addComponent(PlayerController);
+            // var script: TestScript = this.playerA.addComponent(TestScript);
+            // script.InitData(this.playerA);
         }
     }
 }

@@ -1,6 +1,7 @@
 import LogManager from "./LogManager";
-import JoystickManager from "./JoystickManager";
+// import JoystickManager from "./JoystickManager";
 import MainView from "./MainView";
+import JoystickView from "./JoystickView";
 
 /**控制角色运动 */
 // https://ldc.layabox.com/doc/?nav=zh-ts-4-1-1 //官方移动角色
@@ -38,10 +39,10 @@ export default class PlayerController extends Laya.Script3D {
 
     onStart(): void {
         // this.gameObject = GameManager.instance.playerA;
-        this.gameObject = MainView.getInstance().playerA;
-        console.log("gameObject:", this.gameObject != null);
+        this.gameObject = MainView.instance.playerA;
+        // console.log("gameObject:", this.gameObject != null);
         this.animator = this.gameObject.getComponent(Laya.Animator);
-        console.log("animator:", this.animator != null);
+        // console.log("animator:", this.animator != null);
         this.animator.play(this.motions[0]);
 
         this.currentMotion = 0;
@@ -62,8 +63,8 @@ export default class PlayerController extends Laya.Script3D {
 
         // 全局
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
-        console.log("JoystickManager: ", (JoystickManager.instance != null));
-        JoystickManager.instance.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+        console.log("JoystickView: ", (JoystickView.instance != null));
+        JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
     }
 
     onUpdate(): void {
@@ -114,7 +115,8 @@ export default class PlayerController extends Laya.Script3D {
         }
 
         // 检测到攻击动画，就覆盖移动动画，停止移动
-        this.posz = JoystickManager.instance.Horizontal * 0.02;
+        // this.posz = JoystickManager.instance.Horizontal * 0.02;
+        this.posz = JoystickView.instance.Horizontal * 0.02;
         this.currentMotion = (this.posz > 0)? 1 : 2;
         this.animator.play(this.motions[this.currentMotion]); //前进/后退
     }

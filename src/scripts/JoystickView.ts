@@ -23,20 +23,14 @@ export default class JoystickView extends ui.JoystickUI {
         console.log("stickImage: ", this.stickImage != null);
         this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
 
-        // Laya.stage.on(Laya.Event.MOUSE_DOWN, this, ()=> {
-        //     console.log("点击，，");
-        // });
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
         Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
 
         Laya.timer.frameLoop(1, this, this.outputData);
     }
     
-    
     // 基于UI
     mouseDown(e: Laya.Event): void {
-        console.log("mouseDown");
-
         // this.touches = e.touches; //多点触控
         this.myIndex = e.touchId;
         this.centerX = this.roundImage.x;
@@ -47,8 +41,6 @@ export default class JoystickView extends ui.JoystickUI {
 
     // 基于场景
     mouseMove(e: Laya.Event): void {
-        console.log("mouseMove");
-
         var dx: number = 0;
         var dy: number = 0;
 
@@ -92,8 +84,6 @@ export default class JoystickView extends ui.JoystickUI {
 
     // 基于场景
     mouseUp(e: Laya.Event): void {
-        console.log("mouseUp");
-
         if(Laya.Browser.onPC) { }
         else {
             if(e.touchId != this.myIndex) {

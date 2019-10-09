@@ -4,7 +4,7 @@
     "selectedBox":2,
     "selecteID":4,
     "searchKey":"Scene,Joystick,Joystick",
-    "props":{"zOrder":1,"width":1280,"var":"Joystick","sceneColor":"#000000","name":"Joystick","height":720},
+    "props":{"zOrder":1,"width":1280,"var":"Joystick","sceneColor":"#000000","name":"Joystick","mouseThrough":true,"height":720},
     "nodeParent":-1,
     "maxID":5,
     "label":"Joystick",

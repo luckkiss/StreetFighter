@@ -7,7 +7,7 @@ export module ui {
     export class JoystickUI extends Laya.Scene {
 		public stickImage:Laya.Image;
 		public roundImage:Laya.Image;
-        public static  uiView:any ={"type":"Scene","props":{"zOrder":1,"width":1280,"name":"Joystick","height":720},"compId":2,"child":[{"type":"Image","props":{"width":180,"var":"stickImage","skin":"ui/joystickPoint.png","name":"Stick","left":50,"height":180,"bottom":50,"anchorY":0.5,"anchorX":0.5},"compId":3},{"type":"Image","props":{"width":240,"var":"roundImage","skin":"ui/joystickBg.png","name":"Round","left":20,"height":240,"bottom":20,"anchorY":0.5,"anchorX":0.5},"compId":4}],"loadList":["ui/joystickPoint.png","ui/joystickBg.png"],"loadList3D":[]};
+        public static  uiView:any ={"type":"Scene","props":{"zOrder":1,"width":1280,"name":"Joystick","mouseThrough":true,"height":720},"compId":2,"child":[{"type":"Image","props":{"width":180,"var":"stickImage","skin":"ui/joystickPoint.png","name":"Stick","left":50,"height":180,"bottom":50,"anchorY":0.5,"anchorX":0.5},"compId":3},{"type":"Image","props":{"width":240,"var":"roundImage","skin":"ui/joystickBg.png","name":"Round","left":20,"height":240,"bottom":20,"anchorY":0.5,"anchorX":0.5},"compId":4}],"loadList":["ui/joystickPoint.png","ui/joystickBg.png"],"loadList3D":[]};
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
