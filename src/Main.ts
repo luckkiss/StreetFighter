@@ -1,4 +1,7 @@
 import GameConfig from "./GameConfig";
+import LoadView from "./scripts/LoadView";
+// import UIManager from "./UIManager";
+
 class Main {
 	constructor() {
 		//根据IDE设置初始化引擎		
@@ -30,7 +33,27 @@ class Main {
 
 	onConfigLoaded(): void {
 		//加载IDE指定的场景
-		GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+		// GameConfig.startScene && Laya.Scene.open(GameConfig.startScene); //文件模式
+		
+        // 预加载主游戏页面图片资源数组
+        var res: Array<any> = [
+			{url:"ui.json",  type:Laya.Loader.JSON},
+			{url:"res/atlas/comp.atlas",  type:Laya.Loader.ATLAS},
+			{url:"res/atlas/comp.png",  type:Laya.Loader.IMAGE},
+			// {url:"res/atlas/ui.atlas",  type:Laya.Loader.ATLAS},
+			// {url:"res/atlas/ui.png",  type:Laya.Loader.IMAGE},
+			// {url:"res/audios/bgm.mp3",  type:Laya.Loader.SOUND},
+			// {url:"res/unity3d/LayaScene.ls",  type:Laya.Scene3D},
+        ];
+        Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
+	}
+
+	private loadView: LoadView;
+
+	onLoaded(): void {
+		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
+		this.loadView = new LoadView(); //加载模式/内嵌模式
+		Laya.stage.addChild(this.loadView);
 	}
 }
 //激活启动类
