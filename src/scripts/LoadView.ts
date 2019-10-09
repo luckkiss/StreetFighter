@@ -29,8 +29,12 @@ export default class LoadView extends ui.LoadUI {
 			{url:"res/atlas/ui.png",  type:Laya.Loader.IMAGE},
 			{url:"res/audios/bgm.mp3",  type:Laya.Loader.SOUND},
 			// {url:"res/unity3d/LayaScene.ls",  type:Laya.Scene3D},
+			// {url:"res/scenes/Empty.ls",  type:Laya.Scene3D},
+			// {url:"res/prefabs/Main Camera.lh",  type:Laya.Camera},
+			// {url:"res/prefabs/Background.lh",  type:Laya.Sprite3D},
+			// {url:"res/prefabs/RPG-CharacterA.lh",  type:Laya.Sprite3D},
         ];
-		// 设置progress Handler的第4个参数为true，根据加载文件个数获取加载进度
+		// Handler第4个参数为true，根据加载文件个数获取加载进度
 		Laya.loader.load(res, null, Laya.Handler.create(this, this.onProgress, null, false));
 	}
 	
@@ -47,10 +51,6 @@ export default class LoadView extends ui.LoadUI {
 	
     // 加载完成
     public onComplete(): void {
-	   	// 实例化游戏开始界面
-		// this.GameStart = new GamStart(); //注意哦，这里的GameStart是静态属性，所以访问的时候不能用this了，只能用GameMain类，
-		// Laya.stage.addChild(GameMain.GameStart);
-
 		// Laya.Scene.open("Main.scene");
 		var lobbyView: LobbyView = new LobbyView(); //加载模式/内嵌模式
 		Laya.stage.addChild(lobbyView);

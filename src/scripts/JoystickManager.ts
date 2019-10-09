@@ -1,4 +1,4 @@
-import GameManager from "./GameManager";
+import LogManager from "./LogManager";
 
 /**控制输入类 */
 //https://github.com/lizenghua/JoyStick
@@ -67,7 +67,7 @@ export default class JoystickManager extends Laya.Script {
                 return;
             }
             if(e.touches.length <= this.myIndex) {
-                GameManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
+                LogManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
                 // Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
                 return;
             }
@@ -140,7 +140,7 @@ export default class JoystickManager extends Laya.Script {
                 dy = Laya.stage.mouseY - this.centerY;
             } else {
                 if(this.touches.length <= this.myIndex) {
-                    GameManager.instance.vConsole("outputData.数组越界");
+                    LogManager.instance.vConsole("outputData.数组越界");
                     return;
                 }
                 dx = this.touches[this.myIndex].stageX - this.centerX;

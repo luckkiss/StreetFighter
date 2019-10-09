@@ -1,4 +1,5 @@
 import {ui} from "../ui/layaMaxUI";
+import MainView from "./MainView";
 
 export default class LobbyView extends ui.LobbyUI {
     public static getInstance(): LobbyView {
@@ -27,5 +28,12 @@ export default class LobbyView extends ui.LobbyUI {
 
     private onMatch(): void {
         console.log("开始匹配...");
+        Laya.timer.once(1000, this, this.onEnterGame);
+    }
+
+    private onEnterGame(): void {
+		var mainView: MainView = new MainView(); //加载模式/内嵌模式
+		Laya.stage.addChild(mainView);
+		Laya.stage.removeChild(this);
     }
 }

@@ -40,12 +40,8 @@ class Main {
 			{url:"ui.json",  type:Laya.Loader.JSON},
 			{url:"res/atlas/comp.atlas",  type:Laya.Loader.ATLAS},
 			{url:"res/atlas/comp.png",  type:Laya.Loader.IMAGE},
-			// {url:"res/atlas/ui.atlas",  type:Laya.Loader.ATLAS},
-			// {url:"res/atlas/ui.png",  type:Laya.Loader.IMAGE},
-			// {url:"res/audios/bgm.mp3",  type:Laya.Loader.SOUND},
-			// {url:"res/unity3d/LayaScene.ls",  type:Laya.Scene3D},
         ];
-        Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
+		Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
 	}
 
 	private loadView: LoadView;

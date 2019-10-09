@@ -1,5 +1,6 @@
-import GameManager from "./GameManager";
+import LogManager from "./LogManager";
 import JoystickManager from "./JoystickManager";
+import MainView from "./MainView";
 
 /**控制角色运动 */
 // https://ldc.layabox.com/doc/?nav=zh-ts-4-1-1 //官方移动角色
@@ -34,7 +35,8 @@ export default class PlayerController extends Laya.Script3D {
     constructor() {
         super();
 
-        this.gameObject = GameManager.instance.playerA;
+        // this.gameObject = GameManager.instance.playerA;
+        this.gameObject = MainView.getInstance().playerA;
         this.animator = this.gameObject.getComponent(Laya.Animator);
 
         this.currentMotion = 0;
@@ -43,7 +45,7 @@ export default class PlayerController extends Laya.Script3D {
         this.posz = 0;
 
         this._clickTime = 0;
-        var gamePad: Laya.Node = GameManager.instance.gamePad;
+        var gamePad: Laya.Node = LogManager.instance.gamePad;
         this.fistBtn = gamePad.getChildByName("Fist") as Laya.Image;
         this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.onFistHandler);
         this.kickBtn = gamePad.getChildByName("Kick") as Laya.Image;
@@ -98,7 +100,7 @@ export default class PlayerController extends Laya.Script3D {
     // 基于场景
     mouseMove(e: Laya.Event): void {
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
-            GameManager.instance.vConsole("在播放其他动作");
+            LogManager.instance.vConsole("在播放其他动作");
             this.posz = 0;
             return;
         }
@@ -123,7 +125,7 @@ export default class PlayerController extends Laya.Script3D {
         if(Laya.Browser.onPC) { }
         else {
             if(e.touchId != this.myIndex) {
-                GameManager.instance.vConsole("离开的点是其他手指：" + e.touchId + "，摇杆的手指是：" + this.myIndex);
+                LogManager.instance.vConsole("离开的点是其他手指：" + e.touchId + "，摇杆的手指是：" + this.myIndex);
                 return;
             }
         }
