@@ -51,7 +51,6 @@ export default class LoadView extends ui.LoadUI {
 	
     // 加载完成
     public onComplete(): void {
-		// Laya.Scene.open("Main.scene");
 		var lobbyView: LobbyView = new LobbyView(); //加载模式/内嵌模式
 		Laya.stage.addChild(lobbyView);
 		Laya.stage.removeChild(this);

@@ -205,6 +205,21 @@
         REG("ui.MainUI", MainUI);
     })(ui || (ui = {}));
 
+    class TestScript extends Laya.Script {
+        constructor() {
+            super();
+            this.intType = 1000;
+            this.numType = 1000;
+            this.strType = "hello laya";
+            this.boolType = true;
+            console.log("添加脚本成功");
+        }
+        onEnable() {
+        }
+        onDisable() {
+        }
+    }
+
     class MainView extends ui.MainUI {
         static getInstance() {
             if (this.instance == null) {
@@ -215,19 +230,15 @@
         constructor() {
             super();
             this.createView(Laya.View.uiMap["Main"]);
-            this.PreloadingRes();
-        }
-        PreloadingRes() {
-            var resource = [
-                { url: "res/scenes/Empty.ls", type: Laya.Scene3D },
-                { url: "res/prefabs/RPG-CharacterA.lh", type: Laya.Sprite3D },
-            ];
-            Laya.loader.create(resource, Laya.Handler.create(this, this.onPreLoadFinish));
-        }
-        onPreLoadFinish() {
-            this.scene3d = Laya.stage.addChild(Laya.Loader.getRes("res/scenes/Empty.ls"));
-            var sp = Laya.Loader.getRes("res/prefabs/RPG-CharacterA.lh");
-            var layaMonkey2 = this.scene3d.addChild(sp);
+            Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, function (sc) {
+                this.scene3d = sc;
+                this.scene3d.zOrder = -1;
+                this.stage.addChild(this.scene3d);
+                Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, function (sp) {
+                    this.playerA = this.scene3d.addChild(sp);
+                    this.playerA.addComponent(TestScript);
+                }));
+            }));
         }
     }
 
