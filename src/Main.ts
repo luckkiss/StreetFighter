@@ -44,7 +44,7 @@ class Main {
 		Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
 	}
 
-	private loadView: LoadView;
+	public loadView: LoadView;
 
 	onLoaded(): void {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值

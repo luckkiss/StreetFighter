@@ -1,6 +1,7 @@
 import {ui} from "../ui/layaMaxUI";
 import PlayerController from "./PlayerController";
 import TestScript from "./TestScript";
+import LobbyView from "./LobbyView";
     
 export default class MainView extends ui.MainUI {
     public static getInstance(): MainView {
@@ -13,9 +14,7 @@ export default class MainView extends ui.MainUI {
     private static instance: MainView;
 	
     /*3D场景*/
-    private scene3d: Laya.Scene3D;
-    private camera: Laya.Camera;
-    private directionLight: Laya.DirectionLight;
+    public scene3d: Laya.Scene3D;
     public playerA: Laya.Sprite3D;
     public playerB: Laya.Sprite3D;
     
@@ -35,5 +34,14 @@ export default class MainView extends ui.MainUI {
                 this.playerA.addComponent(TestScript);
             }));
         }));
+
+        this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            Laya.stage.removeChild(this.scene3d);
+            Laya.stage.removeChild(this.playerA);
+            Laya.stage.removeChild(this);
+            var lobbyView = new LobbyView(); //加载模式/内嵌模式
+            Laya.stage.addChild(lobbyView);
+            console.log("离开游戏");
+        });
     }
 }

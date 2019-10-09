@@ -16,10 +16,9 @@ export default class LobbyView extends ui.LobbyUI {
 		this.createView(Laya.View.uiMap["Lobby"]);
         this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.onSign);
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.onMatch);
-    }
-
-    onStart(): void {
+        
 		Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
+        console.log("播放音乐");
     }
 
     private onSign(): void {
