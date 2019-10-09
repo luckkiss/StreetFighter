@@ -21,7 +21,6 @@ export default class Load extends Laya.Script {
         // 当进度条发生变化的时候，我们需要下面的方法来监听其变化
         this.progressBar.changeHandler = new Laya.Handler(this, this.onChange);
 		
-        // this.onProLoaded();
 		Laya.timer.once(1000, this, this.onProLoaded);
 	}
     
@@ -52,9 +51,8 @@ export default class Load extends Laya.Script {
 
 		if(this.progressBar.value == 1) {
 			// 游戏主页面资源加载完成后执行这里的代码
-			// console.log("游戏加载完成咯！！");
-			// 延迟1秒再显示游戏主页面
 			this.progressBar.value = pro;
+			// 延迟1秒再显示游戏主页面
 			Laya.timer.once(1000, this, this.onLoad);
 		}
 	}
