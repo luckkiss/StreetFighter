@@ -34,12 +34,15 @@ export default class PlayerController extends Laya.Script3D {
 
     constructor() {
         super();
+    }
 
+    onStart(): void {
         // this.gameObject = GameManager.instance.playerA;
         this.gameObject = MainView.getInstance().playerA;
         console.log("gameObject:", this.gameObject != null);
         this.animator = this.gameObject.getComponent(Laya.Animator);
         console.log("animator:", this.animator != null);
+        this.animator.play(this.motions[0]);
 
         this.currentMotion = 0;
         this.animLastTime = 0;
@@ -59,11 +62,8 @@ export default class PlayerController extends Laya.Script3D {
 
         // 全局
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+        console.log("JoystickManager: ", (JoystickManager.instance != null));
         JoystickManager.instance.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
-    }
-
-    onStart(): void {
-        this.animator.play(this.motions[0]);
     }
 
     onUpdate(): void {

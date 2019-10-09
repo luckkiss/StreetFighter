@@ -28,11 +28,6 @@ export default class LoadView extends ui.LoadUI {
 			{url:"res/atlas/ui.atlas",  type:Laya.Loader.ATLAS},
 			{url:"res/atlas/ui.png",  type:Laya.Loader.IMAGE},
 			{url:"res/audios/bgm.mp3",  type:Laya.Loader.SOUND},
-			// {url:"res/unity3d/LayaScene.ls",  type:Laya.Scene3D},
-			// {url:"res/scenes/Empty.ls",  type:Laya.Scene3D},
-			// {url:"res/prefabs/Main Camera.lh",  type:Laya.Camera},
-			// {url:"res/prefabs/Background.lh",  type:Laya.Sprite3D},
-			// {url:"res/prefabs/RPG-CharacterA.lh",  type:Laya.Sprite3D},
         ];
 		// Handler第4个参数为true，根据加载文件个数获取加载进度
 		Laya.loader.load(res, null, Laya.Handler.create(this, this.onProgress, null, false));

@@ -32,7 +32,9 @@ export default class JoystickManager extends Laya.Script {
 
     onAwake(): void {
         this.round = this.roundNode as Laya.Sprite;
+        console.log("round:", this.round != null);
         this.stick = this.stickNode as Laya.Sprite;
+        console.log("stick:", this.stick != null);
 
         this.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
 

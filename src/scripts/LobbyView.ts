@@ -17,7 +17,8 @@ export default class LobbyView extends ui.LobbyUI {
         this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.onSign);
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.onMatch);
         
-		Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
+        Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
+        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
         console.log("播放音乐");
     }
 
@@ -32,7 +33,8 @@ export default class LobbyView extends ui.LobbyUI {
 
     private onEnterGame(): void {
 		var mainView: MainView = new MainView(); //加载模式/内嵌模式
-		Laya.stage.addChild(mainView);
+        Laya.stage.addChild(mainView);
+        // Laya.stage.addChild(MainView.getInstance());
 		Laya.stage.removeChild(this);
     }
 }

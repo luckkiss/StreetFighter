@@ -2,7 +2,7 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
-    "selecteID":73,
+    "selecteID":61,
     "searchKey":"Scene,Main,Main",
     "props":{"width":1280,"var":"Main","sceneColor":"#000000","name":"Main","height":720},
     "nodeParent":-1,
@@ -28,23 +28,6 @@
             "isAniNode":true,
             "hasChild":false,
             "compId":51,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Script",
-            "switchAble":true,
-            "source":"src/scripts/JoystickManager.ts",
-            "searchKey":"Script,JoystickManager",
-            "removeAble":true,
-            "props":{"y":0,"x":0,"stickNode":"@node:61","roundNode":"@node:57"},
-            "nodeParent":2,
-            "label":"JoystickManager",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":68,
             "child":[
                 ]
         },
@@ -151,77 +134,6 @@
         {
             "x":15,
             "type":"Image",
-            "searchKey":"Image,Joystick",
-            "props":{"y":550,"x":170,"width":240,"visible":false,"skin":"ui/joystickBg.png","pivotY":120,"pivotX":120,"name":"Joystick","height":240},
-            "nodeParent":2,
-            "label":"Joystick",
-            "isOpen":false,
-            "isDirectory":true,
-            "isAniNode":true,
-            "hasChild":true,
-            "compId":31,
-            "child":[
-                {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,Up",
-                    "props":{"y":40,"x":120,"width":80,"texture":"ui/up.jpg","pivotY":40,"pivotX":40,"name":"Up","height":80},
-                    "nodeParent":31,
-                    "label":"Up",
-                    "isOpen":true,
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":40,
-                    "child":[
-                        ]
-                },
-                {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,Left",
-                    "props":{"y":120,"x":40,"width":80,"texture":"ui/left.jpg","pivotY":40,"pivotX":40,"name":"Left","height":80},
-                    "nodeParent":31,
-                    "label":"Left",
-                    "isOpen":true,
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":38,
-                    "child":[
-                        ]
-                },
-                {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,Right",
-                    "props":{"y":120,"x":200,"width":80,"texture":"ui/right.jpg","pivotY":40,"pivotX":40,"name":"Right","height":80},
-                    "nodeParent":31,
-                    "label":"Right",
-                    "isOpen":true,
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":39,
-                    "child":[
-                        ]
-                },
-                {
-                    "type":"Sprite",
-                    "searchKey":"Sprite,Down",
-                    "props":{"y":200,"x":120,"width":80,"texture":"ui/down.jpg","pivotY":40,"pivotX":40,"name":"Down","height":80},
-                    "nodeParent":31,
-                    "label":"Down",
-                    "isOpen":true,
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":37,
-                    "child":[
-                        ]
-                }],
-            "$HIDDEN":true
-        },
-        {
-            "x":15,
-            "type":"Image",
             "searchKey":"Image,GamePad",
             "props":{"width":240,"skin":"ui/joystickBg.png","right":50,"pivotY":120,"pivotX":120,"name":"GamePad","height":240,"bottom":57},
             "nodeParent":2,
@@ -291,7 +203,7 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,Round,roundImage",
-            "props":{"y":430,"x":170,"width":240,"var":"roundImage","skin":"ui/joystickBg.png","name":"Round","left":50,"height":240,"bottom":50,"anchorY":0.5,"anchorX":0.5},
+            "props":{"y":430,"width":240,"visible":false,"var":"roundImage","skin":"ui/joystickBg.png","name":"Round","left":50,"height":240,"bottom":50,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"Round",
             "isOpen":true,
@@ -300,13 +212,14 @@
             "hasChild":false,
             "compId":57,
             "child":[
-                ]
+                ],
+            "$HIDDEN":false
         },
         {
             "x":15,
             "type":"Image",
             "searchKey":"Image,Stick,stickImage",
-            "props":{"width":180,"var":"stickImage","skin":"ui/joystickPoint.png","name":"Stick","left":80,"height":180,"bottom":80,"anchorY":0.5,"anchorX":0.5},
+            "props":{"y":0,"x":0,"width":180,"visible":false,"var":"stickImage","skin":"ui/joystickPoint.png","name":"Stick","left":80,"height":180,"bottom":80,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"Stick",
             "isOpen":true,
@@ -315,7 +228,8 @@
             "hasChild":false,
             "compId":61,
             "child":[
-                ]
+                ],
+            "$HIDDEN":false
         },
         {
             "x":15,

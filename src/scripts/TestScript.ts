@@ -1,22 +1,26 @@
+import LogManager from "./LogManager";
+import JoystickManager from "./JoystickManager";
+import MainView from "./MainView";
+
 export default class TestScript extends Laya.Script {
-    /** @prop {name:intType, tips:"整数类型示例", type:Int, default:1000}*/
-    public intType: number = 1000;
-    /** @prop {name:numType, tips:"数字类型示例", type:Number, default:1000}*/
-    public numType: number = 1000;
-    /** @prop {name:strType, tips:"字符串类型示例", type:String, default:"hello laya"}*/
-    public strType: string = "hello laya";
-    /** @prop {name:boolType, tips:"布尔类型示例", type:Bool, default:true}*/
-    public boolType: boolean = true;
-    // 更多参数说明请访问: https://ldc2.layabox.com/doc/?nav=zh-as-2-4-0
+    public gameObject: Laya.Sprite3D;
+    public animator: Laya.Animator;
     
     constructor() {
         super();
-        console.log("添加脚本成功");
-    }
-    
-    onEnable(): void {
     }
 
-    onDisable(): void {
+    onStart(): void {
+        // this.gameObject = MainView.getInstance().playerA;
+        // console.log("gameObject:", this.gameObject != null);
+        // this.animator = this.gameObject.getComponent(Laya.Animator);
+        // console.log("animator:", this.animator != null);
+    }
+    
+    InitData(sp: Laya.Sprite3D): void {
+        this.gameObject = sp;
+        console.log("gameObject:", this.gameObject != null);
+        this.animator = this.gameObject.getComponent(Laya.Animator);
+        console.log("animator:", this.animator != null);
     }
 }

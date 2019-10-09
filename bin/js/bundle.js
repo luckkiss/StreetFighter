@@ -25,134 +25,10 @@
         }
     }
 
-    class JoystickManager extends Laya.Script {
-        constructor() {
-            super();
-            this.speed = 0;
-            this.centerX = -1;
-            this.centerY = -1;
-            this.Horizontal = 0;
-            this.Vertical = 0;
-            this.myIndex = -1;
-            this.lastX = 0;
-            this.lastY = 0;
-            JoystickManager.instance = this;
-        }
-        onAwake() {
-            this.round = this.roundNode;
-            this.stick = this.stickNode;
-            this.stick.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
-            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
-            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
-            Laya.timer.frameLoop(1, this, this.outputData);
-        }
-        mouseDown(e) {
-            this.myIndex = e.touchId;
-            this.centerX = this.round.x;
-            this.centerY = this.round.y;
-            Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
-        }
-        mouseMove(e) {
-            var dx = 0;
-            var dy = 0;
-            if (Laya.Browser.onPC) {
-                dx = Laya.stage.mouseX;
-                dy = Laya.stage.mouseY;
-            }
-            else {
-                if (e.touchId != this.myIndex) {
-                    return;
-                }
-                if (e.touches.length <= this.myIndex) {
-                    LogManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
-                    return;
-                }
-                this.touches = e.touches;
-            }
-            dx = this.touches[this.myIndex].stageX;
-            dy = this.touches[this.myIndex].stageY;
-            if (this.centerX >= 0 && this.centerY >= 0) {
-                let dis = this.dis(this.centerX, this.centerY, dx, dy);
-                if (dis > 40) {
-                    this.stick.pos(this.centerX + Math.cos(this.angle) * 40, this.centerY + Math.sin(this.angle) * 40);
-                }
-                else {
-                    this.stick.pos(dx, dy);
-                }
-                if (dis > 3) {
-                    this.speed = 2;
-                }
-                else {
-                    this.speed = 0;
-                }
-            }
-        }
-        mouseUp(e) {
-            if (Laya.Browser.onPC) ;
-            else {
-                if (e.touchId != this.myIndex) {
-                    return;
-                }
-            }
-            this.myIndex = -1;
-            Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
-            this.speed = 0;
-            this.stick.pos(this.round.x, this.round.y);
-        }
-        mouseOut(e) {
-            if (Laya.Browser.onPC) ;
-            else {
-                if (e.touchId != this.myIndex) {
-                    return;
-                }
-            }
-            this.myIndex = -1;
-            Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
-            this.speed = 0;
-            this.stick.pos(this.round.x, this.round.y);
-        }
-        outputData() {
-            if (this.speed > 0) {
-                var dx = 0;
-                var dy = 0;
-                if (Laya.Browser.onPC) {
-                    dx = Laya.stage.mouseX - this.centerX;
-                    dy = Laya.stage.mouseY - this.centerY;
-                }
-                else {
-                    if (this.touches.length <= this.myIndex) {
-                        LogManager.instance.vConsole("outputData.数组越界");
-                        return;
-                    }
-                    dx = this.touches[this.myIndex].stageX - this.centerX;
-                    dy = this.touches[this.myIndex].stageY - this.centerY;
-                    if (isNaN(dx) || isNaN(dy)) {
-                        dx = this.lastX;
-                        dy = this.lastY;
-                    }
-                    else {
-                        this.lastX = dx;
-                        this.lastY = dy;
-                    }
-                }
-                this.angle = Math.atan2(dy, dx);
-                var h = Math.cos(this.angle) * this.speed;
-                this.Horizontal = isNaN(h) ? 0 : h;
-            }
-        }
-        dis(centerX, centerY, mouseX, mouseY) {
-            let dx = centerX - mouseX;
-            let dy = centerY - mouseY;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            return distance;
-        }
-    }
-
     class GameConfig {
         constructor() { }
         static init() {
             var reg = Laya.ClassUtils.regClass;
-            reg("scripts/JoystickManager.ts", JoystickManager);
             reg("scripts/LogManager.ts", LogManager);
         }
     }
@@ -173,6 +49,16 @@
     var REG = Laya.ClassUtils.regClass;
     var ui;
     (function (ui) {
+        class JoystickUI extends Laya.Scene {
+            constructor() { super(); }
+            createChildren() {
+                super.createChildren();
+                this.createView(JoystickUI.uiView);
+            }
+        }
+        JoystickUI.uiView = { "type": "Scene", "props": { "width": 240, "name": "Joystick", "height": 240 }, "compId": 2, "child": [{ "type": "Image", "props": { "width": 180, "var": "stickImage", "skin": "ui/joystickPoint.png", "name": "Stick", "left": 30, "height": 180, "bottom": 30, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Image", "props": { "width": 240, "var": "roundImage", "skin": "ui/joystickBg.png", "name": "Round", "left": 0, "height": 240, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }], "loadList": ["ui/joystickPoint.png", "ui/joystickBg.png"], "loadList3D": [] };
+        ui.JoystickUI = JoystickUI;
+        REG("ui.JoystickUI", JoystickUI);
         class LoadUI extends Laya.Scene {
             constructor() { super(); }
             createChildren() {
@@ -200,23 +86,30 @@
                 this.createView(MainUI.uiView);
             }
         }
-        MainUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Main", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "stickNode": "@node:61", "roundNode": "@node:57", "runtime": "scripts/JoystickManager.ts" }, "compId": 68 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Text", "props": { "text": "左上1", "name": "TextUL", "fontSize": 40, "font": "Arial", "color": "#ffffff", "runtime": "laya.display.Text" }, "compId": 4 }, { "type": "Text", "props": { "y": 0, "x": 1200, "text": "右上", "name": "TextUR", "fontSize": 40, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 12 }, { "type": "Text", "props": { "y": 680, "x": 0, "text": "左下", "name": "TextDL", "fontSize": 40, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 14 }, { "type": "Text", "props": { "y": 680, "x": 1200, "text": "右下", "name": "TextDR", "fontSize": 40, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 13 }, { "type": "Text", "props": { "x": 100, "presetID": 1, "y": 0, "width": 1080, "text": "log", "name": "Console", "isPresetRoot": true, "height": 720, "fontSize": 16, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 71 }] }, { "type": "Image", "props": { "y": 550, "x": 170, "width": 240, "visible": false, "skin": "ui/joystickBg.png", "pivotY": 120, "pivotX": 120, "name": "Joystick", "height": 240 }, "compId": 31, "child": [{ "type": "Sprite", "props": { "y": 40, "x": 120, "width": 80, "texture": "ui/up.jpg", "pivotY": 40, "pivotX": 40, "name": "Up", "height": 80 }, "compId": 40 }, { "type": "Sprite", "props": { "y": 120, "x": 40, "width": 80, "texture": "ui/left.jpg", "pivotY": 40, "pivotX": 40, "name": "Left", "height": 80 }, "compId": 38 }, { "type": "Sprite", "props": { "y": 120, "x": 200, "width": 80, "texture": "ui/right.jpg", "pivotY": 40, "pivotX": 40, "name": "Right", "height": 80 }, "compId": 39 }, { "type": "Sprite", "props": { "y": 200, "x": 120, "width": 80, "texture": "ui/down.jpg", "pivotY": 40, "pivotX": 40, "name": "Down", "height": 80 }, "compId": 37 }] }, { "type": "Image", "props": { "width": 240, "skin": "ui/joystickBg.png", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Image", "props": { "y": 50, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Jump", "labelSize": 30, "label": "跳跃", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Image", "props": { "y": 120, "x": 50, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Defend", "labelSize": 30, "label": "防御", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Image", "props": { "y": 120, "x": 190, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Kick", "labelSize": 30, "label": "踢腿", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Image", "props": { "y": 190, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Fist", "labelSize": 30, "label": "重拳", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Image", "props": { "y": 430, "x": 170, "width": 240, "var": "roundImage", "skin": "ui/joystickBg.png", "name": "Round", "left": 50, "height": 240, "bottom": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 57 }, { "type": "Image", "props": { "width": 180, "var": "stickImage", "skin": "ui/joystickPoint.png", "name": "Stick", "left": 80, "height": 180, "bottom": 80, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 61 }, { "type": "Button", "props": { "var": "exitBtn", "skin": "comp/button.png", "name": "Exit", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开" }, "compId": 73 }], "loadList": ["prefab/Console.prefab", "ui/joystickBg.png", "ui/up.jpg", "ui/left.jpg", "ui/right.jpg", "ui/down.jpg", "ui/joystickPoint.png", "comp/button.png"], "loadList3D": [] };
+        MainUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Main", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Text", "props": { "text": "左上1", "name": "TextUL", "fontSize": 40, "font": "Arial", "color": "#ffffff", "runtime": "laya.display.Text" }, "compId": 4 }, { "type": "Text", "props": { "y": 0, "x": 1200, "text": "右上", "name": "TextUR", "fontSize": 40, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 12 }, { "type": "Text", "props": { "y": 680, "x": 0, "text": "左下", "name": "TextDL", "fontSize": 40, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 14 }, { "type": "Text", "props": { "y": 680, "x": 1200, "text": "右下", "name": "TextDR", "fontSize": 40, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 13 }, { "type": "Text", "props": { "x": 100, "presetID": 1, "y": 0, "width": 1080, "text": "log", "name": "Console", "isPresetRoot": true, "height": 720, "fontSize": 16, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 71 }] }, { "type": "Image", "props": { "width": 240, "skin": "ui/joystickBg.png", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Image", "props": { "y": 50, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Jump", "labelSize": 30, "label": "跳跃", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Image", "props": { "y": 120, "x": 50, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Defend", "labelSize": 30, "label": "防御", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Image", "props": { "y": 120, "x": 190, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Kick", "labelSize": 30, "label": "踢腿", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Image", "props": { "y": 190, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Fist", "labelSize": 30, "label": "重拳", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Image", "props": { "y": 430, "width": 240, "visible": false, "var": "roundImage", "skin": "ui/joystickBg.png", "name": "Round", "left": 50, "height": 240, "bottom": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 57 }, { "type": "Image", "props": { "y": 0, "x": 0, "width": 180, "visible": false, "var": "stickImage", "skin": "ui/joystickPoint.png", "name": "Stick", "left": 80, "height": 180, "bottom": 80, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 61 }, { "type": "Button", "props": { "var": "exitBtn", "skin": "comp/button.png", "name": "Exit", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开" }, "compId": 73 }], "loadList": ["prefab/Console.prefab", "ui/joystickBg.png", "ui/joystickPoint.png", "comp/button.png"], "loadList3D": [] };
         ui.MainUI = MainUI;
         REG("ui.MainUI", MainUI);
     })(ui || (ui = {}));
 
-    class TestScript extends Laya.Script {
-        constructor() {
-            super();
-            this.intType = 1000;
-            this.numType = 1000;
-            this.strType = "hello laya";
-            this.boolType = true;
-            console.log("添加脚本成功");
-        }
+    class JoystickView extends ui.JoystickUI {
+        constructor() { super(); }
         onEnable() {
         }
         onDisable() {
+        }
+    }
+
+    class TestScript extends Laya.Script {
+        constructor() {
+            super();
+        }
+        onStart() {
+        }
+        InitData(sp) {
+            this.gameObject = sp;
+            console.log("gameObject:", this.gameObject != null);
+            this.animator = this.gameObject.getComponent(Laya.Animator);
+            console.log("animator:", this.animator != null);
         }
     }
 
@@ -230,15 +123,10 @@
         constructor() {
             super();
             this.createView(Laya.View.uiMap["Main"]);
-            Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, function (sc) {
-                this.scene3d = sc;
-                this.scene3d.zOrder = -1;
-                this.stage.addChild(this.scene3d);
-                Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, function (sp) {
-                    this.playerA = this.scene3d.addChild(sp);
-                    this.playerA.addComponent(TestScript);
-                }));
-            }));
+            var joystick = new JoystickView();
+            Laya.stage.addChild(joystick);
+            joystick.pos(50, 430);
+            Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 Laya.stage.removeChild(this.scene3d);
                 Laya.stage.removeChild(this.playerA);
@@ -247,6 +135,21 @@
                 Laya.stage.addChild(lobbyView);
                 console.log("离开游戏");
             });
+        }
+        onScene3DComplete(sc) {
+            this.scene3d = sc;
+            this.scene3d.zOrder = -1;
+            Laya.stage.addChild(this.scene3d);
+            console.log("场景加载完成");
+            Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
+        }
+        onPlayerAComplete(sp) {
+            console.log("3D精灵加载完成");
+            if (this.playerA == null) {
+                this.playerA = this.scene3d.addChild(sp);
+                var script = this.playerA.addComponent(TestScript);
+                script.InitData(this.playerA);
+            }
         }
     }
 
@@ -263,6 +166,7 @@
             this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.onSign);
             this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.onMatch);
             Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
+            Laya.SoundManager.autoStopMusic = true;
             console.log("播放音乐");
         }
         onSign() {
