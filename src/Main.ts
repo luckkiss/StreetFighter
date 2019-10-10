@@ -53,7 +53,6 @@ class Main {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
 		this.loadView = new LoadView(); //加载模式/内嵌模式
 		Laya.stage.addChild(this.loadView);
-
 	}
 }
 //激活启动类

@@ -41,7 +41,27 @@ export default class WebSocketClient extends Laya.Script {
 
     private receiveHandler(msg: any = null): void {
         ///接收到数据触发函数
-        console.log("接收到数据触发函数:", msg);
+        // console.log("接收到数据触发函数:", msg);
+        
+        //解包
+        //{"type":"enter","data":"user2 进来啦"}
+        //{"type":"message","data":"user2 说:hello"}
+        var obj = JSON.parse(msg);
+        console.log("====> " + obj.type + ": " + obj.data);
+
+        //notify到外部统一处理
+        switch(obj.type) {
+            case "enter": //用户进入
+            {
+
+            }
+            break;
+            case "message": //聊天消息
+            {
+
+            }
+            break;
+        }
     }
 
     private closeHandler(e: any = null): void {

@@ -76,7 +76,7 @@
                 this.createView(LobbyUI.uiView);
             }
         }
-        LobbyUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Lobby", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "runtime": "laya.ui.Widget" }, "compId": 5 }, { "type": "Button", "props": { "x": 640, "var": "signBtn", "skin": "comp/button.png", "name": "Sign", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "签到", "centerY": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "y": 359, "x": 640, "var": "matchBtn", "skin": "comp/button.png", "name": "Match", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "匹配", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }], "loadList": ["comp/button.png"], "loadList3D": [] };
+        LobbyUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Lobby", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "runtime": "laya.ui.Widget" }, "compId": 5 }, { "type": "Button", "props": { "y": 460, "x": 640, "var": "signBtn", "skin": "comp/button.png", "name": "Sign", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "签到", "centerY": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "y": 359, "x": 640, "var": "matchBtn", "skin": "comp/button.png", "name": "Match", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "匹配", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }], "loadList": ["comp/button.png"], "loadList3D": [] };
         ui.LobbyUI = LobbyUI;
         REG("ui.LobbyUI", LobbyUI);
         class MainUI extends Laya.Scene {
@@ -117,7 +117,8 @@
             console.log("正确建立连接；");
         }
         receiveHandler(msg = null) {
-            console.log("接收到数据触发函数:", msg);
+            var obj = JSON.parse(msg);
+            console.log("====> " + obj.type + ": " + obj.data);
         }
         closeHandler(e = null) {
             console.log("关闭事件");
