@@ -1,6 +1,6 @@
 import {ui} from "../ui/layaMaxUI";
-import WebSocketClient from "../WebSocketClient";
 import MainView from "./MainView";
+import WebSocketClient from "../WebSocketClient";
 
 export default class LobbyView extends ui.LobbyUI {
     public static getInstance(): LobbyView {
@@ -176,7 +176,8 @@ export default class LobbyView extends ui.LobbyUI {
     private onEnterGame(): void {
 		var mainView: MainView = new MainView(); //加载模式/内嵌模式
         Laya.stage.addChild(mainView);
-		Laya.stage.removeChild(this);
+        Laya.stage.removeChild(this);
+        // Laya.stage.offAll();
     }
 
     //#endregion

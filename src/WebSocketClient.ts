@@ -17,6 +17,20 @@ export default class WebSocketClient extends Laya.Script {
         super();
     }
 
+    public get isConnected(): boolean {
+        if(this.socket != null && this.socket.connected) {
+            return true;
+        }
+        return false;
+    }
+
+    public reconnect(): void {
+        if(this.socket == null)
+            this.socket = new Laya.Socket();
+        var url: string = "ws://192.168.1.101:3001";
+        this.socket.connectByUrl(url);
+    }
+
     public initSocket(): void {
         this.byte = new Laya.Byte();
         //大小端，这里我们采用小端

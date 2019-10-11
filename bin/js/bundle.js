@@ -91,50 +91,6 @@
         REG("ui.MainUI", MainUI);
     })(ui || (ui = {}));
 
-    class WebSocketClient extends Laya.Script {
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new WebSocketClient();
-            }
-            return this.instance;
-        }
-        constructor() {
-            super();
-        }
-        initSocket() {
-            this.byte = new Laya.Byte();
-            this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
-            this.socket = new Laya.Socket();
-            this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
-            var url = "ws://192.168.1.101:3001";
-            this.socket.connectByUrl(url);
-            this.socket.on(Laya.Event.OPEN, this, this.openHandler);
-            this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
-            this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
-            this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
-        }
-        sendData(obj) {
-            if (!this.socket.connected) {
-                console.error("已经断开连接.");
-                return;
-            }
-            this.socket.send(JSON.stringify(obj));
-        }
-        openHandler(event = null) {
-            console.log("正确建立连接；");
-        }
-        receiveHandler(msg = null) {
-            var obj = JSON.parse(msg);
-            Laya.stage.event("nethandle", obj);
-        }
-        closeHandler(e = null) {
-            console.log("关闭事件");
-        }
-        errorHandler(e = null) {
-            console.log("连接出错");
-        }
-    }
-
     class JoystickView extends ui.JoystickUI {
         constructor() {
             super();
@@ -148,8 +104,6 @@
             this.lastY = 0;
             this.createView(Laya.View.uiMap["Joystick"]);
             JoystickView.instance = this;
-            console.log("roundImage: ", this.roundImage != null);
-            console.log("stickImage: ", this.stickImage != null);
             this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
@@ -255,6 +209,62 @@
         }
     }
 
+    class WebSocketClient extends Laya.Script {
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new WebSocketClient();
+            }
+            return this.instance;
+        }
+        constructor() {
+            super();
+        }
+        get isConnected() {
+            if (this.socket != null && this.socket.connected) {
+                return true;
+            }
+            return false;
+        }
+        reconnect() {
+            if (this.socket == null)
+                this.socket = new Laya.Socket();
+            var url = "ws://192.168.1.101:3001";
+            this.socket.connectByUrl(url);
+        }
+        initSocket() {
+            this.byte = new Laya.Byte();
+            this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
+            this.socket = new Laya.Socket();
+            this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
+            var url = "ws://192.168.1.101:3001";
+            this.socket.connectByUrl(url);
+            this.socket.on(Laya.Event.OPEN, this, this.openHandler);
+            this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
+            this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
+            this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
+        }
+        sendData(obj) {
+            if (!this.socket.connected) {
+                console.error("已经断开连接.");
+                return;
+            }
+            this.socket.send(JSON.stringify(obj));
+        }
+        openHandler(event = null) {
+            console.log("正确建立连接；");
+        }
+        receiveHandler(msg = null) {
+            var obj = JSON.parse(msg);
+            Laya.stage.event("nethandle", obj);
+        }
+        closeHandler(e = null) {
+            console.log("关闭事件");
+        }
+        errorHandler(e = null) {
+            console.log("连接出错");
+        }
+    }
+
     class PlayerController extends Laya.Script3D {
         constructor() {
             super();
@@ -274,7 +284,26 @@
             this.animLastTime = 0;
             this.posy = 0;
             this.posz = 0;
+            this.client = null;
             this.myIndex = -1;
+            this.client = WebSocketClient.getInstance();
+            Laya.stage.offAll("nethandle");
+            Laya.stage.on("nethandle", this, this.handle);
+        }
+        handle(obj) {
+            switch (obj.type) {
+                case "sc_move": {
+                    break;
+                }
+                case "sc_fist": {
+                    var uid = obj.uid;
+                    var isLocalPlayer = uid == "wx10000";
+                    if (isLocalPlayer) {
+                        this.onFistCallback(this.touchEvent);
+                    }
+                    break;
+                }
+            }
         }
         onStart() {
             this.gameObject = MainView.instance.playerA;
@@ -322,7 +351,6 @@
         }
         mouseMove(e) {
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
-                LogManager.instance.vConsole("在播放其他动作");
                 this.posz = 0;
                 return;
             }
@@ -344,7 +372,6 @@
             if (Laya.Browser.onPC) ;
             else {
                 if (e.touchId != this.myIndex) {
-                    LogManager.instance.vConsole("离开的点是其他手指：" + e.touchId + "，摇杆的手指是：" + this.myIndex);
                     return;
                 }
             }
@@ -392,7 +419,18 @@
             this.animator.play(this.motions[this.currentMotion]);
         }
         ;
+        sendFist() {
+            var obj = {
+                "type": "cs_fist",
+                "uid": "wx10000",
+            };
+            this.client.sendData(obj);
+        }
         onFistHandler(e) {
+            this.touchEvent = e;
+            this.sendFist();
+        }
+        onFistCallback(e) {
             this.animLastTime = 600;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -427,6 +465,7 @@
             console.log("播完自动放待机：", waitTime);
         }
         onKickHandler(e) {
+            this.touchEvent = e;
             this.animLastTime = 600;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
