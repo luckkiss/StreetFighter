@@ -1,5 +1,6 @@
 import {ui} from "../ui/layaMaxUI";
 import MainView from "./MainView";
+import LoadingView from "./LoadingView";
 import WebSocketClient from "../WebSocketClient";
 
 export default class LobbyView extends ui.LobbyUI {
@@ -29,13 +30,20 @@ export default class LobbyView extends ui.LobbyUI {
         // 添加网络监听
         Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
+        
+        // UI初始化
+        this.awardPanel.visible = false;
+        this.registerPanel.visible = false;
+        this.initUI();
+		Laya.stage.addChild(LoadingView.getInstance());
+    }
 
+    private initUI(): void {
         // UI监听注册
         this.nicknameInput.on(Laya.Event.BLUR, this, ()=> {
             console.log("网络校验昵称 3");
         });
         this.registerBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendRegister);
-        this.awardPanel.visible = false;
         this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendSign);
         this.closeAwardBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             this.awardPanel.visible = false;
@@ -51,11 +59,9 @@ export default class LobbyView extends ui.LobbyUI {
     }
 
     private handle(obj): void {
-        // console.log("recive: " + obj.type + ": " + obj.data);
         switch(obj.type) {
             case "sc_enter": { //建立连接
-                console.log("建立连接");
-                //TODO: 关闭转圈页
+		        Laya.stage.removeChild(LoadingView.getInstance());
                 if(this.uid != null) {
                     this.sendLogin();
                 }

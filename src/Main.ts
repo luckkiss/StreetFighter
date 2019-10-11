@@ -1,6 +1,7 @@
 import GameConfig from "./GameConfig";
 import LoadView from "./scripts/LoadView";
 import JoystickView from "./scripts/JoystickView";
+import LoadingView from "./scripts/LoadingView";
 // import UIManager from "./UIManager";
 
 class Main {
