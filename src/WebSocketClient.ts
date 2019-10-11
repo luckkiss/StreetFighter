@@ -34,34 +34,30 @@ export default class WebSocketClient extends Laya.Script {
         this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
     }
 
+    public sendData(obj): void {
+        if(!this.socket.connected) {
+            console.error("已经断开连接."); //TODO:重连
+            return;
+        }
+        this.socket.send(JSON.stringify(obj));
+    }
+
     private openHandler(event: any = null): void {
         //正确建立连接；
         console.log("正确建立连接；");
+        // var obj: Object = {
+        //     "type": "connected"
+        // };
+        // Laya.stage.event("nethandle", obj);
     }
 
     private receiveHandler(msg: any = null): void {
         ///接收到数据触发函数
         // console.log("接收到数据触发函数:", msg);
-        
         //解包
-        //{"type":"enter","data":"user2 进来啦"}
-        //{"type":"message","data":"user2 说:hello"}
         var obj = JSON.parse(msg);
-        console.log("====> " + obj.type + ": " + obj.data);
-
         //notify到外部统一处理
-        switch(obj.type) {
-            case "enter": //用户进入
-            {
-
-            }
-            break;
-            case "message": //聊天消息
-            {
-
-            }
-            break;
-        }
+        Laya.stage.event("nethandle", obj);
     }
 
     private closeHandler(e: any = null): void {
@@ -73,28 +69,4 @@ export default class WebSocketClient extends Laya.Script {
         //连接出错
         console.log("连接出错");
     }
-
-    // 开始匹配
-    public sendMatch(): void {
-        if(!this.socket.connected) {
-            console.error("已经断开连接.");
-            return;
-        }
-        
-        var msgClients: Object = {
-            "type": "message",
-            "data": "hello",
-        };
-        this.socket.send(JSON.stringify(msgClients));
-    }
-
-    //#region 本地方法
-
-    // 改名、改颜色
-    public setUserData(): void {
-
-    }
-
-    //#endregion
-
 }

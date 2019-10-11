@@ -76,7 +76,7 @@
                 this.createView(LobbyUI.uiView);
             }
         }
-        LobbyUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Lobby", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "runtime": "laya.ui.Widget" }, "compId": 5 }, { "type": "Button", "props": { "y": 460, "x": 640, "var": "signBtn", "skin": "comp/button.png", "name": "Sign", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "签到", "centerY": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "y": 359, "x": 640, "var": "matchBtn", "skin": "comp/button.png", "name": "Match", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "匹配", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }], "loadList": ["comp/button.png"], "loadList3D": [] };
+        LobbyUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Lobby", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "runtime": "laya.ui.Widget" }, "compId": 5 }, { "type": "Button", "props": { "x": 1191, "var": "signBtn", "skin": "comp/button.png", "name": "Sign", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "签到", "centerY": -318, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "y": 670, "x": 1191, "var": "matchBtn", "skin": "comp/button.png", "name": "Match", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "匹配", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "var": "registerPanel", "skin": "comp/img_blank.png", "name": "RegisterPanel", "height": 720, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 9, "child": [{ "type": "Image", "props": { "y": 363, "x": 640, "width": 640, "skin": "comp/img_blank.png", "name": "Page", "height": 360, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 10, "child": [{ "type": "Text", "props": { "y": 84, "x": 150, "text": "用户名", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 17 }, { "type": "TextInput", "props": { "y": 80, "x": 240, "width": 160, "var": "nicknameInput", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Nickname", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 11, "child": [{ "type": "Text", "props": { "y": 35, "text": "2-12个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 20 }] }, { "type": "Text", "props": { "y": 144, "x": 172, "text": "密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 18 }, { "type": "TextInput", "props": { "y": 140, "x": 240, "width": 160, "var": "passwordInput", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Password", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 12, "child": [{ "type": "Text", "props": { "y": 35, "x": 0, "text": "6-16个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 21 }] }, { "type": "Text", "props": { "y": 204, "x": 128, "text": "确认密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 19 }, { "type": "TextInput", "props": { "y": 200, "x": 240, "width": 160, "var": "password2Input", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Password2", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 16 }, { "type": "Button", "props": { "y": 280, "x": 320, "width": 160, "var": "registerBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "Register", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "立即注册", "height": 40, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 13 }] }] }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "name": "UserPanel", "height": 720, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22, "child": [{ "type": "Image", "props": { "y": 20, "width": 80, "skin": "comp/img_bg5.png", "sizeGrid": "10,10,10,10", "name": "HeadImg", "left": 20, "height": 80 }, "compId": 23, "child": [{ "type": "Text", "props": { "y": 10, "x": 100, "var": "nickNameText", "text": "用户昵称", "name": "NickName", "fontSize": 22, "color": "#ffffff", "runtime": "laya.display.Text" }, "compId": 24 }] }] }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "var": "awardPanel", "name": "AwardPanel", "height": 720, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 25, "child": [{ "type": "Image", "props": { "y": 360, "x": 640, "width": 320, "skin": "comp/img_blank.png", "name": "Page", "height": 360, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 26, "child": [{ "type": "Text", "props": { "y": 40, "x": 116, "text": "恭喜获得", "pivotX": 0.5, "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 27 }, { "type": "Image", "props": { "y": 100, "x": 110, "width": 100, "skin": "comp/img_bg4.png", "sizeGrid": "10,10,10,10", "name": "AwardImg", "height": 100 }, "compId": 37 }, { "type": "Button", "props": { "y": 260, "width": 160, "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "Register", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "领取双倍", "height": 40, "centerX": 1, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 35 }, { "type": "Label", "props": { "var": "closeAwardBtn", "text": "直接关闭", "name": "CloseAward", "fontSize": 11, "color": "#ffffff", "centerX": 1, "bottom": 40, "anchorY": 0.5, "anchorX": 0.5, "align": "center" }, "compId": 36 }] }] }], "loadList": ["comp/button.png", "comp/img_blank.png", "comp/textinput.png", "comp/img_bg5.png", "comp/img_bg4.png"], "loadList3D": [] };
         ui.LobbyUI = LobbyUI;
         REG("ui.LobbyUI", LobbyUI);
         class MainUI extends Laya.Scene {
@@ -113,31 +113,25 @@
             this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
             this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
         }
+        sendData(obj) {
+            if (!this.socket.connected) {
+                console.error("已经断开连接.");
+                return;
+            }
+            this.socket.send(JSON.stringify(obj));
+        }
         openHandler(event = null) {
             console.log("正确建立连接；");
         }
         receiveHandler(msg = null) {
             var obj = JSON.parse(msg);
-            console.log("====> " + obj.type + ": " + obj.data);
+            Laya.stage.event("nethandle", obj);
         }
         closeHandler(e = null) {
             console.log("关闭事件");
         }
         errorHandler(e = null) {
             console.log("连接出错");
-        }
-        sendMatch() {
-            if (!this.socket.connected) {
-                console.error("已经断开连接.");
-                return;
-            }
-            var msgClients = {
-                "type": "message",
-                "data": "hello",
-            };
-            this.socket.send(JSON.stringify(msgClients));
-        }
-        setUserData() {
         }
     }
 
@@ -532,15 +526,27 @@
         constructor() {
             super();
             this.client = null;
+            this.uid = null;
             this.createView(Laya.View.uiMap["Lobby"]);
-            this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.onSign);
-            this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.onMatch);
             Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
             Laya.SoundManager.autoStopMusic = true;
-            console.log("播放音乐");
+            console.log("播放音乐.");
             this.client = WebSocketClient.getInstance();
-            console.log("client: ", this.client != null);
             this.client.initSocket();
+            Laya.stage.offAll("nethandle");
+            Laya.stage.on("nethandle", this, this.handle);
+            this.nicknameInput.on(Laya.Event.BLUR, this, () => {
+                console.log("网络校验昵称 3");
+            });
+            this.registerBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendRegister);
+            this.awardPanel.visible = false;
+            this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendSign);
+            this.closeAwardBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                this.awardPanel.visible = false;
+            });
+            this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
+            this.uid = Laya.LocalStorage.getItem("uid");
+            this.registerPanel.visible = this.uid == null;
         }
         static getInstance() {
             if (this.instance == null) {
@@ -548,14 +554,102 @@
             }
             return this.instance;
         }
-        onSign() {
-            console.log("签到.");
+        handle(obj) {
+            switch (obj.type) {
+                case "sc_enter": {
+                    console.log("建立连接");
+                    if (this.uid != null) {
+                        this.sendLogin();
+                    }
+                    break;
+                }
+                case "sc_login_success": {
+                    console.log("登陆成功，写入cookie：" + obj.uid);
+                    Laya.LocalStorage.setItem("uid", obj.uid);
+                    this.registerPanel.visible = false;
+                    this.nickNameText.text = obj.nickname;
+                    break;
+                }
+                case "sc_login_failed": {
+                    console.log("登陆失败");
+                    break;
+                }
+                case "sc_match_success": {
+                    console.log("匹配成功");
+                    Laya.timer.once(1000, this, this.onEnterGame);
+                    break;
+                }
+                case "sc_match_failed": {
+                    console.log("匹配失败");
+                    break;
+                }
+                case "sc_sign_success": {
+                    console.log("签到成功，看广告x2");
+                    this.awardPanel.visible = true;
+                    break;
+                }
+                case "sc_message": {
+                    break;
+                }
+            }
         }
-        onMatch() {
-            console.log("开始匹配...");
-            this.client.sendMatch();
-            Laya.timer.once(1000, this, this.onEnterGame);
+        sendCheckNickName() {
+            var obj = {
+                "type": "cs_check_register",
+                "nick": this.nicknameInput.text,
+            };
+            this.client.sendData(obj);
         }
+        sendRegister() {
+            if (this.nicknameInput.text.length < 2 || this.nicknameInput.text.length > 12) {
+                console.log("用户名应为2-12个字符");
+                return;
+            }
+            if (this.passwordInput.text.length < 6 || this.passwordInput.text.length > 16) {
+                console.log("密码应为6-16个字符");
+                return;
+            }
+            if (this.password2Input.text != this.passwordInput.text) {
+                console.log("两次密码输入不一致");
+                return;
+            }
+            var obj = {
+                "type": "cs_register",
+                "nick": this.nicknameInput.text,
+                "pwd": this.password2Input.text,
+            };
+            this.client.sendData(obj);
+        }
+        sendLogin() {
+            var obj = {
+                "type": "cs_login",
+                "uid": Laya.LocalStorage.getItem("uid"),
+            };
+            this.client.sendData(obj);
+        }
+        setUserData() { }
+        sendSign() {
+            var obj = {
+                "type": "cs_sign",
+                "uid": Laya.LocalStorage.getItem("uid"),
+            };
+            this.client.sendData(obj);
+        }
+        sendMatch() {
+            var obj = {
+                "type": "cs_match",
+                "uid": Laya.LocalStorage.getItem("uid"),
+            };
+            this.client.sendData(obj);
+        }
+        onCheckRegister() {
+            console.log("昵称检查结果.");
+        }
+        onCheckSign() {
+            console.log("检查当天签到.");
+        }
+        onSign() { }
+        onMatch() { }
         onEnterGame() {
             var mainView = new MainView();
             Laya.stage.addChild(mainView);
