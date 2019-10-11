@@ -627,6 +627,7 @@
                 this.awardPanel.visible = false;
             });
             this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
+            Laya.LocalStorage.clear();
             this.uid = Laya.LocalStorage.getItem("uid");
             this.registerPanel.visible = this.uid == null;
         }
@@ -637,6 +638,10 @@
                     if (this.uid != null) {
                         this.sendLogin();
                     }
+                    break;
+                }
+                case "sc_register_failed": {
+                    console.log("注册失败，昵称被占用");
                     break;
                 }
                 case "sc_login_success": {
@@ -692,7 +697,7 @@
             var obj = {
                 "type": "cs_register",
                 "nick": this.nicknameInput.text,
-                "pwd": this.password2Input.text,
+                "pwd": this.md5(this.passwordInput.text),
             };
             this.client.sendData(obj);
         }
@@ -730,6 +735,9 @@
             var mainView = new MainView();
             Laya.stage.addChild(mainView);
             Laya.stage.removeChild(this);
+        }
+        md5(data) {
+            return data;
         }
     }
 

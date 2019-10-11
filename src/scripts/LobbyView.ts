@@ -2,6 +2,7 @@ import {ui} from "../ui/layaMaxUI";
 import MainView from "./MainView";
 import LoadingView from "./LoadingView";
 import WebSocketClient from "../WebSocketClient";
+// const crypto = require('crypto');
 
 export default class LobbyView extends ui.LobbyUI {
     public static getInstance(): LobbyView {
@@ -51,7 +52,7 @@ export default class LobbyView extends ui.LobbyUI {
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
         
         // 获取用户信息
-        // Laya.LocalStorage.clear();
+        Laya.LocalStorage.clear();
         // Laya.LocalStorage.setItem("uid", "hahaha");
         this.uid = Laya.LocalStorage.getItem("uid");
         // console.log("用户信息：" + this.uid);
@@ -65,6 +66,10 @@ export default class LobbyView extends ui.LobbyUI {
                 if(this.uid != null) {
                     this.sendLogin();
                 }
+                break;
+            }
+            case "sc_register_failed": {
+                console.log("注册失败，昵称被占用");
                 break;
             }
             case "sc_login_success": { //登录成功
@@ -124,11 +129,11 @@ export default class LobbyView extends ui.LobbyUI {
             console.log("两次密码输入不一致");
             return;
         }
-
+        
         var obj: Object = {
             "type": "cs_register",
             "nick": this.nicknameInput.text,
-            "pwd": this.password2Input.text,
+            "pwd": this.md5(this.passwordInput.text),
         };
         this.client.sendData(obj);
     }
@@ -187,4 +192,12 @@ export default class LobbyView extends ui.LobbyUI {
     }
 
     //#endregion
+
+    // MD5加密
+    private md5(data: string): string {
+        // 以md5的格式创建一个哈希值
+        // let hash = crypto.createHash('md5');
+        // return hash.update(data).digest('base64');
+        return data;
+    }
 }
