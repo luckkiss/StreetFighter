@@ -1,5 +1,5 @@
 import {ui} from "../ui/layaMaxUI";
-import MainView from "./MainView";
+import MatchView from "./MatchView";
 import TipsView from "./TipsView";
 import LoadingView from "./LoadingView";
 import WebSocketClient from "../WebSocketClient";
@@ -193,8 +193,8 @@ export default class LobbyView extends ui.LobbyUI {
     private onMatch(): void {}
     
     private onEnterGame(): void {
-		var mainView: MainView = new MainView(); //加载模式/内嵌模式
-        Laya.stage.addChild(mainView);
+		var matchView: MatchView = new MatchView(); //加载模式/内嵌模式
+        Laya.stage.addChild(matchView);
         Laya.stage.removeChild(this);
         // Laya.stage.offAll();
     }

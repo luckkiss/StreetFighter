@@ -1,10 +1,9 @@
 import {ui} from "../ui/layaMaxUI";
 import PlayerController from "./PlayerController";
 import JoystickView from "./JoystickView";
-import TestScript from "./TestScript";
 import LobbyView from "./LobbyView";
     
-export default class MainView extends ui.MainUI {
+export default class MainView extends ui.MatchUI {
     // public static getInstance(): MainView {
     //     if(this.instance == null) {
     //         this.instance = new MainView();
@@ -59,8 +58,6 @@ export default class MainView extends ui.MainUI {
         if(this.playerA == null) {
             this.playerA = this.scene3d.addChild(sp) as Laya.Sprite3D;
             this.playerA.addComponent(PlayerController);
-            // var script: TestScript = this.playerA.addComponent(TestScript);
-            // script.InitData(this.playerA);
         }
     }
 }

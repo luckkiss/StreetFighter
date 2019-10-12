@@ -1,6 +1,6 @@
 import LogManager from "./LogManager";
 // import JoystickManager from "./JoystickManager";
-import MainView from "./MainView";
+import MatchView from "./MatchView";
 import JoystickView from "./JoystickView";
 import WebSocketClient from "../WebSocketClient";
 
@@ -67,7 +67,7 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     onStart(): void {
-        this.gameObject = MainView.instance.playerA;
+        this.gameObject = MatchView.instance.playerA;
         this.animator = this.gameObject.getComponent(Laya.Animator);
         this.animator.play(this.motions[0]);
 

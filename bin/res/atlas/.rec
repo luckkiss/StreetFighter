@@ -41,10 +41,8 @@ P 01BAE7F5 vslider.png
 D prefab
 R 75DA7A04 Console.prefab
 D ui
-P 88CB158E down.jpg
+R ECED22FF bg1.jpg
+R 2887DDC8 bg2.jpg
 P A7ED3403 joystickBg.png
 P 3755D3DC joystickPoint.png
-P 198C7DE7 left.jpg
-R 7297F73E loading.png
-P 97C5CF32 right.jpg
-P E8C068D5 up.jpg
+P 7297F73E loading.png
