@@ -3,6 +3,7 @@ import MatchView from "./MatchView";
 import TipsView from "./TipsView";
 import LoadingView from "./LoadingView";
 import WebSocketClient from "../WebSocketClient";
+import UserData from "../backup/UserData";
 // const crypto = require('crypto');
 
 export default class LobbyView extends ui.LobbyUI {
@@ -75,6 +76,7 @@ export default class LobbyView extends ui.LobbyUI {
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
                 this.registerPanel.visible = false;
                 this.nickNameText.text = obj.nickname;
+                var playerStatus: PlayerStatus;
                 break;
             }
             case "sc_login_failed": { //登录失败
@@ -132,7 +134,6 @@ export default class LobbyView extends ui.LobbyUI {
             TipsView.getInstance().showText(1000, "两次密码输入不一致");
             return;
         }
-        
         var obj: Object = {
             "type": "cs_register",
             "nick": this.nicknameInput.text,

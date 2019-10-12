@@ -43,13 +43,13 @@ export default class MainView extends ui.MatchUI {
         this.scene3d = sc;
         this.scene3d.zOrder = -1;
         Laya.stage.addChild(this.scene3d);
-        console.log("场景加载完成");
+        // console.log("场景加载完成");
         //加载精灵
         Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
     }
 
     onPlayerAComplete(sp: Laya.Sprite3D): void {
-        console.log("3D精灵加载完成");
+        // console.log("3D精灵加载完成");
         if(this.playerA == null) {
             this.playerA = this.scene3d.addChild(sp) as Laya.Sprite3D;
             this.playerA.addComponent(PlayerController);

@@ -2,6 +2,7 @@ import {ui} from "./ui/layaMaxUI";
 import GameConfig from "./GameConfig";
 import LoadView from "./scripts/LoadView";
 import LobbyView from "./scripts/LobbyView";
+import MatchView from "./scripts/MatchView";
 
 export default class UIManager {
     //ui列表
@@ -28,9 +29,9 @@ export default class UIManager {
         } else if (uiname == UIName.LobbyView) {
             ui = new LobbyView();
             Laya.stage.addChild(ui);
-        } else if (uiname == UIName.MainView) {
-            // ui = new GameRoom();
-            // Laya.stage.addChild(ui);
+        } else if (uiname == UIName.MatchView) {
+            ui = new MatchView();
+            Laya.stage.addChild(ui);
         }
 
         if(ui != undefined) {
@@ -40,7 +41,7 @@ export default class UIManager {
 }
 
 const enum UIName {
-    LoadView,
-    LobbyView,
-    MainView
+    LoadView    = 0,
+    LobbyView   = 1,
+    MatchView   = 2,
 }

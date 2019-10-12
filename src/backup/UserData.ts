@@ -10,4 +10,10 @@ export default class UserData {
 
     public uid: string = "";
     public nickname: string = "";
+    public playerStatus: PlayerStatus = PlayerStatus.FREE; // Depend on inlining
+}
+export enum PlayerStatus {
+    FREE	= 0,	//空闲状态
+    WAIT	= 1,	//等待匹配
+    GAME	= 2,	//游戏中
 }

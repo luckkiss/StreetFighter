@@ -2,6 +2,7 @@ import LogManager from "./LogManager";
 import MatchView from "./MatchView";
 import JoystickView from "./JoystickView";
 import WebSocketClient from "../WebSocketClient";
+import UserData, { PlayerStatus } from "../backup/UserData";
 
 /**控制角色运动 */
 // https://ldc.layabox.com/doc/?nav=zh-ts-4-1-1 //官方移动角色
@@ -32,7 +33,20 @@ export default class PlayerController extends Laya.Script3D {
     private currentMotion = 0;
     private animLastTime: number = 0; //动画时长
     private posy: number = 0;
-    private posz: number = 0;
+    private _posz: number = 0;
+    public get posz() {
+        return this._posz;
+    }
+    public set posz(z: number) {
+        var obj: Object = {
+            "type": "cs_move",
+            "uid": this.uid,
+            "posz": z,
+        };
+        this.client.sendData(obj);
+        // this._posz = z;
+        // UserData.getInstance().playerStatus = PlayerStatus.FREE;
+    }
 
     private client: WebSocketClient = null;
     private uid: string = "";
@@ -49,9 +63,6 @@ export default class PlayerController extends Laya.Script3D {
     // 碰撞校验都由客户端完成，服务器只做分发
     private handle(obj): void {
         switch(obj.type) {
-            case "sc_move": { //移动
-                break;
-            }
             case "sc_fist": { //出拳
                 var isLocalPlayer: boolean = (obj.uid == this.uid);
                 if(isLocalPlayer) {
@@ -90,6 +101,14 @@ export default class PlayerController extends Laya.Script3D {
                 }
                 break;
             }
+            case "sc_move": { //移动
+                var isLocalPlayer: boolean = (obj.uid == this.uid);
+                if(isLocalPlayer) {
+                    this._posz = obj.posz;
+                    // console.log("本地移动：" + obj.posz);
+                }
+                break;
+            }
         }
     }
 
@@ -115,21 +134,19 @@ export default class PlayerController extends Laya.Script3D {
         this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
 
         // 全局
-        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
-        console.log("JoystickView: ", (JoystickView.instance != null));
         JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
-    }
 
-    onUpdate(): void {
-        if(this.gameObject.transform.position.y > 0 && this.posy == 0) { // 跳跃
-            this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
-            if(this.gameObject.transform.position.y < 0) {
-                this.gameObject.transform.position.y = 0;
+        Laya.stage.frameLoop(1, this, ()=> {
+            if(this.gameObject.transform.position.y > 0 && this.posy == 0) { // 跳跃
+                this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
+                if(this.gameObject.transform.position.y < 0) {
+                    this.gameObject.transform.position.y = 0;
+                }
+            } else { // 移动
+                this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
             }
-        } else { // 移动
-            this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
-        }
+        });
     }
 
     //#region 移动控制
@@ -141,7 +158,6 @@ export default class PlayerController extends Laya.Script3D {
             return;
         }
         this.myIndex = e.touchId;
-
         this.posz = 0;
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
@@ -161,7 +177,6 @@ export default class PlayerController extends Laya.Script3D {
                 return;
             }
         }
-
         // 检测到攻击动画，就覆盖移动动画，停止移动
         this.posz = JoystickView.instance.Horizontal * 0.02;
         this.currentMotion = (this.posz > 0)? 1 : 2;
@@ -181,7 +196,6 @@ export default class PlayerController extends Laya.Script3D {
             }
         }
         this.myIndex = -1;
-
         this.posz = 0;
         this.currentMotion = 0;
         this.animator.crossFade(this.motions[this.currentMotion], 0.2);

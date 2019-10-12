@@ -314,7 +314,7 @@
             this.currentMotion = 0;
             this.animLastTime = 0;
             this.posy = 0;
-            this.posz = 0;
+            this._posz = 0;
             this.client = null;
             this.uid = "";
             this.client = WebSocketClient.getInstance();
@@ -322,11 +322,19 @@
             Laya.stage.offAll("nethandle");
             Laya.stage.on("nethandle", this, this.handle);
         }
+        get posz() {
+            return this._posz;
+        }
+        set posz(z) {
+            var obj = {
+                "type": "cs_move",
+                "uid": this.uid,
+                "posz": z,
+            };
+            this.client.sendData(obj);
+        }
         handle(obj) {
             switch (obj.type) {
-                case "sc_move": {
-                    break;
-                }
                 case "sc_fist": {
                     var isLocalPlayer = (obj.uid == this.uid);
                     if (isLocalPlayer) {
@@ -366,6 +374,13 @@
                     }
                     break;
                 }
+                case "sc_move": {
+                    var isLocalPlayer = (obj.uid == this.uid);
+                    if (isLocalPlayer) {
+                        this._posz = obj.posz;
+                    }
+                    break;
+                }
             }
         }
         onStart() {
@@ -387,19 +402,18 @@
             this.defendBtn = gamePad.getChildByName("Defend");
             this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
-            console.log("JoystickView: ", (JoystickView.instance != null));
             JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
-        }
-        onUpdate() {
-            if (this.gameObject.transform.position.y > 0 && this.posy == 0) {
-                this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
-                if (this.gameObject.transform.position.y < 0) {
-                    this.gameObject.transform.position.y = 0;
+            Laya.stage.frameLoop(1, this, () => {
+                if (this.gameObject.transform.position.y > 0 && this.posy == 0) {
+                    this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
+                    if (this.gameObject.transform.position.y < 0) {
+                        this.gameObject.transform.position.y = 0;
+                    }
                 }
-            }
-            else {
-                this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
-            }
+                else {
+                    this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
+                }
+            });
         }
         mouseDown(e) {
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -644,11 +658,9 @@
             this.scene3d = sc;
             this.scene3d.zOrder = -1;
             Laya.stage.addChild(this.scene3d);
-            console.log("场景加载完成");
             Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
         }
         onPlayerAComplete(sp) {
-            console.log("3D精灵加载完成");
             if (this.playerA == null) {
                 this.playerA = this.scene3d.addChild(sp);
                 this.playerA.addComponent(PlayerController);
@@ -693,6 +705,20 @@
             Laya.timer.frameLoop(1, this, () => {
                 this.loadingImage.rotation += 5;
             });
+        }
+    }
+
+    class UserData {
+        constructor() {
+            this.playerStatus = 0;
+            this.uid = "";
+            this.nickname = "";
+        }
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new UserData();
+            }
+            return this.instance;
         }
     }
 
@@ -751,6 +777,7 @@
                     Laya.LocalStorage.setItem("pwd", obj.pwd);
                     this.registerPanel.visible = false;
                     this.nickNameText.text = obj.nickname;
+                    UserData.getInstance().playerStatus = PlayerStatus.Free;
                     break;
                 }
                 case "sc_login_failed": {
