@@ -53,15 +53,17 @@ export default class LobbyView extends ui.LobbyUI {
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
         
         // 获取用户信息
-        Laya.LocalStorage.clear();
-        // Laya.LocalStorage.setItem("uid", "hahaha");
+        // Laya.LocalStorage.clear();
         this.uid = Laya.LocalStorage.getItem("uid");
-        // console.log("用户信息：" + this.uid);
-        this.registerPanel.visible = this.uid == null; //弹出注册页面
+        console.log("用户信息：" + this.uid);
+        this.registerPanel.visible = (this.uid == null); //弹出注册页面
     }
 
     private handle(obj): void {
         switch(obj.type) {
+            case "sc_message": { //聊天消息（示例）
+                break;
+            }
             case "sc_enter": { //建立连接
 		        Laya.stage.removeChild(LoadingView.getInstance());
                 if(this.uid != null) {
@@ -74,14 +76,28 @@ export default class LobbyView extends ui.LobbyUI {
                 break;
             }
             case "sc_login_success": { //登录成功
-                console.log("登陆成功，写入cookie：" + obj.uid);
+                console.log("登陆成功，写入cookie：" + obj.uid + ": " + obj.pwd);
                 Laya.LocalStorage.setItem("uid", obj.uid);
+                Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
                 this.registerPanel.visible = false;
                 this.nickNameText.text = obj.nickname;
                 break;
             }
             case "sc_login_failed": { //登录失败
                 TipsView.getInstance().showText(1000, "登陆失败");
+                break;
+            }
+            case "sc_sign_success": { //签到成功
+                console.log("签到成功，看广告x2");
+                this.awardPanel.visible = true;
+                break;
+            }
+            case "sc_sign_failed": { //签到失败
+                if(obj.code == 1) {
+                    TipsView.getInstance().showText(1000, "今日已签到");
+                } else if (obj.code == 2) {
+                    TipsView.getInstance().showText(1000, "签到失败");
+                }
                 break;
             }
             case "sc_match_success": { //匹配成功
@@ -91,14 +107,6 @@ export default class LobbyView extends ui.LobbyUI {
             }
             case "sc_match_failed": { //匹配失败
                 TipsView.getInstance().showText(1000, "匹配失败");
-                break;
-            }
-            case "sc_sign_success": { //签到成功
-                console.log("签到成功，看广告x2");
-                this.awardPanel.visible = true;
-                break;
-            }
-            case "sc_message": { //聊天消息
                 break;
             }
         }
@@ -119,15 +127,15 @@ export default class LobbyView extends ui.LobbyUI {
     private sendRegister(): void {
         // 本地校验
         if(this.nicknameInput.text.length < 2 || this.nicknameInput.text.length > 12) {
-            console.log("用户名应为2-12个字符");
+            TipsView.getInstance().showText(1000, "用户名应为2-12个字符");
             return;
         }
         if(this.passwordInput.text.length < 6 || this.passwordInput.text.length > 16) {
-            console.log("密码应为6-16个字符");
+            TipsView.getInstance().showText(1000, "密码应为6-16个字符");
             return;
         }
         if(this.password2Input.text != this.passwordInput.text) {
-            console.log("两次密码输入不一致");
+            TipsView.getInstance().showText(1000, "两次密码输入不一致");
             return;
         }
         
@@ -144,6 +152,7 @@ export default class LobbyView extends ui.LobbyUI {
         var obj: Object = {
             "type": "cs_login",
             "uid": Laya.LocalStorage.getItem("uid"),
+            "pwd": Laya.LocalStorage.getItem("pwd")
         };
         this.client.sendData(obj);
     }
@@ -177,9 +186,7 @@ export default class LobbyView extends ui.LobbyUI {
         console.log("昵称检查结果.");
     }
 
-    private onCheckSign(): void {
-        console.log("检查当天签到.");
-    }
+    private onCheckSign(): void {}
 
     private onSign(): void {}
 
