@@ -71,7 +71,7 @@ export module ui {
     REG("ui.MainUI",MainUI);
     export class TipsUI extends Laya.Scene {
 		public messageText:Laya.Label;
-        public static  uiView:any ={"type":"Scene","props":{"width":1280,"name":"Tips","height":720},"compId":2,"child":[{"type":"Image","props":{"zOrder":99,"y":360,"x":640,"width":1280,"skin":"comp/img_blank.png","name":"TipsPanel","height":720,"anchorY":0.5,"anchorX":0.5},"compId":4,"child":[{"type":"Image","props":{"y":360,"x":640,"width":150,"text":"消息提示","skin":"comp/img_blank.png","name":"Background","height":50,"fontSize":22,"color":"#ffffff","anchorY":0.5,"anchorX":0.5},"compId":6},{"type":"Label","props":{"var":"messageText","text":"消息提示","name":"MessageText","fontSize":22,"color":"#ffffff","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},"compId":5}]}],"loadList":["comp/img_blank.png"],"loadList3D":[]};
+        public static  uiView:any ={"type":"Scene","props":{"width":1280,"name":"Tips","height":720},"compId":2,"child":[{"type":"Image","props":{"zOrder":99,"y":360,"x":640,"width":1280,"name":"TipsPanel","height":720,"anchorY":0.5,"anchorX":0.5},"compId":4,"child":[{"type":"Image","props":{"y":360,"x":640,"width":150,"text":"消息提示","skin":"comp/img_blank.png","name":"Background","height":50,"fontSize":22,"color":"#ffffff","anchorY":0.5,"anchorX":0.5},"compId":6,"child":[{"type":"Label","props":{"y":26,"x":76,"var":"messageText","text":"消息提示","name":"MessageText","fontSize":22,"color":"#ffffff","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},"compId":5}]}]}],"loadList":["comp/img_blank.png"],"loadList3D":[]};
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

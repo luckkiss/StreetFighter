@@ -1,5 +1,6 @@
 import {ui} from "../ui/layaMaxUI";
 import MainView from "./MainView";
+import TipsView from "./TipsView";
 import LoadingView from "./LoadingView";
 import WebSocketClient from "../WebSocketClient";
 // const crypto = require('crypto');
@@ -36,7 +37,7 @@ export default class LobbyView extends ui.LobbyUI {
         this.awardPanel.visible = false;
         this.registerPanel.visible = false;
         this.initUI();
-		Laya.stage.addChild(LoadingView.getInstance());
+        Laya.stage.addChild(LoadingView.getInstance());
     }
 
     private initUI(): void {
@@ -68,8 +69,8 @@ export default class LobbyView extends ui.LobbyUI {
                 }
                 break;
             }
-            case "sc_register_failed": {
-                console.log("注册失败，昵称被占用");
+            case "sc_register_failed": { //注册失败
+                TipsView.getInstance().showText(1000, "注册失败，昵称被占用");
                 break;
             }
             case "sc_login_success": { //登录成功
@@ -80,7 +81,7 @@ export default class LobbyView extends ui.LobbyUI {
                 break;
             }
             case "sc_login_failed": { //登录失败
-                console.log("登陆失败");
+                TipsView.getInstance().showText(1000, "登陆失败");
                 break;
             }
             case "sc_match_success": { //匹配成功
@@ -89,7 +90,7 @@ export default class LobbyView extends ui.LobbyUI {
                 break;
             }
             case "sc_match_failed": { //匹配失败
-                console.log("匹配失败");
+                TipsView.getInstance().showText(1000, "匹配失败");
                 break;
             }
             case "sc_sign_success": { //签到成功
