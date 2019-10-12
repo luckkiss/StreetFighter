@@ -1,5 +1,4 @@
 import LogManager from "./LogManager";
-// import JoystickManager from "./JoystickManager";
 import MatchView from "./MatchView";
 import JoystickView from "./JoystickView";
 import WebSocketClient from "../WebSocketClient";
@@ -35,6 +34,7 @@ export default class PlayerController extends Laya.Script3D {
     private posz: number = 0;
 
     private client: WebSocketClient = null;
+    private touchEvent: Laya.Event;
 
     constructor() {
         super();
@@ -45,8 +45,6 @@ export default class PlayerController extends Laya.Script3D {
         Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
     }
-
-    private touchEvent: Laya.Event;
 
     // 碰撞校验都由客户端完成，服务器只做分发
     private handle(obj): void {

@@ -2,14 +2,9 @@ import {ui} from "../ui/layaMaxUI";
 import PlayerController from "./PlayerController";
 import JoystickView from "./JoystickView";
 import LobbyView from "./LobbyView";
-    
+import WebSocketClient from "../WebSocketClient";
+
 export default class MainView extends ui.MatchUI {
-    // public static getInstance(): MainView {
-    //     if(this.instance == null) {
-    //         this.instance = new MainView();
-    //     }
-    //     return this.instance;
-	// }
 	/*界面实例*/
     public static instance: MainView;
     
