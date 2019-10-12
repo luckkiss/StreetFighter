@@ -6,13 +6,6 @@ import WebSocketClient from "../WebSocketClient";
 // const crypto = require('crypto');
 
 export default class LobbyView extends ui.LobbyUI {
-    public static getInstance(): LobbyView {
-        if(this.instance == null) {
-            this.instance = new LobbyView();
-        }
-        return this.instance;
-	}
-	/*界面实例*/
     private static instance: LobbyView;
     
     private client: WebSocketClient = null;
@@ -20,6 +13,7 @@ export default class LobbyView extends ui.LobbyUI {
 
     constructor() {
         super();
+        LobbyView.instance = this;
         this.createView(Laya.View.uiMap["Lobby"]);
 
         Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);

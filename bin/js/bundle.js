@@ -298,6 +298,7 @@
     class PlayerController extends Laya.Script3D {
         constructor() {
             super();
+            this.myIndex = -1;
             this.motions = [
                 "Unarmed-Idle",
                 "Unarmed-Strafe-Forward",
@@ -315,8 +316,9 @@
             this.posy = 0;
             this.posz = 0;
             this.client = null;
-            this.myIndex = -1;
+            this.uid = "";
             this.client = WebSocketClient.getInstance();
+            this.uid = Laya.LocalStorage.getItem("uid");
             Laya.stage.offAll("nethandle");
             Laya.stage.on("nethandle", this, this.handle);
         }
@@ -326,10 +328,41 @@
                     break;
                 }
                 case "sc_fist": {
-                    var uid = obj.uid;
-                    var isLocalPlayer = uid == "wx10000";
+                    var isLocalPlayer = (obj.uid == this.uid);
                     if (isLocalPlayer) {
                         this.onFistCallback(this.touchEvent);
+                        console.log("本地出拳");
+                    }
+                    break;
+                }
+                case "sc_kick": {
+                    var isLocalPlayer = (obj.uid == this.uid);
+                    if (isLocalPlayer) {
+                        this.onKickCallback(this.touchEvent);
+                        console.log("本地踢脚");
+                    }
+                    break;
+                }
+                case "sc_jump": {
+                    var isLocalPlayer = (obj.uid == this.uid);
+                    if (isLocalPlayer) {
+                        this.onJumpCallback(this.touchEvent);
+                        console.log("本地跳跃");
+                    }
+                    break;
+                }
+                case "sc_defend": {
+                    var isLocalPlayer = (obj.uid == this.uid);
+                    console.log("[防御]" + obj.uid + ":" + obj.state);
+                    if (isLocalPlayer) {
+                        if (obj.state == 1) {
+                            this.onDefendCallback(this.touchEvent);
+                            console.log("本地防御");
+                        }
+                        else if (obj.state == 0) {
+                            this.handleMouseUp();
+                            console.log("本地取消防御");
+                        }
                     }
                     break;
                 }
@@ -348,12 +381,12 @@
             this.fistBtn = gamePad.getChildByName("Fist");
             this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
             this.kickBtn = gamePad.getChildByName("Kick");
-            this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.onKickHandler);
+            this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
             this.jumpBtn = gamePad.getChildByName("Jump");
-            this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.onJumpHandler);
+            this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
             this.defendBtn = gamePad.getChildByName("Defend");
-            this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
-            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+            this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
+            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
             console.log("JoystickView: ", (JoystickView.instance != null));
             JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
         }
@@ -432,12 +465,6 @@
             Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         }
-        handleMouseUp() {
-            if (this.currentMotion == 9) {
-                console.log("松手取消防御");
-                this.animator.play(this.motions[0]);
-            }
-        }
         playIdle() {
             Laya.timer.clear(this, this.playOther);
             this.currentMotion = 0;
@@ -453,7 +480,7 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_fist",
-                "uid": "wx10000",
+                "uid": this.uid,
             };
             this.client.sendData(obj);
         }
@@ -491,8 +518,15 @@
             Laya.timer.once(waitTime, this, this.playIdle);
             console.log("播完自动放待机：", waitTime);
         }
-        onKickHandler(e) {
+        sendKick(e) {
             this.touchEvent = e;
+            var obj = {
+                "type": "cs_kick",
+                "uid": this.uid,
+            };
+            this.client.sendData(obj);
+        }
+        onKickCallback(e) {
             this.animLastTime = 600;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -510,7 +544,15 @@
             Laya.timer.once(waitTime, this, this.playIdle);
             console.log("播完自动放待机：", waitTime);
         }
-        onJumpHandler(e) {
+        sendJump(e) {
+            this.touchEvent = e;
+            var obj = {
+                "type": "cs_jump",
+                "uid": this.uid,
+            };
+            this.client.sendData(obj);
+        }
+        onJumpCallback(e) {
             this.animLastTime = 800;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -536,7 +578,16 @@
             Laya.timer.once(waitTime, this, this.playIdle);
             console.log("播完自动放待机：", waitTime);
         }
-        onDefendHandler(e) {
+        sendDefend(e) {
+            this.touchEvent = e;
+            var obj = {
+                "type": "cs_defend",
+                "uid": this.uid,
+                "state": 1,
+            };
+            this.client.sendData(obj);
+        }
+        onDefendCallback(e) {
             this.animLastTime = 800;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -550,6 +601,23 @@
                 this.currentMotion = 9;
                 this.animator.play(this.motions[this.currentMotion]);
                 console.log("========> onDefendHandler.防御");
+            }
+        }
+        sendCancelDefend(e) {
+            if (this.currentMotion == 9) {
+                this.touchEvent = e;
+                var obj = {
+                    "type": "cs_defend",
+                    "uid": this.uid,
+                    "state": 0,
+                };
+                this.client.sendData(obj);
+            }
+        }
+        handleMouseUp() {
+            if (this.currentMotion == 9) {
+                console.log("松手取消防御");
+                this.animator.play(this.motions[0]);
             }
         }
     }
@@ -633,6 +701,7 @@
             super();
             this.client = null;
             this.uid = null;
+            LobbyView.instance = this;
             this.createView(Laya.View.uiMap["Lobby"]);
             Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
             Laya.SoundManager.autoStopMusic = true;
@@ -645,12 +714,6 @@
             this.registerPanel.visible = false;
             this.initUI();
             Laya.stage.addChild(LoadingView.getInstance());
-        }
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new LobbyView();
-            }
-            return this.instance;
         }
         initUI() {
             this.nicknameInput.on(Laya.Event.BLUR, this, () => {

@@ -10,6 +10,7 @@ export default class PlayerController extends Laya.Script3D {
     public gameObject: Laya.Sprite3D;
     public animator: Laya.Animator;
 
+    private myIndex: number = -1; //控制摇杆的手指
     private _clickTime: number; //限制点击次数
     public fistBtn: Laya.Image;
     public kickBtn: Laya.Image;
@@ -34,14 +35,13 @@ export default class PlayerController extends Laya.Script3D {
     private posz: number = 0;
 
     private client: WebSocketClient = null;
+    private uid: string = "";
     private touchEvent: Laya.Event;
 
     constructor() {
         super();
-
         this.client = WebSocketClient.getInstance();
-        // console.log(this.client.isConnected);
-        
+        this.uid = Laya.LocalStorage.getItem("uid");
         Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
     }
@@ -50,14 +50,43 @@ export default class PlayerController extends Laya.Script3D {
     private handle(obj): void {
         switch(obj.type) {
             case "sc_move": { //移动
-
                 break;
             }
             case "sc_fist": { //出拳
-                var uid = obj.uid;
-                var isLocalPlayer: boolean = uid == "wx10000";
+                var isLocalPlayer: boolean = (obj.uid == this.uid);
                 if(isLocalPlayer) {
                     this.onFistCallback(this.touchEvent);
+                    console.log("本地出拳");
+                }
+                break;
+            }
+            case "sc_kick": { //踢脚
+                var isLocalPlayer: boolean = (obj.uid == this.uid);
+                if(isLocalPlayer) {
+                    this.onKickCallback(this.touchEvent);
+                    console.log("本地踢脚");
+                }
+                break;
+            }
+            case "sc_jump": { //跳跃
+                var isLocalPlayer: boolean = (obj.uid == this.uid);
+                if(isLocalPlayer) {
+                    this.onJumpCallback(this.touchEvent);
+                    console.log("本地跳跃");
+                }
+                break;
+            }
+            case "sc_defend": { //防御
+                var isLocalPlayer: boolean = (obj.uid == this.uid);
+                console.log("[防御]" + obj.uid + ":" + obj.state);
+                if(isLocalPlayer) {
+                    if(obj.state == 1) {
+                        this.onDefendCallback(this.touchEvent);
+                        console.log("本地防御");
+                    } else if(obj.state == 0) {
+                        this.handleMouseUp();
+                        console.log("本地取消防御");
+                    }
                 }
                 break;
             }
@@ -79,14 +108,15 @@ export default class PlayerController extends Laya.Script3D {
         this.fistBtn = gamePad.getChildByName("Fist") as Laya.Image;
         this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
         this.kickBtn = gamePad.getChildByName("Kick") as Laya.Image;
-        this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.onKickHandler);
+        this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
         this.jumpBtn = gamePad.getChildByName("Jump") as Laya.Image;
-        this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.onJumpHandler);
+        this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
         this.defendBtn = gamePad.getChildByName("Defend") as Laya.Image;
-        this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.onDefendHandler);
+        this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
 
         // 全局
-        Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.handleMouseUp);
+        Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
         console.log("JoystickView: ", (JoystickView.instance != null));
         JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
     }
@@ -104,11 +134,8 @@ export default class PlayerController extends Laya.Script3D {
 
     //#region 移动控制
 
-    public myIndex: number = -1; //控制摇杆的手指
-
     // 基于UI
     mouseDown(e: Laya.Event): void {
-
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
             console.log("在播放其他动作");
             return;
@@ -136,7 +163,6 @@ export default class PlayerController extends Laya.Script3D {
         }
 
         // 检测到攻击动画，就覆盖移动动画，停止移动
-        // this.posz = JoystickManager.instance.Horizontal * 0.02;
         this.posz = JoystickView.instance.Horizontal * 0.02;
         this.currentMotion = (this.posz > 0)? 1 : 2;
         this.animator.play(this.motions[this.currentMotion]); //前进/后退
@@ -187,14 +213,6 @@ export default class PlayerController extends Laya.Script3D {
 
     //#endregion
 
-    // 恢复待机
-    handleMouseUp(): void {
-        if(this.currentMotion == 9) {
-            console.log("松手取消防御");
-            this.animator.play(this.motions[0]); //待机
-        }
-    }
-
     public playIdle () {
         Laya.timer.clear(this, this.playOther); //停掉其他延迟执行的动作
         this.currentMotion = 0;
@@ -210,10 +228,9 @@ export default class PlayerController extends Laya.Script3D {
     // 带连击5,6,7 | 600
     sendFist(e: Laya.Event): void {
         this.touchEvent = e;
-
         var obj: Object = {
             "type": "cs_fist",
-            "uid": "wx10000",
+            "uid": this.uid,
         };
         this.client.sendData(obj);
     }
@@ -263,9 +280,16 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     // 踢技8 | 600
-    onKickHandler(e: Laya.Event): void {
+    sendKick(e: Laya.Event): void {
         this.touchEvent = e;
+        var obj: Object = {
+            "type": "cs_kick",
+            "uid": this.uid,
+        };
+        this.client.sendData(obj);
+    }
 
+    onKickCallback(e: Laya.Event): void {
         this.animLastTime = 600; //单次踢腿时长
         var waitTime: number = 0;
 
@@ -288,8 +312,16 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     // 跳跃3，着陆4 | 800
-    onJumpHandler(e: Laya.Event): void {
+    sendJump(e: Laya.Event): void {
+        this.touchEvent = e;
+        var obj: Object = {
+            "type": "cs_jump",
+            "uid": this.uid,
+        };
+        this.client.sendData(obj);
+    }
 
+    onJumpCallback(e: Laya.Event): void {
         this.animLastTime = 800; //单次踢腿时长
         var waitTime: number = 0;
 
@@ -325,8 +357,17 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     // 防御9 | 500
-    onDefendHandler(e: Laya.Event): void {
+    sendDefend(e: Laya.Event): void {
+        this.touchEvent = e;
+        var obj: Object = {
+            "type": "cs_defend",
+            "uid": this.uid,
+            "state": 1,
+        };
+        this.client.sendData(obj);
+    }
 
+    onDefendCallback(e: Laya.Event): void {
         this.animLastTime = 800; //单次踢腿时长
         var waitTime: number = 0;
 
@@ -335,18 +376,35 @@ export default class PlayerController extends Laya.Script3D {
             console.error("点击过快，等待：", waitTime / 1000, "秒");
             return;
         } else {
-            
             //不需要清理Idle延迟函数
-
             waitTime = this.animLastTime;
             this._clickTime = Laya.Browser.now();
             
             this.currentMotion = 9;
             this.animator.play(this.motions[this.currentMotion]); //跳跃
-
             console.log("========> onDefendHandler.防御");
         }
-
         // 松手才取消状态
+    }
+
+    // 取消防御9 | 500
+    sendCancelDefend(e: Laya.Event): void {
+        if(this.currentMotion == 9) {
+            this.touchEvent = e;
+            var obj: Object = {
+                "type": "cs_defend",
+                "uid": this.uid,
+                "state": 0,
+            };
+            this.client.sendData(obj);
+        }
+    }
+
+    // 恢复待机
+    handleMouseUp(): void {
+        if(this.currentMotion == 9) {
+            console.log("松手取消防御");
+            this.animator.play(this.motions[0]); //待机
+        }
     }
 }
