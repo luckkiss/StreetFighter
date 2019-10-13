@@ -13,10 +13,10 @@ export default class PlayerController extends Laya.Script3D {
 
     private myIndex: number = -1; //控制摇杆的手指
     private _clickTime: number; //限制点击次数
-    public fistBtn: Laya.Image;
-    public kickBtn: Laya.Image;
-    public jumpBtn: Laya.Image;
-    public defendBtn: Laya.Image;
+    private fistBtn: Laya.Image;
+    private kickBtn: Laya.Image;
+    private jumpBtn: Laya.Image;
+    private defendBtn: Laya.Image;
     
     private motions: Array<string> = [
         "Unarmed-Idle",             //待机0
@@ -24,10 +24,10 @@ export default class PlayerController extends Laya.Script3D {
         "Unarmed-Strafe-Backward",  //后退2
         "Unarmed-Jump",             //跳跃3
         "Unarmed-Land",             //着陆4
-        "Unarmed-Attack-L1",        //重拳5
-        "Unarmed-Attack-L2",        //重拳6
-        "Unarmed-Attack-L3",        //重拳7
-        "Unarmed-Attack-Kick-L1",   //踢腿8
+        "Unarmed-Attack-L1",        //重拳5//距离2以内//伤害10
+        "Unarmed-Attack-L2",        //重拳6//距离2以内//伤害15
+        "Unarmed-Attack-L3",        //重拳7//距离2以内//伤害20
+        "Unarmed-Attack-Kick-L1",   //踢腿8//距离2以内//伤害20，破防
         "Unarmed-Defend",           //防御9
     ];
     private currentMotion = 0;
@@ -38,6 +38,25 @@ export default class PlayerController extends Laya.Script3D {
         return this._posz;
     }
     public set posz(z: number) {
+        if(this.isLocalPlayer == false) return;
+
+        // 摇杆拖到底，保持不动时，不再收发消息。
+        // 但是本地FrameLoop()中的posz并非为0。
+        console.log("发送z：", z.toFixed(3) + " / " + this.distance.toFixed(1));
+
+        // 间距小于阈值，如果我在左边，posz>0，不允许发送了
+        if(this.distance < 1.5 && this.direction == 1 && z > 0) {
+            console.log("我在左边，无法再接近");
+            // return;
+            z = 0;
+        }
+        // 间距小于阈值，如果我在右边，posz<0，不允许发送了
+        else if(this.distance < 1.5 && this.direction == -1 && z > 0) {
+            console.log("我在右边，无法再接近");
+            // return;
+            z = 0;
+        }
+
         var obj: Object = {
             "type": "cs_move",
             "uid": this.clientUid,
@@ -47,11 +66,25 @@ export default class PlayerController extends Laya.Script3D {
         // this._posz = z;
     }
 
+    // 实时检测间距
+    private distance: number = 0;
+    private checkDistance(): void {
+        this.distance = MatchView.instance.checkDistance();
+    }
+    private getOtherPlayer(): PlayerController {
+        if(this == MatchView.instance.scriptA) {
+            return MatchView.instance.scriptB;
+        } else if(this == MatchView.instance.scriptB) {
+            return MatchView.instance.scriptA;
+        }
+        return null;
+    }
+
     private touchEvent: Laya.Event;
     private client: WebSocketClient = null;
     private clientUid: string = ""; //MatchView传进来
     private modelUid: string = ""; //MatchView传进来
-    private isLocalPlayer: boolean = false;
+    private isLocalPlayer: boolean = false; //是我的Avatar
     private direction: number = 1;
 
     constructor() {
@@ -59,28 +92,29 @@ export default class PlayerController extends Laya.Script3D {
         this.client = WebSocketClient.getInstance();
         // Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
+        this.distance = 0;
     }
 
     // 碰撞校验都由客户端完成，服务器只做分发
     private handle(obj): void {
-        var isSelf: boolean = (obj.uid == this.modelUid);
+        var isDriven: boolean = (obj.uid == this.modelUid); //模型受网络消息驱动
         switch(obj.type) {
             case "sc_fist": { //出拳
                 // console.log("出拳：" + obj.uid + " | " + isSelf);
-                if(isSelf) {
+                if(isDriven) {
                     this.onFistCallback(this.touchEvent);
                 }
                 break;
             }
             case "sc_kick": { //踢脚
-                if(isSelf) {
+                if(isDriven) {
                     this.onKickCallback(this.touchEvent);
                     console.log("本地踢脚");
                 }
                 break;
             }
             case "sc_jump": { //跳跃
-                if(isSelf) {
+                if(isDriven) {
                     this.onJumpCallback(this.touchEvent);
                     console.log("本地跳跃");
                 }
@@ -88,7 +122,7 @@ export default class PlayerController extends Laya.Script3D {
             }
             case "sc_defend": { //防御
                 console.log("[防御]" + obj.uid + ":" + obj.defend);
-                if(isSelf) {
+                if(isDriven) {
                     if(obj.defend == 1) {
                         this.onDefendCallback(this.touchEvent);
                         console.log("本地防御");
@@ -100,11 +134,21 @@ export default class PlayerController extends Laya.Script3D {
                 break;
             }
             case "sc_move": { //移动
-                if(isSelf) {
+                if(isDriven) {
                     this._posz = obj.posz;
-                    // console.log("本地移动：" + obj.posz);
+                    // console.log("移动：" + obj.posz);
                 }
                 break;
+            }
+            case "sc_hit": { //伤害
+                if(isDriven) {
+                    if(obj.damage == 0) {
+                        console.log(obj.uid, "防御了，在他边上创建防御特效");
+                    } else if (obj.damage > 0) {
+                        console.log(obj.uid + "受伤了(-" + obj.damage + ")，让他播放挨打硬直");
+                        MatchView.instance.updateHP(this, obj.damage);
+                    }
+                }
             }
         }
     }
@@ -145,6 +189,20 @@ export default class PlayerController extends Laya.Script3D {
 
         // 更新移动
         Laya.stage.frameLoop(1, this, ()=> {
+
+            // 间距小于阈值，如果我在左边，posz>0，不允许发送了
+            if(this.distance < 1.5 && this.direction == 1 && this.posz > 0) {
+                console.log("我在左边，无法再接近");
+                // return;
+                this.posz = 0;
+            }
+            // 间距小于阈值，如果我在右边，posz<0，不允许发送了
+            else if(this.distance < 1.5 && this.direction == -1 && this.posz > 0) {
+                console.log("我在右边，无法再接近");
+                // return;
+                this.posz = 0;
+            }
+
             if(this.gameObject.transform.position.y > 0 && this.posy == 0) { // 跳跃
                 this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
                 if(this.gameObject.transform.position.y < 0) {
@@ -163,7 +221,7 @@ export default class PlayerController extends Laya.Script3D {
                 } else {
                     motion = 0;
                 }
-                if(this.currentMotion != motion) {
+                if(this.currentMotion != motion && this.currentMotion != 9) { //没有在防御
                     this.currentMotion = motion;
                     this.animator.play(this.motions[this.currentMotion]); //前进/后退
                 }
@@ -183,7 +241,10 @@ export default class PlayerController extends Laya.Script3D {
         this.posz = 0;
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
-        Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+        Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
+        if(this.isLocalPlayer) {
+            Laya.timer.frameLoop(1, this, this.checkDistance);
+        }
     }
 
     // 基于场景
@@ -216,7 +277,6 @@ export default class PlayerController extends Laya.Script3D {
         if(Laya.Browser.onPC) {}
         else {
             if(e.touchId != this.myIndex) {
-                // LogManager.instance.vConsole("离开的点是其他手指：" + e.touchId + "，摇杆的手指是：" + this.myIndex);
                 return;
             }
         }
@@ -226,28 +286,11 @@ export default class PlayerController extends Laya.Script3D {
         this.animator.crossFade(this.motions[this.currentMotion], 0.2);
         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
-        Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
-    }
-
-    mouseOut(e: Laya.Event): void {
-        if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
-            console.log("在播放其他动作");
-            return;
+        Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseUp);
+        
+        if(this.isLocalPlayer) {
+            Laya.timer.clear(this, this.checkDistance);
         }
-        if(Laya.Browser.onPC) {}
-        else {
-            if(e.touchId != this.myIndex) {
-                return;
-            }
-        }
-        this.myIndex = -1;
-
-        this.posz = 0;
-        this.currentMotion = 0;
-        this.animator.crossFade(this.motions[this.currentMotion], 0.2);
-        Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
-        Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
-        Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
     }
 
     //#endregion
@@ -277,6 +320,9 @@ export default class PlayerController extends Laya.Script3D {
         this.animLastTime = 600; //单次出拳时长
         var waitTime: number = 0;
 
+        // 服务器判定出拳了
+        var hitAmount = 10;
+
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
             waitTime = this.animLastTime - (Laya.Browser.now() - this._clickTime); //一定大于0
             // console.log("两次点击间隔非常小：", this.currentMotion, "，等待：", waitTime / 1000, "秒");
@@ -289,6 +335,14 @@ export default class PlayerController extends Laya.Script3D {
                 Laya.timer.once(waitTime, this, this.playOther); //等待拳1播完，播拳2动画
                 console.log("========> onFistBtn.重拳2，等待：", waitTime);
                 waitTime += this.animLastTime; //恢复待机的时间延长
+                
+                if(this.distance > 2.5) {
+                    hitAmount = 0;
+                    // console.log("距离太远，无法命中");
+                } else {
+                    hitAmount = 15;
+                    this.sendHit(hitAmount);
+                }
 
             } else if(this.currentMotion == 6 && waitTime < 200) {
 
@@ -298,6 +352,14 @@ export default class PlayerController extends Laya.Script3D {
                 Laya.timer.once(waitTime, this, this.playOther);
                 console.log("========> onFistBtn.重拳3");
                 waitTime += this.animLastTime; //恢复待机的时间延长
+
+                if(this.distance > 2.5) {
+                    hitAmount = 0;
+                    // console.log("距离太远，无法命中");
+                } else {
+                    hitAmount = 20;
+                    this.sendHit(hitAmount);
+                }
 
             } else {
                 console.error("点击过快");
@@ -310,11 +372,37 @@ export default class PlayerController extends Laya.Script3D {
             this.currentMotion = 5;
             Laya.timer.once(0, this, this.playOther);
             console.log("========> onFistHandler.重拳1");
+
+            if(this.distance > 2.5) {
+                hitAmount = 0;
+                // console.log("距离太远，无法命中");
+            } else {
+                hitAmount = 10;
+                this.sendHit(hitAmount);
+            }
         }
 
         // 播完自动放待机
         Laya.timer.once(waitTime, this, this.playIdle);
         console.log("播完自动放待机：", waitTime);
+    }
+
+    // 伤害
+    sendHit(amount: number): void {
+        if(this.isLocalPlayer == false) return;
+
+        // 对方在防御
+        if(this.getOtherPlayer().currentMotion == 9) {
+            amount = 0;
+            console.log("对方在防御，播放防御特效");
+        }
+
+        var obj: Object = {
+            "type": "cs_hit",
+            "uid": this.clientUid,
+            "amount": amount,
+        };
+        this.client.sendData(obj); //确实打中了，发送我的输出。由服务器判定造成的伤害
     }
 
     // 踢技8 | 600

@@ -106,7 +106,7 @@
                 this.createView(MatchUI.uiView);
             }
         }
-        MatchUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Main", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Text", "props": { "x": 100, "presetID": 1, "y": 0, "width": 1080, "text": "log", "name": "Console", "isPresetRoot": true, "height": 720, "fontSize": 16, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 71 }] }, { "type": "Image", "props": { "width": 240, "skin": "ui/joystickBg.png", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Image", "props": { "y": 50, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Jump", "labelSize": 30, "label": "跳跃", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Image", "props": { "y": 120, "x": 50, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Defend", "labelSize": 30, "label": "防御", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Image", "props": { "y": 120, "x": 190, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Kick", "labelSize": 30, "label": "踢腿", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Image", "props": { "y": 190, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Fist", "labelSize": 30, "label": "重拳", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Button", "props": { "var": "exitBtn", "skin": "comp/button.png", "name": "Exit", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开" }, "compId": 73 }, { "type": "Label", "props": { "y": 65, "x": 640, "text": "VS", "styleSkin": "comp/button.png", "name": "VS", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开", "fontSize": 44, "color": "#ffcc00", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 84 }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "var": "leftHPPanel", "name": "LeftHPPanel", "height": 720, "clipWidth": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 79, "child": [{ "type": "Label", "props": { "y": 40, "x": 200, "var": "name0Text", "text": "Player0", "styleSkin": "comp/label.png", "name": "Name0Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 0 }, "compId": 82 }, { "type": "Image", "props": { "y": 16, "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "name": "Background", "left": 200, "height": 32, "clipWidth": 10, "anchorY": 0.5 }, "compId": 77, "child": [{ "type": "Clip", "props": { "y": 16, "x": 5, "width": 300, "var": "fillImage", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage", "height": 24, "anchorY": 0.5, "anchorX": 0 }, "compId": 78 }, { "type": "Label", "props": { "var": "hp0Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP0Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "align": "right" }, "compId": 83 }] }] }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "var": "rightHPPanel", "name": "RightHPPanel", "height": 720, "clipWidth": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 85, "child": [{ "type": "Label", "props": { "var": "name1Text", "top": 30, "text": "Player1", "styleSkin": "comp/label.png", "right": 200, "name": "Name1Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 1 }, "compId": 86 }, { "type": "Image", "props": { "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "right": 200, "name": "Background", "height": 32, "clipWidth": 10, "anchorY": 0.5, "anchorX": 1 }, "compId": 88, "child": [{ "type": "Clip", "props": { "y": 16, "x": 305, "width": 300, "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage", "height": 24, "anchorY": 0.5, "anchorX": 1 }, "compId": 89 }, { "type": "Label", "props": { "var": "hp1Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP1Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 87 }] }] }], "loadList": ["prefab/Console.prefab", "ui/joystickBg.png", "ui/joystickPoint.png", "comp/button.png", "comp/label.png", "comp/progress$bar.png", "comp/progress.png"], "loadList3D": [] };
+        MatchUI.uiView = { "type": "Scene", "props": { "width": 1280, "name": "Main", "height": 720 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Text", "props": { "x": 100, "presetID": 1, "y": 0, "width": 1080, "text": "log", "name": "Console", "isPresetRoot": true, "height": 720, "fontSize": 16, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 71 }] }, { "type": "Image", "props": { "width": 240, "skin": "ui/joystickBg.png", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Image", "props": { "y": 50, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Jump", "labelSize": 30, "label": "跳跃", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Image", "props": { "y": 120, "x": 50, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Defend", "labelSize": 30, "label": "防御", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Image", "props": { "y": 120, "x": 190, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Kick", "labelSize": 30, "label": "踢腿", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Image", "props": { "y": 190, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Fist", "labelSize": 30, "label": "重拳", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Button", "props": { "var": "exitBtn", "skin": "comp/button.png", "name": "Exit", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开" }, "compId": 73 }, { "type": "Label", "props": { "y": 65, "x": 640, "text": "VS", "styleSkin": "comp/button.png", "name": "VS", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开", "fontSize": 44, "color": "#ffcc00", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 84 }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "var": "leftHPPanel", "name": "LeftHPPanel", "height": 720, "clipWidth": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 79, "child": [{ "type": "Label", "props": { "y": 40, "x": 200, "var": "name0Text", "text": "Player0", "styleSkin": "comp/label.png", "name": "Name0Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 0 }, "compId": 82 }, { "type": "Image", "props": { "y": 16, "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "name": "Background", "left": 200, "height": 32, "clipWidth": 10, "anchorY": 0.5 }, "compId": 77, "child": [{ "type": "Clip", "props": { "y": 16, "x": 5, "width": 300, "var": "fillImage0", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage0", "height": 24, "anchorY": 0.5, "anchorX": 0 }, "compId": 78 }, { "type": "Label", "props": { "var": "hp0Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP0Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "align": "right" }, "compId": 83 }] }] }, { "type": "Image", "props": { "y": 360, "x": 640, "width": 1280, "var": "rightHPPanel", "name": "RightHPPanel", "height": 720, "clipWidth": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 85, "child": [{ "type": "Label", "props": { "var": "name1Text", "top": 30, "text": "Player1", "styleSkin": "comp/label.png", "right": 200, "name": "Name1Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 1 }, "compId": 86 }, { "type": "Image", "props": { "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "right": 200, "name": "Background", "height": 32, "clipWidth": 10, "anchorY": 0.5, "anchorX": 1 }, "compId": 88, "child": [{ "type": "Clip", "props": { "y": 16, "x": 305, "width": 300, "var": "fillImage1", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage1", "height": 24, "anchorY": 0.5, "anchorX": 1 }, "compId": 89 }, { "type": "Label", "props": { "var": "hp1Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP1Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 87 }] }] }], "loadList": ["prefab/Console.prefab", "ui/joystickBg.png", "ui/joystickPoint.png", "comp/button.png", "comp/label.png", "comp/progress$bar.png", "comp/progress.png"], "loadList3D": [] };
         ui.MatchUI = MatchUI;
         REG("ui.MatchUI", MatchUI);
         class TipsUI extends Laya.Scene {
@@ -318,6 +318,7 @@
             this.animLastTime = 0;
             this.posy = 0;
             this._posz = 0;
+            this.distance = 0;
             this.client = null;
             this.clientUid = "";
             this.modelUid = "";
@@ -325,11 +326,23 @@
             this.direction = 1;
             this.client = WebSocketClient.getInstance();
             Laya.stage.on("nethandle", this, this.handle);
+            this.distance = 0;
         }
         get posz() {
             return this._posz;
         }
         set posz(z) {
+            if (this.isLocalPlayer == false)
+                return;
+            console.log("发送z：", z.toFixed(3) + " / " + this.distance.toFixed(1));
+            if (this.distance < 1.5 && this.direction == 1 && z > 0) {
+                console.log("我在左边，无法再接近");
+                z = 0;
+            }
+            else if (this.distance < 1.5 && this.direction == -1 && z > 0) {
+                console.log("我在右边，无法再接近");
+                z = 0;
+            }
             var obj = {
                 "type": "cs_move",
                 "uid": this.clientUid,
@@ -337,24 +350,36 @@
             };
             this.client.sendData(obj);
         }
+        checkDistance() {
+            this.distance = MainView.instance.checkDistance();
+        }
+        getOtherPlayer() {
+            if (this == MainView.instance.scriptA) {
+                return MainView.instance.scriptB;
+            }
+            else if (this == MainView.instance.scriptB) {
+                return MainView.instance.scriptA;
+            }
+            return null;
+        }
         handle(obj) {
-            var isSelf = (obj.uid == this.modelUid);
+            var isDriven = (obj.uid == this.modelUid);
             switch (obj.type) {
                 case "sc_fist": {
-                    if (isSelf) {
+                    if (isDriven) {
                         this.onFistCallback(this.touchEvent);
                     }
                     break;
                 }
                 case "sc_kick": {
-                    if (isSelf) {
+                    if (isDriven) {
                         this.onKickCallback(this.touchEvent);
                         console.log("本地踢脚");
                     }
                     break;
                 }
                 case "sc_jump": {
-                    if (isSelf) {
+                    if (isDriven) {
                         this.onJumpCallback(this.touchEvent);
                         console.log("本地跳跃");
                     }
@@ -362,7 +387,7 @@
                 }
                 case "sc_defend": {
                     console.log("[防御]" + obj.uid + ":" + obj.defend);
-                    if (isSelf) {
+                    if (isDriven) {
                         if (obj.defend == 1) {
                             this.onDefendCallback(this.touchEvent);
                             console.log("本地防御");
@@ -375,10 +400,21 @@
                     break;
                 }
                 case "sc_move": {
-                    if (isSelf) {
+                    if (isDriven) {
                         this._posz = obj.posz;
                     }
                     break;
+                }
+                case "sc_hit": {
+                    if (isDriven) {
+                        if (obj.damage == 0) {
+                            console.log(obj.uid, "防御了，在他边上创建防御特效");
+                        }
+                        else if (obj.damage > 0) {
+                            console.log(obj.uid + "受伤了(-" + obj.damage + ")，让他播放挨打硬直");
+                            MainView.instance.updateHP(this, obj.damage);
+                        }
+                    }
                 }
             }
         }
@@ -412,6 +448,14 @@
                 }
             }
             Laya.stage.frameLoop(1, this, () => {
+                if (this.distance < 1.5 && this.direction == 1 && this.posz > 0) {
+                    console.log("我在左边，无法再接近");
+                    this.posz = 0;
+                }
+                else if (this.distance < 1.5 && this.direction == -1 && this.posz > 0) {
+                    console.log("我在右边，无法再接近");
+                    this.posz = 0;
+                }
                 if (this.gameObject.transform.position.y > 0 && this.posy == 0) {
                     this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
                     if (this.gameObject.transform.position.y < 0) {
@@ -432,7 +476,7 @@
                     else {
                         motion = 0;
                     }
-                    if (this.currentMotion != motion) {
+                    if (this.currentMotion != motion && this.currentMotion != 9) {
                         this.currentMotion = motion;
                         this.animator.play(this.motions[this.currentMotion]);
                     }
@@ -448,7 +492,10 @@
             this.posz = 0;
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
-            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
+            if (this.isLocalPlayer) {
+                Laya.timer.frameLoop(1, this, this.checkDistance);
+            }
         }
         mouseMove(e) {
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -484,26 +531,10 @@
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
-            Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
-        }
-        mouseOut(e) {
-            if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
-                console.log("在播放其他动作");
-                return;
+            Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseUp);
+            if (this.isLocalPlayer) {
+                Laya.timer.clear(this, this.checkDistance);
             }
-            if (Laya.Browser.onPC) ;
-            else {
-                if (e.touchId != this.myIndex) {
-                    return;
-                }
-            }
-            this.myIndex = -1;
-            this.posz = 0;
-            this.currentMotion = 0;
-            this.animator.crossFade(this.motions[this.currentMotion], 0.2);
-            Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
-            Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
-            Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         }
         playIdle() {
             Laya.timer.clear(this, this.playOther);
@@ -527,6 +558,7 @@
         onFistCallback(e) {
             this.animLastTime = 600;
             var waitTime = 0;
+            var hitAmount = 10;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 waitTime = this.animLastTime - (Laya.Browser.now() - this._clickTime);
                 if (this.currentMotion == 5 && waitTime < 200) {
@@ -535,6 +567,13 @@
                     Laya.timer.once(waitTime, this, this.playOther);
                     console.log("========> onFistBtn.重拳2，等待：", waitTime);
                     waitTime += this.animLastTime;
+                    if (this.distance > 2.5) {
+                        hitAmount = 0;
+                    }
+                    else {
+                        hitAmount = 15;
+                        this.sendHit(hitAmount);
+                    }
                 }
                 else if (this.currentMotion == 6 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
@@ -542,6 +581,13 @@
                     Laya.timer.once(waitTime, this, this.playOther);
                     console.log("========> onFistBtn.重拳3");
                     waitTime += this.animLastTime;
+                    if (this.distance > 2.5) {
+                        hitAmount = 0;
+                    }
+                    else {
+                        hitAmount = 20;
+                        this.sendHit(hitAmount);
+                    }
                 }
                 else {
                     console.error("点击过快");
@@ -554,9 +600,30 @@
                 this.currentMotion = 5;
                 Laya.timer.once(0, this, this.playOther);
                 console.log("========> onFistHandler.重拳1");
+                if (this.distance > 2.5) {
+                    hitAmount = 0;
+                }
+                else {
+                    hitAmount = 10;
+                    this.sendHit(hitAmount);
+                }
             }
             Laya.timer.once(waitTime, this, this.playIdle);
             console.log("播完自动放待机：", waitTime);
+        }
+        sendHit(amount) {
+            if (this.isLocalPlayer == false)
+                return;
+            if (this.getOtherPlayer().currentMotion == 9) {
+                amount = 0;
+                console.log("对方在防御，播放防御特效");
+            }
+            var obj = {
+                "type": "cs_hit",
+                "uid": this.clientUid,
+                "amount": amount,
+            };
+            this.client.sendData(obj);
         }
         sendKick(e) {
             this.touchEvent = e;
@@ -665,6 +732,8 @@
     class MainView extends ui.MatchUI {
         constructor() {
             super();
+            this.hpA = 300;
+            this.hpB = 300;
             this.uid = "";
             this.createView(Laya.View.uiMap["Main"]);
             MainView.instance = this;
@@ -675,9 +744,10 @@
             Laya.stage.addChild(this.joystick);
             Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                Laya.stage.removeChild(this.joystick);
                 Laya.stage.removeChild(this.scene3d);
                 Laya.stage.removeChild(this.playerA);
-                Laya.stage.removeChild(this.joystick);
+                Laya.stage.removeChild(this.playerB);
                 Laya.stage.removeChild(this);
                 var lobbyView = new LobbyView();
                 Laya.stage.addChild(lobbyView);
@@ -732,21 +802,43 @@
                     console.log("收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
                     this.playerA.addComponent(PlayerController);
                     this.playerB.addComponent(PlayerController);
-                    var scriptA = this.playerA.getComponent(PlayerController);
-                    var scriptB = this.playerB.getComponent(PlayerController);
+                    this.scriptA = this.playerA.getComponent(PlayerController);
+                    this.scriptB = this.playerB.getComponent(PlayerController);
                     if (this.uid == obj.user0.uid) {
                         console.log("我在左边");
                     }
                     else if (this.uid == obj.user1.uid) {
                         console.log("我在右边");
                     }
-                    scriptA.setUid(obj.user0.uid, 0);
-                    scriptB.setUid(obj.user1.uid, 1);
+                    this.scriptA.setUid(obj.user0.uid, 0);
+                    this.scriptB.setUid(obj.user1.uid, 1);
+                    this.hpA = 300;
+                    this.hp0Text.text = this.hpA.toString();
+                    this.fillImage0.width = this.hpA;
+                    this.name0Text.text = obj.user0.nickname;
+                    this.hpB = 300;
+                    this.hp1Text.text = this.hpB.toString();
+                    this.fillImage1.width = this.hpB;
+                    this.name1Text.text = obj.user1.nickname;
                     break;
                 }
             }
         }
-        updateHP() {
+        checkDistance() {
+            var distance = this.playerA.transform.position.z - this.playerB.transform.position.z;
+            return distance;
+        }
+        updateHP(player, damage) {
+            if (player == this.scriptA) {
+                this.hpA -= damage;
+                this.hp0Text.text = this.hpA.toString();
+                this.fillImage0.width = this.hpA;
+            }
+            else if (player == this.scriptB) {
+                this.hpB -= damage;
+                this.hp1Text.text = this.hpB.toString();
+                this.fillImage1.width = this.hpB;
+            }
         }
     }
 
@@ -841,10 +933,15 @@
             this.goLoginBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 this.loginPanel.visible = true;
                 this.registerPanel.visible = false;
+                this.loginNickname.text = "";
+                this.loginPassword.text = "";
             });
             this.goRegisterBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 this.loginPanel.visible = false;
                 this.registerPanel.visible = true;
+                this.nicknameInput.text = "";
+                this.passwordInput.text = "";
+                this.password2Input.text = "";
             });
             this.loginBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendLogin);
             this.registerBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendRegister);
@@ -950,7 +1047,7 @@
             var obj = {
                 "type": "cs_login",
                 "nickname": this.loginNickname.text,
-                "pwd": this.loginPassword.text,
+                "pwd": this.md5(this.loginPassword.text),
             };
             this.client.sendData(obj);
         }

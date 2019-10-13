@@ -14,7 +14,11 @@ export default class MainView extends ui.MatchUI {
     /*3D场景*/
     public scene3d: Laya.Scene3D;
     public playerA: Laya.Sprite3D;
+    public scriptA: PlayerController;
+    private hpA: number = 300;
     public playerB: Laya.Sprite3D;
+    public scriptB: PlayerController;
+    private hpB: number = 300;
     
     /*数据*/
     public uid: string = "";
@@ -37,9 +41,10 @@ export default class MainView extends ui.MatchUI {
         Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
 
         this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            Laya.stage.removeChild(this.joystick);
             Laya.stage.removeChild(this.scene3d);
             Laya.stage.removeChild(this.playerA);
-            Laya.stage.removeChild(this.joystick);
+            Laya.stage.removeChild(this.playerB);
             Laya.stage.removeChild(this);
             var lobbyView = new LobbyView(); //加载模式/内嵌模式
             Laya.stage.addChild(lobbyView);
@@ -53,14 +58,11 @@ export default class MainView extends ui.MatchUI {
         Laya.stage.addChild(this.scene3d);
         // console.log("场景加载完成");
         //加载精灵
-        // Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
-        // Laya.Sprite3D.load("res/prefabs/RPG-CharacterB.lh", Laya.Handler.create(this, this.onPlayerBComplete));
         Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerComplete));
     }
 
     onPlayerComplete(sp: Laya.Sprite3D): void {
         // console.log("角色加载完成");
-
         var prefabA = Laya.Sprite3D.instantiate(sp);
         var prefabB = Laya.Sprite3D.instantiate(sp);
         this.playerA = this.scene3d.addChild(prefabA) as Laya.Sprite3D;
@@ -112,21 +114,44 @@ export default class MainView extends ui.MatchUI {
                 console.log("收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
                 this.playerA.addComponent(PlayerController);
                 this.playerB.addComponent(PlayerController);
-                var scriptA: PlayerController = this.playerA.getComponent(PlayerController);
-                var scriptB: PlayerController = this.playerB.getComponent(PlayerController);
+                this.scriptA = this.playerA.getComponent(PlayerController);
+                this.scriptB = this.playerB.getComponent(PlayerController);
                 if(this.uid == obj.user0.uid) {
                     console.log("我在左边");
                 } else if (this.uid == obj.user1.uid) {
                     console.log("我在右边");
                 }
-                scriptA.setUid(obj.user0.uid, 0);
-                scriptB.setUid(obj.user1.uid, 1);
+                this.scriptA.setUid(obj.user0.uid, 0);
+                this.scriptB.setUid(obj.user1.uid, 1);
+                // 血条初始化
+                this.hpA = 300;
+                this.hp0Text.text = this.hpA.toString();
+                this.fillImage0.width = this.hpA;
+                this.name0Text.text = obj.user0.nickname;
+                this.hpB = 300;
+                this.hp1Text.text = this.hpB.toString();
+                this.fillImage1.width = this.hpB;
+                this.name1Text.text = obj.user1.nickname;
                 break;
             }
         }
     }
 
-    public updateHP(): void {
-        // this.hptext
+    public checkDistance(): number {
+        var distance: number = this.playerA.transform.position.z - this.playerB.transform.position.z;
+        // console.log("A-B间距：", distance.toFixed(1));
+        return distance;
+    }
+
+    public updateHP(player: PlayerController, damage: number): void {
+        if(player == this.scriptA) {
+            this.hpA -= damage;
+            this.hp0Text.text = this.hpA.toString();
+            this.fillImage0.width = this.hpA;
+        } else if (player == this.scriptB) {
+            this.hpB -= damage;
+            this.hp1Text.text = this.hpB.toString();
+            this.fillImage1.width = this.hpB;
+        }
     }
 }

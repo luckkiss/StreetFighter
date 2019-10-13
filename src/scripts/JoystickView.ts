@@ -27,7 +27,6 @@ export default class JoystickView extends ui.JoystickUI {
     
     // 基于UI
     mouseDown(e: Laya.Event): void {
-        // this.touches = e.touches; //多点触控
         this.myIndex = e.touchId;
         this.centerX = this.roundImage.x;
         this.centerY = this.roundImage.y;
@@ -51,7 +50,6 @@ export default class JoystickView extends ui.JoystickUI {
             }
             if(e.touches.length <= this.myIndex) {
                 // LogManager.instance.vConsole("数组越界：" + e.touches.length + " <= " + this.myIndex);
-                // Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
                 return;
             }
             this.touches = e.touches;
