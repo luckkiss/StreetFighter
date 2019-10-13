@@ -319,10 +319,10 @@
             this.posy = 0;
             this._posz = 0;
             this.client = null;
-            this.uid = "";
+            this.clientUid = "";
+            this.modelUid = "";
+            this.isLocalPlayer = false;
             this.client = WebSocketClient.getInstance();
-            this.uid = Laya.LocalStorage.getItem("uid");
-            Laya.stage.offAll("nethandle");
             Laya.stage.on("nethandle", this, this.handle);
         }
         get posz() {
@@ -331,41 +331,38 @@
         set posz(z) {
             var obj = {
                 "type": "cs_move",
-                "uid": this.uid,
+                "uid": this.clientUid,
                 "posz": z,
             };
             this.client.sendData(obj);
         }
         handle(obj) {
+            var isSelf = (obj.uid == this.modelUid);
             switch (obj.type) {
                 case "sc_fist": {
-                    var isLocalPlayer = (obj.uid == this.uid);
-                    if (isLocalPlayer) {
+                    console.log("出拳：" + obj.uid + "-" + isSelf);
+                    if (isSelf) {
                         this.onFistCallback(this.touchEvent);
-                        console.log("本地出拳");
                     }
                     break;
                 }
                 case "sc_kick": {
-                    var isLocalPlayer = (obj.uid == this.uid);
-                    if (isLocalPlayer) {
+                    if (isSelf) {
                         this.onKickCallback(this.touchEvent);
                         console.log("本地踢脚");
                     }
                     break;
                 }
                 case "sc_jump": {
-                    var isLocalPlayer = (obj.uid == this.uid);
-                    if (isLocalPlayer) {
+                    if (isSelf) {
                         this.onJumpCallback(this.touchEvent);
                         console.log("本地跳跃");
                     }
                     break;
                 }
                 case "sc_defend": {
-                    var isLocalPlayer = (obj.uid == this.uid);
                     console.log("[防御]" + obj.uid + ":" + obj.state);
-                    if (isLocalPlayer) {
+                    if (isSelf) {
                         if (obj.state == 1) {
                             this.onDefendCallback(this.touchEvent);
                             console.log("本地防御");
@@ -378,16 +375,19 @@
                     break;
                 }
                 case "sc_move": {
-                    var isLocalPlayer = (obj.uid == this.uid);
-                    if (isLocalPlayer) {
+                    if (isSelf) {
                         this._posz = obj.posz;
                     }
                     break;
                 }
             }
         }
-        onStart() {
-            this.gameObject = MainView.instance.playerA;
+        setUid(modelid) {
+            console.log("设置uid：" + modelid);
+            this.modelUid = modelid;
+            this.clientUid = MainView.instance.uid;
+            this.isLocalPlayer = (this.modelUid == this.clientUid);
+            this.gameObject = this.owner;
             this.animator = this.gameObject.getComponent(Laya.Animator);
             this.animator.play(this.motions[0]);
             this.currentMotion = 0;
@@ -395,17 +395,21 @@
             this.posy = 0;
             this.posz = 0;
             this._clickTime = 0;
-            var gamePad = LogManager.instance.gamePad;
-            this.fistBtn = gamePad.getChildByName("Fist");
-            this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
-            this.kickBtn = gamePad.getChildByName("Kick");
-            this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
-            this.jumpBtn = gamePad.getChildByName("Jump");
-            this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
-            this.defendBtn = gamePad.getChildByName("Defend");
-            this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
-            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
-            JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+            if (this.isLocalPlayer) {
+                var gamePad = LogManager.instance.gamePad;
+                this.fistBtn = gamePad.getChildByName("Fist");
+                this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
+                this.kickBtn = gamePad.getChildByName("Kick");
+                this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
+                this.jumpBtn = gamePad.getChildByName("Jump");
+                this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
+                this.defendBtn = gamePad.getChildByName("Defend");
+                this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
+                Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
+                if (this.isLocalPlayer) {
+                    JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+                }
+            }
             Laya.stage.frameLoop(1, this, () => {
                 if (this.gameObject.transform.position.y > 0 && this.posy == 0) {
                     this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
@@ -440,9 +444,11 @@
                     return;
                 }
             }
-            this.posz = JoystickView.instance.Horizontal * 0.02;
-            this.currentMotion = (this.posz > 0) ? 1 : 2;
-            this.animator.play(this.motions[this.currentMotion]);
+            if (this.isLocalPlayer) {
+                this.posz = JoystickView.instance.Horizontal * 0.02;
+                this.currentMotion = (this.posz > 0) ? 1 : 2;
+                this.animator.play(this.motions[this.currentMotion]);
+            }
         }
         mouseUp(e) {
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -497,7 +503,7 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_fist",
-                "uid": this.uid,
+                "uid": this.clientUid,
             };
             this.client.sendData(obj);
         }
@@ -539,7 +545,7 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_kick",
-                "uid": this.uid,
+                "uid": this.clientUid,
             };
             this.client.sendData(obj);
         }
@@ -565,7 +571,7 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_jump",
-                "uid": this.uid,
+                "uid": this.clientUid,
             };
             this.client.sendData(obj);
         }
@@ -599,7 +605,7 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_defend",
-                "uid": this.uid,
+                "uid": this.clientUid,
                 "state": 1,
             };
             this.client.sendData(obj);
@@ -625,7 +631,7 @@
                 this.touchEvent = e;
                 var obj = {
                     "type": "cs_defend",
-                    "uid": this.uid,
+                    "uid": this.clientUid,
                     "state": 0,
                 };
                 this.client.sendData(obj);
@@ -642,8 +648,12 @@
     class MainView extends ui.MatchUI {
         constructor() {
             super();
+            this.uid = "";
             this.createView(Laya.View.uiMap["Main"]);
             MainView.instance = this;
+            this.uid = Laya.LocalStorage.getItem("uid");
+            Laya.stage.offAll("nethandle");
+            Laya.stage.on("nethandle", this, this.handle);
             this.joystick = new JoystickView();
             Laya.stage.addChild(this.joystick);
             Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
@@ -661,12 +671,62 @@
             this.scene3d = sc;
             this.scene3d.zOrder = -1;
             Laya.stage.addChild(this.scene3d);
-            Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
+            Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
-        onPlayerAComplete(sp) {
-            if (this.playerA == null) {
-                this.playerA = this.scene3d.addChild(sp);
-                this.playerA.addComponent(PlayerController);
+        onPlayerComplete(sp) {
+            var prefabA = Laya.Sprite3D.instantiate(sp);
+            var prefabB = Laya.Sprite3D.instantiate(sp);
+            this.playerA = this.scene3d.addChild(prefabA);
+            this.playerB = this.scene3d.addChild(prefabB);
+            this.playerA.transform.position = new Laya.Vector3(0, 0, 3);
+            this.playerA.transform.rotation = new Laya.Quaternion(0, 1, 0, 0);
+            var matA = this.playerA.getChildAt(1).skinnedMeshRenderer.material;
+            matA.albedoColor = new Laya.Vector4(0, 1, 0, 1);
+            this.playerB.transform.position = new Laya.Vector3(0, 0, -3);
+            this.playerB.transform.rotation = new Laya.Quaternion(0, 0, 0, -1);
+            var matB = this.playerB.getChildAt(1).skinnedMeshRenderer.material;
+            matB.albedoColor = new Laya.Vector4(0, 0, 1, 1);
+            this.sendGameReady();
+        }
+        sendGameReady() {
+            var obj = {
+                "type": "cs_gameReady",
+                "uid": this.uid,
+            };
+            WebSocketClient.getInstance().sendData(obj);
+            console.log("发送准备完成");
+        }
+        sendExitGame() {
+            var obj = {
+                "type": "cs_exitGame",
+                "uid": this.uid,
+            };
+            WebSocketClient.getInstance().sendData(obj);
+            console.log("发送离开游戏");
+        }
+        handle(obj) {
+            var isLocalPlayer = (obj.uid == this.uid);
+            switch (obj.type) {
+                case "sc_exit": {
+                    console.log("收到逃跑" + obj.nickname);
+                    break;
+                }
+                case "sc_ready": {
+                    console.log("收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
+                    this.playerA.addComponent(PlayerController);
+                    this.playerB.addComponent(PlayerController);
+                    var scriptA = this.playerA.getComponent(PlayerController);
+                    var scriptB = this.playerB.getComponent(PlayerController);
+                    if (this.uid == obj.user0.uid) {
+                        console.log("我在左边");
+                    }
+                    else if (this.uid == obj.user1.uid) {
+                        console.log("我在右边");
+                    }
+                    scriptA.setUid(obj.user0.uid);
+                    scriptB.setUid(obj.user1.uid);
+                    break;
+                }
             }
         }
     }
@@ -893,7 +953,6 @@
         }
         textAnimation() {
             this.tick++;
-            console.log("进入循环：" + this.tick);
             if (this.tick >= this.array.length) {
                 this.tick = 0;
             }
@@ -909,6 +968,7 @@
             var matchView = new MainView();
             Laya.stage.addChild(matchView);
             Laya.stage.removeChild(this);
+            Laya.timer.clearAll(this);
         }
         md5(data) {
             return data;

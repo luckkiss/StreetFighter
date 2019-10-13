@@ -8,6 +8,7 @@ export default class MainView extends ui.MatchUI {
 	/*界面实例*/
     public static instance: MainView;
     
+    /*2D界面*/
     private joystick: JoystickView;
 
     /*3D场景*/
@@ -15,10 +16,17 @@ export default class MainView extends ui.MatchUI {
     public playerA: Laya.Sprite3D;
     public playerB: Laya.Sprite3D;
     
+    /*数据*/
+    public uid: string = "";
+
     constructor() {
         super();
         this.createView(Laya.View.uiMap["Main"]);
         MainView.instance = this;
+
+        this.uid = Laya.LocalStorage.getItem("uid");
+        Laya.stage.offAll("nethandle");
+        Laya.stage.on("nethandle", this, this.handle);
 
         // 添加摇杆
         this.joystick = new JoystickView(); //加载模式/内嵌模式
@@ -45,18 +53,80 @@ export default class MainView extends ui.MatchUI {
         Laya.stage.addChild(this.scene3d);
         // console.log("场景加载完成");
         //加载精灵
-        Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
+        // Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerAComplete));
+        // Laya.Sprite3D.load("res/prefabs/RPG-CharacterB.lh", Laya.Handler.create(this, this.onPlayerBComplete));
+        Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerComplete));
     }
 
-    onPlayerAComplete(sp: Laya.Sprite3D): void {
-        // console.log("3D精灵加载完成");
-        if(this.playerA == null) {
-            this.playerA = this.scene3d.addChild(sp) as Laya.Sprite3D;
-            this.playerA.addComponent(PlayerController);
-        }
-        if(this.playerB == null) {
-            this.playerB = this.scene3d.addChild(sp) as Laya.Sprite3D;
-            this.playerB.addComponent(PlayerController);
+    onPlayerComplete(sp: Laya.Sprite3D): void {
+        // console.log("角色加载完成");
+
+        var prefabA = Laya.Sprite3D.instantiate(sp);
+        var prefabB = Laya.Sprite3D.instantiate(sp);
+        this.playerA = this.scene3d.addChild(prefabA) as Laya.Sprite3D;
+        this.playerB = this.scene3d.addChild(prefabB) as Laya.Sprite3D;
+
+        //修改材质的反射颜色，让模型偏红
+        this.playerA.transform.position = new Laya.Vector3(0, 0, 3);
+        this.playerA.transform.rotation = new Laya.Quaternion(0, 1, 0, 0); //朝右
+        var matA = (this.playerA.getChildAt(1) as Laya.SkinnedMeshSprite3D).skinnedMeshRenderer.material as Laya.BlinnPhongMaterial;
+        matA.albedoColor = new Laya.Vector4(0,1,0,1); //绿色
+
+        this.playerB.transform.position = new Laya.Vector3(0, 0, -3);
+        this.playerB.transform.rotation = new Laya.Quaternion(0, 0, 0, -1); //朝左
+        var matB = (this.playerB.getChildAt(1) as Laya.SkinnedMeshSprite3D).skinnedMeshRenderer.material as Laya.BlinnPhongMaterial;
+        matB.albedoColor = new Laya.Vector4(0,0,1,1);
+
+        this.sendGameReady();
+    }
+
+    // 场景加载完成
+    private sendGameReady(): void {
+        var obj: Object = {
+            "type": "cs_gameReady",
+            "uid": this.uid,
+        };
+        WebSocketClient.getInstance().sendData(obj);
+        console.log("发送准备完成");
+    }
+    
+    // 离开游戏
+    private sendExitGame(): void {
+        var obj: Object = {
+            "type": "cs_exitGame",
+            "uid": this.uid,
+        };
+        WebSocketClient.getInstance().sendData(obj);
+        console.log("发送离开游戏");
+    }
+    
+    // 碰撞校验都由客户端完成，服务器只做分发
+    private handle(obj): void {
+        var isLocalPlayer: boolean = (obj.uid == this.uid);
+        switch(obj.type) {
+            case "sc_exit": { //离开游戏
+                console.log("收到逃跑" + obj.nickname);
+                break;
+            }
+            case "sc_ready": { //准备完成
+                console.log("收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
+                this.playerA.addComponent(PlayerController);
+                this.playerB.addComponent(PlayerController);
+                var scriptA: PlayerController = this.playerA.getComponent(PlayerController);
+                var scriptB: PlayerController = this.playerB.getComponent(PlayerController);
+                if(this.uid == obj.user0.uid) {
+                    console.log("我在左边");
+                    // scriptA.setUid(obj.user0.uid);
+                    // scriptB.setUid(obj.user1.uid);
+                } else if (this.uid == obj.user1.uid) {
+                    console.log("我在右边");
+                    // scriptB.setUid(obj.user0.uid);
+                    // scriptA.setUid(obj.user1.uid);
+                }
+                scriptA.setUid(obj.user0.uid);
+                scriptB.setUid(obj.user1.uid);
+                break;
+            }
         }
     }
 }
