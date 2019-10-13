@@ -52,6 +52,7 @@ export default class PlayerController extends Laya.Script3D {
     private clientUid: string = ""; //MatchView传进来
     private modelUid: string = ""; //MatchView传进来
     private isLocalPlayer: boolean = false;
+    private direction: number = 1;
 
     constructor() {
         super();
@@ -108,11 +109,12 @@ export default class PlayerController extends Laya.Script3D {
         }
     }
 
-    public setUid(modelid: string): void {
+    public setUid(modelid: string, side: number): void {
         console.log("设置uid：" + modelid);
         this.modelUid = modelid;
         this.clientUid = MatchView.instance.uid;
         this.isLocalPlayer = (this.modelUid == this.clientUid); //只有自己的角色，可以输出操作
+        this.direction = (side == 0)? 1 : -1;
 
         this.gameObject = this.owner as Laya.Sprite3D;
         // this.gameObject = MatchView.instance.playerA;
@@ -152,6 +154,21 @@ export default class PlayerController extends Laya.Script3D {
             } else { // 移动
                 this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
             }
+            
+            // if(this.isLocalPlayer == false) {
+                var motion = 0;
+                if((this.posz > 0)) {
+                    motion = 1;
+                } else if (this.posz < 0) {
+                    motion = 2;
+                } else {
+                    motion = 0;
+                }
+                if(this.currentMotion != motion) {
+                    this.currentMotion = motion;
+                    this.animator.play(this.motions[this.currentMotion]); //前进/后退
+                }
+            // }
         });
     }
 
@@ -185,10 +202,10 @@ export default class PlayerController extends Laya.Script3D {
         }
         // 检测到攻击动画，就覆盖移动动画，停止移动
         if(this.isLocalPlayer) {
-            this.posz = JoystickView.instance.Horizontal * 0.02;
-            this.currentMotion = (this.posz > 0)? 1 : 2;
-            this.animator.play(this.motions[this.currentMotion]); //前进/后退
+            this.posz = JoystickView.instance.Horizontal * 0.02 * this.direction;
         }
+        // this.currentMotion = (this.posz > 0)? 1 : 2;
+        // this.animator.play(this.motions[this.currentMotion]); //前进/后退
     }
 
     mouseUp(e: Laya.Event): void {
@@ -243,7 +260,6 @@ export default class PlayerController extends Laya.Script3D {
     };
 
     public playOther () {
-        // Laya.timer.clear(this, this.playIdle); //清除拳1的播完延迟命令
         this.animator.play(this.motions[this.currentMotion]);
     };
 

@@ -322,6 +322,7 @@
             this.clientUid = "";
             this.modelUid = "";
             this.isLocalPlayer = false;
+            this.direction = 1;
             this.client = WebSocketClient.getInstance();
             Laya.stage.on("nethandle", this, this.handle);
         }
@@ -340,7 +341,6 @@
             var isSelf = (obj.uid == this.modelUid);
             switch (obj.type) {
                 case "sc_fist": {
-                    console.log("出拳：" + obj.uid + "-" + isSelf);
                     if (isSelf) {
                         this.onFistCallback(this.touchEvent);
                     }
@@ -382,11 +382,12 @@
                 }
             }
         }
-        setUid(modelid) {
+        setUid(modelid, side) {
             console.log("设置uid：" + modelid);
             this.modelUid = modelid;
             this.clientUid = MainView.instance.uid;
             this.isLocalPlayer = (this.modelUid == this.clientUid);
+            this.direction = (side == 0) ? 1 : -1;
             this.gameObject = this.owner;
             this.animator = this.gameObject.getComponent(Laya.Animator);
             this.animator.play(this.motions[0]);
@@ -420,6 +421,20 @@
                 else {
                     this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
                 }
+                var motion = 0;
+                if ((this.posz > 0)) {
+                    motion = 1;
+                }
+                else if (this.posz < 0) {
+                    motion = 2;
+                }
+                else {
+                    motion = 0;
+                }
+                if (this.currentMotion != motion) {
+                    this.currentMotion = motion;
+                    this.animator.play(this.motions[this.currentMotion]);
+                }
             });
         }
         mouseDown(e) {
@@ -445,9 +460,7 @@
                 }
             }
             if (this.isLocalPlayer) {
-                this.posz = JoystickView.instance.Horizontal * 0.02;
-                this.currentMotion = (this.posz > 0) ? 1 : 2;
-                this.animator.play(this.motions[this.currentMotion]);
+                this.posz = JoystickView.instance.Horizontal * 0.02 * this.direction;
             }
         }
         mouseUp(e) {
@@ -723,8 +736,8 @@
                     else if (this.uid == obj.user1.uid) {
                         console.log("我在右边");
                     }
-                    scriptA.setUid(obj.user0.uid);
-                    scriptB.setUid(obj.user1.uid);
+                    scriptA.setUid(obj.user0.uid, 0);
+                    scriptB.setUid(obj.user1.uid, 1);
                     break;
                 }
             }

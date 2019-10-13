@@ -123,8 +123,8 @@ export default class MainView extends ui.MatchUI {
                     // scriptB.setUid(obj.user0.uid);
                     // scriptA.setUid(obj.user1.uid);
                 }
-                scriptA.setUid(obj.user0.uid);
-                scriptB.setUid(obj.user1.uid);
+                scriptA.setUid(obj.user0.uid, 0);
+                scriptB.setUid(obj.user1.uid, 1);
                 break;
             }
         }
