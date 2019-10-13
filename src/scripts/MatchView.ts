@@ -54,5 +54,9 @@ export default class MainView extends ui.MatchUI {
             this.playerA = this.scene3d.addChild(sp) as Laya.Sprite3D;
             this.playerA.addComponent(PlayerController);
         }
+        if(this.playerB == null) {
+            this.playerB = this.scene3d.addChild(sp) as Laya.Sprite3D;
+            this.playerB.addComponent(PlayerController);
+        }
     }
 }

@@ -31,6 +31,7 @@ export default class LobbyView extends ui.LobbyUI {
         // UI初始化
         this.awardPanel.visible = false;
         this.registerPanel.visible = false;
+        this.matchPanel.visible = false;
         this.initUI();
         Laya.stage.addChild(LoadingView.getInstance());
     }
@@ -46,6 +47,7 @@ export default class LobbyView extends ui.LobbyUI {
             this.awardPanel.visible = false;
         });
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
+        this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
         
         // 获取用户信息
         // Laya.LocalStorage.clear();
@@ -106,9 +108,10 @@ export default class LobbyView extends ui.LobbyUI {
                 UserData.getInstance().playerStatus = PlayerStatus.GAME;
                 break;
             }
-            case "sc_match_failed": { //匹配失败
-                TipsView.getInstance().showText(1000, "匹配失败");
+            case "sc_match_cancel": { //取消匹配
+                // TipsView.getInstance().showText(1000, "取消匹配");
                 UserData.getInstance().playerStatus = PlayerStatus.FREE;
+                this.matchPanel.visible = false;
                 break;
             }
         }
@@ -172,11 +175,36 @@ export default class LobbyView extends ui.LobbyUI {
 
     // 开始匹配
     private sendMatch(): void {
+        this.matchPanel.visible = true;
+        this.matchText.text = "匹配中";
+        Laya.timer.loop(1000, this, this.textAnimation); //定时重复执行
         var obj: Object = {
             "type": "cs_match",
             "uid": Laya.LocalStorage.getItem("uid"),
         };
         this.client.sendData(obj);
+    }
+
+    // 取消匹配
+    private sendCancelMatch(): void {
+        this.matchPanel.visible = true;
+        Laya.timer.clear(this, this.textAnimation); //删除
+        var obj: Object = {
+            "type": "cs_cancel_match",
+            "uid": Laya.LocalStorage.getItem("uid"),
+        };
+        this.client.sendData(obj);
+    }
+
+    private array = ["", "。", "。。", "。。。"];
+    private tick = 0;
+    textAnimation(): void {
+        this.tick++;
+        // console.log("进入循环：" + this.tick);
+        if(this.tick >= this.array.length) {
+            this.tick = 0;
+        }
+        this.matchText.text = "匹配中" + this.array[this.tick];
     }
 
     //#endregion
@@ -197,6 +225,7 @@ export default class LobbyView extends ui.LobbyUI {
 		var matchView: MatchView = new MatchView(); //加载模式/内嵌模式
         Laya.stage.addChild(matchView);
         Laya.stage.removeChild(this);
+        Laya.timer.clearAll(this); //删除所有大厅时钟
         // Laya.stage.offAll();
     }
 

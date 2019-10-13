@@ -2,11 +2,11 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
-    "selecteID":44,
+    "selecteID":47,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1280,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":720},
     "nodeParent":-1,
-    "maxID":45,
+    "maxID":51,
     "label":"Lobby",
     "isOpen":true,
     "isDirectory":true,
@@ -343,7 +343,65 @@
                                 ]
                         }]
                 }],
-            "$HIDDEN":false
+            "$HIDDEN":true
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,MatchPanel,matchPanel",
+            "props":{"zOrder":1,"y":360,"x":640,"width":1280,"var":"matchPanel","skin":"comp/img_blank.png","name":"MatchPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "nodeParent":2,
+            "label":"MatchPanel",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":45,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,Page",
+                    "props":{"y":360,"x":640,"width":320,"skin":"comp/img_blank.png","name":"Page","height":240,"anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":45,
+                    "label":"Page",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":46,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,MatchText,matchText",
+                            "props":{"y":80,"x":127,"var":"matchText","text":"匹配中","pivotY":0.5,"name":"MatchText","fontSize":22,"color":"#ffffff"},
+                            "nodeParent":46,
+                            "label":"MatchText",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":47,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "searchKey":"Button,CancelMatchBtn,cancelMatchBtn",
+                            "props":{"y":160,"width":160,"var":"cancelMatchBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"CancelMatchBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"取消匹配","height":40,"centerX":1,"anchorY":0.5,"anchorX":0.5},
+                            "nodeParent":46,
+                            "label":"CancelMatchBtn",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":49,
+                            "child":[
+                                ]
+                        }]
+                }],
+            "$HIDDEN":true
         }],
     "animations":[
         {

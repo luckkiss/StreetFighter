@@ -61,9 +61,9 @@ export default class PlayerController extends Laya.Script3D {
 
     // 碰撞校验都由客户端完成，服务器只做分发
     private handle(obj): void {
+        var isLocalPlayer: boolean = (obj.uid == this.uid);
         switch(obj.type) {
             case "sc_fist": { //出拳
-                var isLocalPlayer: boolean = (obj.uid == this.uid);
                 if(isLocalPlayer) {
                     this.onFistCallback(this.touchEvent);
                     console.log("本地出拳");
@@ -71,7 +71,6 @@ export default class PlayerController extends Laya.Script3D {
                 break;
             }
             case "sc_kick": { //踢脚
-                var isLocalPlayer: boolean = (obj.uid == this.uid);
                 if(isLocalPlayer) {
                     this.onKickCallback(this.touchEvent);
                     console.log("本地踢脚");
@@ -79,7 +78,6 @@ export default class PlayerController extends Laya.Script3D {
                 break;
             }
             case "sc_jump": { //跳跃
-                var isLocalPlayer: boolean = (obj.uid == this.uid);
                 if(isLocalPlayer) {
                     this.onJumpCallback(this.touchEvent);
                     console.log("本地跳跃");
@@ -87,7 +85,6 @@ export default class PlayerController extends Laya.Script3D {
                 break;
             }
             case "sc_defend": { //防御
-                var isLocalPlayer: boolean = (obj.uid == this.uid);
                 console.log("[防御]" + obj.uid + ":" + obj.state);
                 if(isLocalPlayer) {
                     if(obj.state == 1) {
@@ -101,7 +98,6 @@ export default class PlayerController extends Laya.Script3D {
                 break;
             }
             case "sc_move": { //移动
-                var isLocalPlayer: boolean = (obj.uid == this.uid);
                 if(isLocalPlayer) {
                     this._posz = obj.posz;
                     // console.log("本地移动：" + obj.posz);
