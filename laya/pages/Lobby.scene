@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":47,
+    "selectedBox":52,
+    "selecteID":57,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1280,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":720},
     "nodeParent":-1,
-    "maxID":51,
+    "maxID":64,
     "label":"Lobby",
     "isOpen":true,
     "isDirectory":true,
@@ -121,13 +121,14 @@
             "props":{"y":360,"x":640,"width":1280,"var":"registerPanel","skin":"comp/img_blank.png","name":"RegisterPanel","height":720,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"RegisterPanel",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":9,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
                     "props":{"y":363,"x":640,"width":640,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
@@ -155,10 +156,10 @@
                         },
                         {
                             "type":"TextInput",
-                            "searchKey":"TextInput,Nickname,nicknameInput",
-                            "props":{"y":80,"x":240,"width":160,"var":"nicknameInput","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"Nickname","height":30,"fontSize":22,"font":"Arial"},
+                            "searchKey":"TextInput,NicknameInput,nicknameInput",
+                            "props":{"y":80,"x":240,"width":160,"var":"nicknameInput","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"NicknameInput","height":30,"fontSize":22,"font":"Arial"},
                             "nodeParent":10,
-                            "label":"Nickname",
+                            "label":"NicknameInput",
                             "isOpen":false,
                             "isDirectory":true,
                             "isAniNode":true,
@@ -249,19 +250,177 @@
                         },
                         {
                             "type":"Button",
-                            "searchKey":"Button,Register,registerBtn",
-                            "props":{"y":280,"x":320,"width":160,"var":"registerBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"Register","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即注册","height":40,"anchorY":0.5,"anchorX":0.5},
+                            "searchKey":"Button,RegisterBtn,registerBtn",
+                            "props":{"y":280,"x":320,"width":160,"var":"registerBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"RegisterBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即注册","height":40,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":10,
-                            "label":"Register",
+                            "label":"RegisterBtn",
+                            "isOpen":true,
                             "isDirectory":false,
                             "isAniNode":true,
                             "hasChild":false,
                             "compId":13,
                             "child":[
                                 ]
+                        },
+                        {
+                            "type":"Label",
+                            "searchKey":"Label,GoLoginBtn,goLoginBtn",
+                            "props":{"width":160,"var":"goLoginBtn","valign":"middle","text":"去登陆","styleSkin":"comp/button.png","sizeGrid":"10,10,10,10","right":0,"name":"GoLoginBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"去登陆","height":40,"fontSize":22,"color":"#ffffff","bottom":0,"anchorY":1,"anchorX":1,"align":"center"},
+                            "nodeParent":10,
+                            "label":"GoLoginBtn",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":62,
+                            "child":[
+                                ]
                         }]
                 }],
             "$HIDDEN":true
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,LoginPanel,loginPanel",
+            "props":{"y":360,"x":640,"width":1280,"var":"loginPanel","skin":"comp/img_blank.png","name":"LoginPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "nodeParent":2,
+            "label":"LoginPanel",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":51,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,Page",
+                    "props":{"y":363,"x":640,"width":640,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":51,
+                    "label":"Page",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":52,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Text",
+                            "searchKey":"Text",
+                            "props":{"y":84,"x":150,"text":"用户名","fontSize":22,"color":"#ffffff","align":"center"},
+                            "nodeParent":52,
+                            "label":"Text",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":53,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"TextInput",
+                            "searchKey":"TextInput,LoginNickname,loginNickname",
+                            "props":{"y":80,"x":240,"width":160,"var":"loginNickname","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"LoginNickname","height":30,"fontSize":22,"font":"Arial"},
+                            "nodeParent":52,
+                            "label":"LoginNickname",
+                            "isOpen":false,
+                            "isDirectory":true,
+                            "isAniNode":true,
+                            "hasChild":true,
+                            "compId":54,
+                            "child":[
+                                {
+                                    "type":"Text",
+                                    "searchKey":"Text",
+                                    "props":{"y":35,"text":"2-12个字符","fontSize":12,"color":"#ffffff","align":"center"},
+                                    "nodeParent":54,
+                                    "label":"Text",
+                                    "isOpen":true,
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":55,
+                                    "child":[
+                                        ]
+                                }]
+                        },
+                        {
+                            "x":45,
+                            "type":"Text",
+                            "searchKey":"Text",
+                            "props":{"y":144,"x":172,"text":"密码","fontSize":22,"color":"#ffffff","align":"center"},
+                            "nodeParent":52,
+                            "label":"Text",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":56,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"TextInput",
+                            "searchKey":"TextInput,LoginPassword,loginPassword",
+                            "props":{"y":140,"x":240,"width":160,"var":"loginPassword","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"LoginPassword","height":30,"fontSize":22,"font":"Arial"},
+                            "nodeParent":52,
+                            "label":"LoginPassword",
+                            "isOpen":false,
+                            "isDirectory":true,
+                            "isAniNode":true,
+                            "hasChild":true,
+                            "compId":57,
+                            "child":[
+                                {
+                                    "type":"Text",
+                                    "searchKey":"Text",
+                                    "props":{"y":35,"x":0,"text":"6-16个字符","fontSize":12,"color":"#ffffff","align":"center"},
+                                    "nodeParent":57,
+                                    "label":"Text",
+                                    "isOpen":true,
+                                    "isDirectory":false,
+                                    "isAniNode":true,
+                                    "hasChild":false,
+                                    "compId":58,
+                                    "child":[
+                                        ]
+                                }]
+                        },
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "searchKey":"Button,LoginBtn,loginBtn",
+                            "props":{"y":280,"x":320,"width":160,"var":"loginBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"LoginBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即登录","height":40,"anchorY":0.5,"anchorX":0.5},
+                            "nodeParent":52,
+                            "label":"LoginBtn",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":61,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,GoRegisterBtn,goRegisterBtn",
+                            "props":{"width":160,"var":"goRegisterBtn","valign":"middle","text":"去注册","styleSkin":"comp/button.png","sizeGrid":"10,10,10,10","right":0,"name":"GoRegisterBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"去登陆","height":40,"fontSize":22,"color":"#ffffff","bottom":0,"anchorY":1,"anchorX":1,"align":"center"},
+                            "nodeParent":52,
+                            "label":"GoRegisterBtn",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":63,
+                            "child":[
+                                ]
+                        }]
+                }],
+            "$HIDDEN":false
         },
         {
             "x":15,
@@ -352,14 +511,13 @@
             "props":{"zOrder":1,"y":360,"x":640,"width":1280,"var":"matchPanel","skin":"comp/img_blank.png","name":"MatchPanel","height":720,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"MatchPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":45,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
                     "props":{"y":360,"x":640,"width":320,"skin":"comp/img_blank.png","name":"Page","height":240,"anchorY":0.5,"anchorX":0.5},
@@ -372,7 +530,6 @@
                     "compId":46,
                     "child":[
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,MatchText,matchText",
                             "props":{"y":80,"x":127,"var":"matchText","text":"匹配中","pivotY":0.5,"name":"MatchText","fontSize":22,"color":"#ffffff"},
@@ -387,7 +544,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,CancelMatchBtn,cancelMatchBtn",
                             "props":{"y":160,"width":160,"var":"cancelMatchBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"CancelMatchBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"取消匹配","height":40,"centerX":1,"anchorY":0.5,"anchorX":0.5},

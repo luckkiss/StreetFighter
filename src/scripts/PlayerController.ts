@@ -87,12 +87,12 @@ export default class PlayerController extends Laya.Script3D {
                 break;
             }
             case "sc_defend": { //防御
-                console.log("[防御]" + obj.uid + ":" + obj.state);
+                console.log("[防御]" + obj.uid + ":" + obj.defend);
                 if(isSelf) {
-                    if(obj.state == 1) {
+                    if(obj.defend == 1) {
                         this.onDefendCallback(this.touchEvent);
                         console.log("本地防御");
-                    } else if(obj.state == 0) {
+                    } else if(obj.defend == 0) {
                         this.handleMouseUp();
                         console.log("本地取消防御");
                     }
@@ -398,7 +398,7 @@ export default class PlayerController extends Laya.Script3D {
         var obj: Object = {
             "type": "cs_defend",
             "uid": this.clientUid,
-            "state": 1,
+            "defend": 1,
         };
         this.client.sendData(obj);
     }
@@ -430,7 +430,7 @@ export default class PlayerController extends Laya.Script3D {
             var obj: Object = {
                 "type": "cs_defend",
                 "uid": this.clientUid,
-                "state": 0,
+                "defend": 0,
             };
             this.client.sendData(obj);
         }

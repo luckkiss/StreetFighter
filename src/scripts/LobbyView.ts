@@ -30,17 +30,32 @@ export default class LobbyView extends ui.LobbyUI {
         
         // UI初始化
         this.awardPanel.visible = false;
+        this.loginPanel.visible = false;
         this.registerPanel.visible = false;
         this.matchPanel.visible = false;
-        this.initUI();
+        this.addUIListener();
         Laya.stage.addChild(LoadingView.getInstance());
     }
 
-    private initUI(): void {
+    private addUIListener(): void {
         // UI监听注册
         this.nicknameInput.on(Laya.Event.BLUR, this, ()=> {
             console.log("网络校验昵称 3");
         });
+        this.goLoginBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            this.loginPanel.visible = true;
+            this.registerPanel.visible = false;
+            this.loginNickname.text = "";
+            this.loginPassword.text = "";
+        });
+        this.goRegisterBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            this.loginPanel.visible = false;
+            this.registerPanel.visible = true;
+            this.nicknameInput.text = "";
+            this.passwordInput.text = "";
+            this.password2Input.text = "";
+        });
+        this.loginBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendLogin);
         this.registerBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendRegister);
         this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendSign);
         this.closeAwardBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
@@ -61,7 +76,7 @@ export default class LobbyView extends ui.LobbyUI {
             case "connected": { //建立连接
 		        Laya.stage.removeChild(LoadingView.getInstance());
                 if(this.uid != null) {
-                    this.sendLogin();
+                    this.sendAutoLogin();
                 }
                 break;
             }
@@ -79,6 +94,7 @@ export default class LobbyView extends ui.LobbyUI {
                 console.log("登陆成功，写入cookie：" + obj.uid + ": " + obj.pwd);
                 Laya.LocalStorage.setItem("uid", obj.uid);
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
+                this.loginPanel.visible = false;
                 this.registerPanel.visible = false;
                 this.nickNameText.text = obj.nickname;
                 UserData.getInstance().playerStatus = PlayerStatus.FREE;
@@ -151,10 +167,20 @@ export default class LobbyView extends ui.LobbyUI {
         this.client.sendData(obj);
     }
 
-    // 自动登录
+    // 手动登录
     private sendLogin(): void {
         var obj: Object = {
             "type": "cs_login",
+            "nickname": this.loginNickname.text,
+            "pwd": this.md5(this.loginPassword.text),
+        };
+        this.client.sendData(obj);
+    }
+
+    // 自动登录
+    private sendAutoLogin(): void {
+        var obj: Object = {
+            "type": "cs_autoLogin",
             "uid": Laya.LocalStorage.getItem("uid"),
             "pwd": Laya.LocalStorage.getItem("pwd")
         };
