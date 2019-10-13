@@ -395,6 +395,7 @@
                         else if (obj.defend == 0) {
                             this.handleMouseUp();
                             console.log("本地取消防御");
+                            this.currentMotion = 0;
                         }
                     }
                     break;
@@ -724,7 +725,6 @@
         }
         sendCancelDefend(e) {
             if (this.currentMotion == 9) {
-                this.currentMotion = 0;
                 this.touchEvent = e;
                 var obj = {
                     "type": "cs_defend",

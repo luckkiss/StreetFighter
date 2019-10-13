@@ -129,6 +129,7 @@ export default class PlayerController extends Laya.Script3D {
                     } else if(obj.defend == 0) {
                         this.handleMouseUp();
                         console.log("本地取消防御");
+                        this.currentMotion = 0;
                     }
                 }
                 break;
@@ -531,7 +532,6 @@ export default class PlayerController extends Laya.Script3D {
     // 取消防御9 | 500
     sendCancelDefend(e: Laya.Event): void {
         if(this.currentMotion == 9) {
-            this.currentMotion = 0;
             this.touchEvent = e;
             var obj: Object = {
                 "type": "cs_defend",
