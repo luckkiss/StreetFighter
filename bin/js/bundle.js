@@ -407,6 +407,9 @@
                 }
                 case "sc_hit": {
                     if (isDriven) {
+                        if (obj.broken == 1) {
+                            console.log(obj.uid, "被破防了");
+                        }
                         if (obj.damage == 0) {
                             console.log(obj.uid, "防御了，在他边上创建防御特效");
                         }
@@ -611,17 +614,18 @@
             Laya.timer.once(waitTime, this, this.playIdle);
             console.log("播完自动放待机：", waitTime);
         }
-        sendHit(amount) {
+        sendHit(amount, broken = 0) {
             if (this.isLocalPlayer == false)
                 return;
-            if (this.getOtherPlayer().currentMotion == 9) {
+            if (this.getOtherPlayer().currentMotion == 9 && broken == 0) {
                 amount = 0;
-                console.log("对方在防御，播放防御特效");
+                console.log("对方防御住了");
             }
             var obj = {
                 "type": "cs_hit",
                 "uid": this.clientUid,
                 "amount": amount,
+                "broken": broken,
             };
             this.client.sendData(obj);
         }
@@ -636,6 +640,7 @@
         onKickCallback(e) {
             this.animLastTime = 600;
             var waitTime = 0;
+            var hitAmount = 20;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 waitTime = this.animLastTime - (Laya.Browser.now() - this._clickTime);
                 console.error("点击过快，等待：", waitTime / 1000, "秒");
@@ -647,6 +652,13 @@
                 this.currentMotion = 8;
                 Laya.timer.once(0, this, this.playOther);
                 console.log("========> onKickHandler.踢腿");
+                if (this.distance > 2) {
+                    hitAmount = 0;
+                }
+                else {
+                    hitAmount = 20;
+                    this.sendHit(hitAmount, 1);
+                }
             }
             Laya.timer.once(waitTime, this, this.playIdle);
             console.log("播完自动放待机：", waitTime);
@@ -712,6 +724,7 @@
         }
         sendCancelDefend(e) {
             if (this.currentMotion == 9) {
+                this.currentMotion = 0;
                 this.touchEvent = e;
                 var obj = {
                     "type": "cs_defend",
