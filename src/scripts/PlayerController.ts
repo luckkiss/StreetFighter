@@ -117,7 +117,6 @@ export default class PlayerController extends Laya.Script3D {
         this.direction = (side == 0)? 1 : -1;
 
         this.gameObject = this.owner as Laya.Sprite3D;
-        // this.gameObject = MatchView.instance.playerA;
         this.animator = this.gameObject.getComponent(Laya.Animator);
         this.animator.play(this.motions[0]);
 
@@ -155,7 +154,7 @@ export default class PlayerController extends Laya.Script3D {
                 this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
             }
             
-            // if(this.isLocalPlayer == false) {
+            if(this.isLocalPlayer == false && (this.animLastTime <= Laya.Browser.now() - this._clickTime)) { //没有其他动画在播
                 var motion = 0;
                 if((this.posz > 0)) {
                     motion = 1;
@@ -168,7 +167,7 @@ export default class PlayerController extends Laya.Script3D {
                     this.currentMotion = motion;
                     this.animator.play(this.motions[this.currentMotion]); //前进/后退
                 }
-            // }
+            }
         });
     }
 
@@ -203,9 +202,10 @@ export default class PlayerController extends Laya.Script3D {
         // 检测到攻击动画，就覆盖移动动画，停止移动
         if(this.isLocalPlayer) {
             this.posz = JoystickView.instance.Horizontal * 0.02 * this.direction;
+            // 非本地的在FrameLoop()中处理
+            this.currentMotion = (this.posz > 0)? 1 : 2;
+            this.animator.play(this.motions[this.currentMotion]); //前进/后退
         }
-        // this.currentMotion = (this.posz > 0)? 1 : 2;
-        // this.animator.play(this.motions[this.currentMotion]); //前进/后退
     }
 
     mouseUp(e: Laya.Event): void {
@@ -368,9 +368,7 @@ export default class PlayerController extends Laya.Script3D {
             console.error("点击过快，等待：", waitTime / 1000, "秒");
             return;
         } else {
-            
             //不需要清理Idle延迟函数
-
             waitTime = this.animLastTime;
             this._clickTime = Laya.Browser.now();
             

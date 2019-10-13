@@ -116,17 +116,17 @@ export default class MainView extends ui.MatchUI {
                 var scriptB: PlayerController = this.playerB.getComponent(PlayerController);
                 if(this.uid == obj.user0.uid) {
                     console.log("我在左边");
-                    // scriptA.setUid(obj.user0.uid);
-                    // scriptB.setUid(obj.user1.uid);
                 } else if (this.uid == obj.user1.uid) {
                     console.log("我在右边");
-                    // scriptB.setUid(obj.user0.uid);
-                    // scriptA.setUid(obj.user1.uid);
                 }
                 scriptA.setUid(obj.user0.uid, 0);
                 scriptB.setUid(obj.user1.uid, 1);
                 break;
             }
         }
+    }
+
+    public updateHP(): void {
+        // this.hptext
     }
 }
