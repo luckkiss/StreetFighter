@@ -10,6 +10,8 @@ export default class WebSocketClient extends Laya.Script {
 	/*界面实例*/
     private static instance: WebSocketClient;
     
+    // "ws://127.0.0.1:3000/socket.io/?EIO=4&transport=websocket";
+    private url: string = "ws://192.168.1.101:3001";
     private socket: Laya.Socket;
     private byte: Laya.Byte;
 
@@ -27,8 +29,7 @@ export default class WebSocketClient extends Laya.Script {
     public reconnect(): void {
         if(this.socket == null)
             this.socket = new Laya.Socket();
-        var url: string = "ws://192.168.1.101:3001";
-        this.socket.connectByUrl(url);
+        this.socket.connectByUrl(this.url);
     }
 
     public initSocket(): void {
@@ -39,9 +40,7 @@ export default class WebSocketClient extends Laya.Script {
         //这里我们采用小端
         this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
         //建立连接
-        // var url: string = "ws://127.0.0.1:3000/socket.io/?EIO=4&transport=websocket";
-        var url: string = "ws://192.168.1.101:3001";
-        this.socket.connectByUrl(url);
+        this.socket.connectByUrl(this.url);
         this.socket.on(Laya.Event.OPEN, this, this.openHandler);
         this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
         this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
@@ -59,10 +58,10 @@ export default class WebSocketClient extends Laya.Script {
     private openHandler(event: any = null): void {
         //正确建立连接；
         console.log("正确建立连接；");
-        // var obj: Object = {
-        //     "type": "connected"
-        // };
-        // Laya.stage.event("nethandle", obj);
+        var obj: Object = {
+            "type": "connected"
+        };
+        Laya.stage.event("nethandle", obj);
     }
 
     private receiveHandler(msg: any = null): void {

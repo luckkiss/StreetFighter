@@ -3,7 +3,7 @@ import MatchView from "./MatchView";
 import TipsView from "./TipsView";
 import LoadingView from "./LoadingView";
 import WebSocketClient from "../WebSocketClient";
-import UserData from "../backup/UserData";
+import UserData, { PlayerStatus } from "../backup/UserData";
 // const crypto = require('crypto');
 
 export default class LobbyView extends ui.LobbyUI {
@@ -56,14 +56,17 @@ export default class LobbyView extends ui.LobbyUI {
 
     private handle(obj): void {
         switch(obj.type) {
-            case "sc_message": { //聊天消息（示例）
-                break;
-            }
-            case "sc_enter": { //建立连接
+            case "connected": { //建立连接
 		        Laya.stage.removeChild(LoadingView.getInstance());
                 if(this.uid != null) {
                     this.sendLogin();
                 }
+                break;
+            }
+            case "sc_enter": { //用户进出
+                break;
+            }
+            case "sc_message": { //聊天消息（示例）
                 break;
             }
             case "sc_register_failed": { //注册失败
@@ -76,11 +79,12 @@ export default class LobbyView extends ui.LobbyUI {
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
                 this.registerPanel.visible = false;
                 this.nickNameText.text = obj.nickname;
-                var playerStatus: PlayerStatus;
+                UserData.getInstance().playerStatus = PlayerStatus.FREE;
                 break;
             }
             case "sc_login_failed": { //登录失败
                 TipsView.getInstance().showText(1000, "登陆失败");
+                UserData.getInstance().playerStatus = PlayerStatus.DISCONNECT;
                 break;
             }
             case "sc_sign_success": { //签到成功
@@ -99,10 +103,12 @@ export default class LobbyView extends ui.LobbyUI {
             case "sc_match_success": { //匹配成功
                 console.log("匹配成功");
                 Laya.timer.once(1000, this, this.onEnterGame);
+                UserData.getInstance().playerStatus = PlayerStatus.GAME;
                 break;
             }
             case "sc_match_failed": { //匹配失败
                 TipsView.getInstance().showText(1000, "匹配失败");
+                UserData.getInstance().playerStatus = PlayerStatus.FREE;
                 break;
             }
         }

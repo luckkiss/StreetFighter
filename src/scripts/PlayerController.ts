@@ -45,7 +45,6 @@ export default class PlayerController extends Laya.Script3D {
         };
         this.client.sendData(obj);
         // this._posz = z;
-        // UserData.getInstance().playerStatus = PlayerStatus.FREE;
     }
 
     private client: WebSocketClient = null;

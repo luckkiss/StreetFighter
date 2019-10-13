@@ -282,6 +282,10 @@
         }
         openHandler(event = null) {
             console.log("正确建立连接；");
+            var obj = {
+                "type": "connected"
+            };
+            Laya.stage.event("nethandle", obj);
         }
         receiveHandler(msg = null) {
             var obj = JSON.parse(msg);
@@ -710,9 +714,9 @@
 
     class UserData {
         constructor() {
-            this.playerStatus = 0;
             this.uid = "";
             this.nickname = "";
+            this.playerStatus = PlayerStatus.FREE;
         }
         static getInstance() {
             if (this.instance == null) {
@@ -721,6 +725,13 @@
             return this.instance;
         }
     }
+    var PlayerStatus;
+    (function (PlayerStatus) {
+        PlayerStatus[PlayerStatus["DISCONNECT"] = -1] = "DISCONNECT";
+        PlayerStatus[PlayerStatus["FREE"] = 0] = "FREE";
+        PlayerStatus[PlayerStatus["WAIT"] = 1] = "WAIT";
+        PlayerStatus[PlayerStatus["GAME"] = 2] = "GAME";
+    })(PlayerStatus || (PlayerStatus = {}));
 
     class LobbyView extends ui.LobbyUI {
         constructor() {
@@ -757,14 +768,17 @@
         }
         handle(obj) {
             switch (obj.type) {
-                case "sc_message": {
-                    break;
-                }
-                case "sc_enter": {
+                case "connected": {
                     Laya.stage.removeChild(LoadingView.getInstance());
                     if (this.uid != null) {
                         this.sendLogin();
                     }
+                    break;
+                }
+                case "sc_enter": {
+                    break;
+                }
+                case "sc_message": {
                     break;
                 }
                 case "sc_register_failed": {
@@ -777,11 +791,12 @@
                     Laya.LocalStorage.setItem("pwd", obj.pwd);
                     this.registerPanel.visible = false;
                     this.nickNameText.text = obj.nickname;
-                    UserData.getInstance().playerStatus = PlayerStatus.Free;
+                    UserData.getInstance().playerStatus = PlayerStatus.FREE;
                     break;
                 }
                 case "sc_login_failed": {
                     TipsView.getInstance().showText(1000, "登陆失败");
+                    UserData.getInstance().playerStatus = PlayerStatus.DISCONNECT;
                     break;
                 }
                 case "sc_sign_success": {
@@ -801,10 +816,12 @@
                 case "sc_match_success": {
                     console.log("匹配成功");
                     Laya.timer.once(1000, this, this.onEnterGame);
+                    UserData.getInstance().playerStatus = PlayerStatus.GAME;
                     break;
                 }
                 case "sc_match_failed": {
                     TipsView.getInstance().showText(1000, "匹配失败");
+                    UserData.getInstance().playerStatus = PlayerStatus.FREE;
                     break;
                 }
             }

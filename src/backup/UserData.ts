@@ -13,7 +13,8 @@ export default class UserData {
     public playerStatus: PlayerStatus = PlayerStatus.FREE; // Depend on inlining
 }
 export enum PlayerStatus {
-    FREE	= 0,	//空闲状态
-    WAIT	= 1,	//等待匹配
-    GAME	= 2,	//游戏中
+    DISCONNECT	= -1,	//离线
+    FREE	    = 0,	//空闲状态
+    WAIT	    = 1,	//等待匹配
+    GAME	    = 2,	//游戏中
 }
