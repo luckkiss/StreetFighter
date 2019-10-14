@@ -6,7 +6,6 @@ import UserData, { PlayerStatus } from "../backup/UserData";
 
 /**控制角色运动 */
 // https://ldc.layabox.com/doc/?nav=zh-ts-4-1-1 //官方移动角色
-
 export default class PlayerController extends Laya.Script3D {
     public gameObject: Laya.Sprite3D;
     public animator: Laya.Animator;
