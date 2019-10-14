@@ -2,7 +2,7 @@
 	"version":"LAYAHIERARCHY:02",
 	"data":{
 		"type":"Sprite3D",
-		"instanceID":2,
+		"instanceID":3,
 		"props":{
 			"name":"RPG-Character",
 			"active":true,
@@ -35,10 +35,6 @@
 						"blendingMode":0,
 						"states":[
 							{
-								"name":"Unarmed-Attack-R1",
-								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Attack-R1-Unarmed-Attack-R1.lani"
-							},
-							{
 								"name":"Unarmed-Jump",
 								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Jump-Unarmed-Jump.lani"
 							},
@@ -63,20 +59,8 @@
 								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Idle-Unarmed-Idle.lani"
 							},
 							{
-								"name":"Unarmed-Attack-R3",
-								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Attack-R3-Unarmed-Attack-R3.lani"
-							},
-							{
-								"name":"Unarmed-Attack-R2",
-								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Attack-R2-Unarmed-Attack-R2.lani"
-							},
-							{
 								"name":"Unarmed-Attack-Kick-L1",
 								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Attack-Kick-L1-Unarmed-Attack-Kick-L1.lani"
-							},
-							{
-								"name":"Unarmed-Attack-Kick-R1",
-								"clipPath":"Assets/Scenes/Unarmed/RPG-Character@Unarmed-Attack-Kick-R1-Unarmed-Attack-Kick-R1.lani"
 							},
 							{
 								"name":"Unarmed-Death1",
@@ -112,7 +96,7 @@
 		"child":[
 			{
 				"type":"Sprite3D",
-				"instanceID":3,
+				"instanceID":4,
 				"props":{
 					"name":"Motion",
 					"active":true,
@@ -139,7 +123,7 @@
 				"child":[
 					{
 						"type":"Sprite3D",
-						"instanceID":4,
+						"instanceID":5,
 						"props":{
 							"name":"B_Pelvis",
 							"active":true,
@@ -166,7 +150,7 @@
 						"child":[
 							{
 								"type":"Sprite3D",
-								"instanceID":5,
+								"instanceID":6,
 								"props":{
 									"name":"B_L_Thigh",
 									"active":true,
@@ -193,7 +177,7 @@
 								"child":[
 									{
 										"type":"Sprite3D",
-										"instanceID":6,
+										"instanceID":7,
 										"props":{
 											"name":"B_L_Calf",
 											"active":true,
@@ -220,7 +204,7 @@
 										"child":[
 											{
 												"type":"Sprite3D",
-												"instanceID":7,
+												"instanceID":8,
 												"props":{
 													"name":"B_L_Foot",
 													"active":true,
@@ -247,7 +231,7 @@
 												"child":[
 													{
 														"type":"Sprite3D",
-														"instanceID":8,
+														"instanceID":9,
 														"props":{
 															"name":"B_L_Toe0",
 															"active":true,
@@ -281,7 +265,7 @@
 							},
 							{
 								"type":"Sprite3D",
-								"instanceID":9,
+								"instanceID":10,
 								"props":{
 									"name":"B_R_Thigh",
 									"active":true,
@@ -308,7 +292,7 @@
 								"child":[
 									{
 										"type":"Sprite3D",
-										"instanceID":10,
+										"instanceID":11,
 										"props":{
 											"name":"B_R_Calf",
 											"active":true,
@@ -335,7 +319,7 @@
 										"child":[
 											{
 												"type":"Sprite3D",
-												"instanceID":11,
+												"instanceID":12,
 												"props":{
 													"name":"B_R_Foot",
 													"active":true,
@@ -362,7 +346,7 @@
 												"child":[
 													{
 														"type":"Sprite3D",
-														"instanceID":12,
+														"instanceID":13,
 														"props":{
 															"name":"B_R_Toe0",
 															"active":true,
@@ -396,7 +380,7 @@
 							},
 							{
 								"type":"Sprite3D",
-								"instanceID":13,
+								"instanceID":14,
 								"props":{
 									"name":"B_Spine",
 									"active":true,
@@ -423,7 +407,7 @@
 								"child":[
 									{
 										"type":"Sprite3D",
-										"instanceID":14,
+										"instanceID":15,
 										"props":{
 											"name":"B_Spine1",
 											"active":true,
@@ -450,7 +434,7 @@
 										"child":[
 											{
 												"type":"Sprite3D",
-												"instanceID":15,
+												"instanceID":16,
 												"props":{
 													"name":"B_Spine2",
 													"active":true,
@@ -477,7 +461,7 @@
 												"child":[
 													{
 														"type":"Sprite3D",
-														"instanceID":16,
+														"instanceID":17,
 														"props":{
 															"name":"B_L_Clavicle",
 															"active":true,
@@ -504,7 +488,7 @@
 														"child":[
 															{
 																"type":"Sprite3D",
-																"instanceID":17,
+																"instanceID":18,
 																"props":{
 																	"name":"B_L_UpperArm",
 																	"active":true,
@@ -531,7 +515,7 @@
 																"child":[
 																	{
 																		"type":"Sprite3D",
-																		"instanceID":18,
+																		"instanceID":19,
 																		"props":{
 																			"name":"B_L_Forearm",
 																			"active":true,
@@ -558,7 +542,7 @@
 																		"child":[
 																			{
 																				"type":"Sprite3D",
-																				"instanceID":19,
+																				"instanceID":20,
 																				"props":{
 																					"name":"B_L_Hand",
 																					"active":true,
@@ -585,7 +569,7 @@
 																				"child":[
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":20,
+																						"instanceID":21,
 																						"props":{
 																							"name":"B_L_Finger0",
 																							"active":true,
@@ -612,7 +596,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":21,
+																								"instanceID":22,
 																								"props":{
 																									"name":"B_L_Finger01",
 																									"active":true,
@@ -639,7 +623,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":22,
+																										"instanceID":23,
 																										"props":{
 																											"name":"B_L_Finger02",
 																											"active":true,
@@ -671,7 +655,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":23,
+																						"instanceID":24,
 																						"props":{
 																							"name":"B_L_Finger1",
 																							"active":true,
@@ -698,7 +682,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":24,
+																								"instanceID":25,
 																								"props":{
 																									"name":"B_L_Finger11",
 																									"active":true,
@@ -725,7 +709,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":25,
+																										"instanceID":26,
 																										"props":{
 																											"name":"B_L_Finger12",
 																											"active":true,
@@ -757,7 +741,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":26,
+																						"instanceID":27,
 																						"props":{
 																							"name":"B_L_Finger2",
 																							"active":true,
@@ -784,7 +768,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":27,
+																								"instanceID":28,
 																								"props":{
 																									"name":"B_L_Finger21",
 																									"active":true,
@@ -811,7 +795,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":28,
+																										"instanceID":29,
 																										"props":{
 																											"name":"B_L_Finger22",
 																											"active":true,
@@ -843,7 +827,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":29,
+																						"instanceID":30,
 																						"props":{
 																							"name":"B_L_Finger3",
 																							"active":true,
@@ -870,7 +854,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":30,
+																								"instanceID":31,
 																								"props":{
 																									"name":"B_L_Finger31",
 																									"active":true,
@@ -897,7 +881,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":31,
+																										"instanceID":32,
 																										"props":{
 																											"name":"B_L_Finger32",
 																											"active":true,
@@ -929,7 +913,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":32,
+																						"instanceID":33,
 																						"props":{
 																							"name":"B_L_Finger4",
 																							"active":true,
@@ -956,7 +940,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":33,
+																								"instanceID":34,
 																								"props":{
 																									"name":"B_L_Finger41",
 																									"active":true,
@@ -983,7 +967,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":34,
+																										"instanceID":35,
 																										"props":{
 																											"name":"B_L_Finger42",
 																											"active":true,
@@ -1023,7 +1007,7 @@
 													},
 													{
 														"type":"Sprite3D",
-														"instanceID":35,
+														"instanceID":36,
 														"props":{
 															"name":"B_Neck",
 															"active":true,
@@ -1050,7 +1034,7 @@
 														"child":[
 															{
 																"type":"Sprite3D",
-																"instanceID":36,
+																"instanceID":37,
 																"props":{
 																	"name":"B_Head",
 																	"active":true,
@@ -1080,7 +1064,7 @@
 													},
 													{
 														"type":"Sprite3D",
-														"instanceID":37,
+														"instanceID":38,
 														"props":{
 															"name":"B_R_Clavicle",
 															"active":true,
@@ -1107,7 +1091,7 @@
 														"child":[
 															{
 																"type":"Sprite3D",
-																"instanceID":38,
+																"instanceID":39,
 																"props":{
 																	"name":"B_R_UpperArm",
 																	"active":true,
@@ -1134,7 +1118,7 @@
 																"child":[
 																	{
 																		"type":"Sprite3D",
-																		"instanceID":39,
+																		"instanceID":40,
 																		"props":{
 																			"name":"B_R_Forearm",
 																			"active":true,
@@ -1161,7 +1145,7 @@
 																		"child":[
 																			{
 																				"type":"Sprite3D",
-																				"instanceID":40,
+																				"instanceID":41,
 																				"props":{
 																					"name":"B_R_Hand",
 																					"active":true,
@@ -1188,7 +1172,7 @@
 																				"child":[
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":41,
+																						"instanceID":42,
 																						"props":{
 																							"name":"B_R_Finger0",
 																							"active":true,
@@ -1215,7 +1199,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":42,
+																								"instanceID":43,
 																								"props":{
 																									"name":"B_R_Finger01",
 																									"active":true,
@@ -1242,7 +1226,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":43,
+																										"instanceID":44,
 																										"props":{
 																											"name":"B_R_Finger02",
 																											"active":true,
@@ -1274,7 +1258,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":44,
+																						"instanceID":45,
 																						"props":{
 																							"name":"B_R_Finger1",
 																							"active":true,
@@ -1301,7 +1285,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":45,
+																								"instanceID":46,
 																								"props":{
 																									"name":"B_R_Finger11",
 																									"active":true,
@@ -1328,7 +1312,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":46,
+																										"instanceID":47,
 																										"props":{
 																											"name":"B_R_Finger12",
 																											"active":true,
@@ -1360,7 +1344,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":47,
+																						"instanceID":48,
 																						"props":{
 																							"name":"B_R_Finger2",
 																							"active":true,
@@ -1387,7 +1371,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":48,
+																								"instanceID":49,
 																								"props":{
 																									"name":"B_R_Finger21",
 																									"active":true,
@@ -1414,7 +1398,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":49,
+																										"instanceID":50,
 																										"props":{
 																											"name":"B_R_Finger22",
 																											"active":true,
@@ -1446,7 +1430,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":50,
+																						"instanceID":51,
 																						"props":{
 																							"name":"B_R_Finger3",
 																							"active":true,
@@ -1473,7 +1457,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":51,
+																								"instanceID":52,
 																								"props":{
 																									"name":"B_R_Finger31",
 																									"active":true,
@@ -1500,7 +1484,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":52,
+																										"instanceID":53,
 																										"props":{
 																											"name":"B_R_Finger32",
 																											"active":true,
@@ -1532,7 +1516,7 @@
 																					},
 																					{
 																						"type":"Sprite3D",
-																						"instanceID":53,
+																						"instanceID":54,
 																						"props":{
 																							"name":"B_R_Finger4",
 																							"active":true,
@@ -1559,7 +1543,7 @@
 																						"child":[
 																							{
 																								"type":"Sprite3D",
-																								"instanceID":54,
+																								"instanceID":55,
 																								"props":{
 																									"name":"B_R_Finger41",
 																									"active":true,
@@ -1586,7 +1570,7 @@
 																								"child":[
 																									{
 																										"type":"Sprite3D",
-																										"instanceID":55,
+																										"instanceID":56,
 																										"props":{
 																											"name":"B_R_Finger42",
 																											"active":true,
@@ -1636,7 +1620,7 @@
 			},
 			{
 				"type":"SkinnedMeshSprite3D",
-				"instanceID":56,
+				"instanceID":57,
 				"props":{
 					"name":"RPG-Character-Mesh",
 					"active":true,
@@ -1658,7 +1642,7 @@
 						1,
 						1
 					],
-					"rootBone":3,
+					"rootBone":4,
 					"boundBox":{
 						"min":[
 							-0.2636196,
@@ -1680,59 +1664,59 @@
 						"radius":1.605008
 					},
 					"bones":[
-						14,
 						15,
-						38,
-						17,
-						35,
+						16,
+						39,
+						18,
 						36,
+						37,
+						7,
 						6,
 						5,
+						14,
 						4,
-						13,
-						3,
-						7,
 						8,
-						18,
-						16,
-						19,
-						10,
 						9,
+						19,
+						17,
+						20,
 						11,
+						10,
 						12,
-						39,
-						37,
+						13,
 						40,
+						38,
 						41,
 						42,
 						43,
 						44,
-						47,
 						45,
-						23,
-						20,
-						26,
+						48,
+						46,
 						24,
-						22,
-						29,
-						30,
-						32,
-						33,
-						34,
 						21,
 						27,
 						25,
-						28,
+						23,
+						30,
 						31,
-						50,
+						33,
+						34,
+						35,
+						22,
+						28,
+						26,
+						29,
+						32,
 						51,
-						53,
+						52,
 						54,
 						55,
-						48,
-						46,
+						56,
 						49,
-						52
+						47,
+						50,
+						53
 					],
 					"materials":[
 						{

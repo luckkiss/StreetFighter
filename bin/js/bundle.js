@@ -750,7 +750,18 @@
             Laya.stage.on("nethandle", this, this.handle);
             this.joystick = new JoystickView();
             Laya.stage.addChild(this.joystick);
-            Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
+            {
+                this.scene3d = Laya.stage.addChild(new Laya.Scene3D());
+                this.scene3d.zOrder = -1;
+                var camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100)));
+                camera.transform.translate(new Laya.Vector3(6, 2, 0));
+                camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
+                var pointLight = this.scene3d.addChild(new Laya.PointLight());
+                pointLight.transform.position = new Laya.Vector3(1, 2, 0);
+                pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
+                pointLight.intensity = 2;
+                Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+            }
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 Laya.stage.removeChild(this.joystick);
                 Laya.stage.removeChild(this.scene3d);
@@ -766,6 +777,8 @@
             this.scene3d = sc;
             this.scene3d.zOrder = -1;
             Laya.stage.addChild(this.scene3d);
+            var cam = Laya.stage.getChildByName("Main Camera");
+            console.log("摄像机：" + cam.transform.position);
             Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
         onPlayerComplete(sp) {
@@ -1158,12 +1171,17 @@
     class Main {
         constructor() {
             if (Laya.Browser.onWeiXin) {
-                Laya.MiniAdpter.init();
-            }
-            if (window["Laya3D"])
+                console.log("微信小游戏");
                 Laya3D.init(GameConfig.width, GameConfig.height);
-            else
+            }
+            else if (window["Laya3D"]) {
+                console.log("Laya3D");
+                Laya3D.init(GameConfig.width, GameConfig.height);
+            }
+            else {
+                console.log("WebGL");
                 Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
+            }
             Laya["Physics"] && Laya["Physics"].enable();
             Laya["DebugPanel"] && Laya["DebugPanel"].enable();
             Laya.stage.scaleMode = GameConfig.scaleMode;

@@ -38,7 +38,35 @@ export default class MatchView extends ui.MatchUI {
 
         // 添加3D场景
         // https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1
-        Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
+        // Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
+        // /* 测试手动创建场景
+        {
+            //添加3D场景
+            this.scene3d = Laya.stage.addChild(new Laya.Scene3D()) as Laya.Scene3D;
+            this.scene3d.zOrder = -1;
+            //添加照相机
+            var camera: Laya.Camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100))) as Laya.Camera;
+            camera.transform.translate(new Laya.Vector3(6, 2, 0));
+			camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
+			// camera.transform.position = new Laya.Vector3(6, 2, 0);
+			// camera.transform.rotationEuler = new Laya.Vector3(3, 90, 0);
+            // //添加方向光
+            // var directionLight: Laya.DirectionLight = this.scene3d.addChild(new Laya.DirectionLight()) as Laya.DirectionLight;
+            // directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+            // directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+            //添加点光源
+            var pointLight: Laya.PointLight = this.scene3d.addChild(new Laya.PointLight()) as Laya.PointLight;
+			pointLight.transform.position = new Laya.Vector3(1, 2, 0);
+            pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
+            pointLight.intensity = 2;
+            // pointLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+			//加载精灵
+            Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+			// Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
+			// 	playerA = scene3d.addChild(sp) as Laya.Sprite3D;
+			// }));
+        }
+        // */
 
         this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             Laya.stage.removeChild(this.joystick);
@@ -56,6 +84,10 @@ export default class MatchView extends ui.MatchUI {
         this.scene3d = sc;
         this.scene3d.zOrder = -1;
         Laya.stage.addChild(this.scene3d);
+
+        var cam = Laya.stage.getChildByName("Main Camera") as Laya.Camera;
+        console.log("摄像机：" + cam.transform.position);
+
         // console.log("场景加载完成");
         //加载精灵
         Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));

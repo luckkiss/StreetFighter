@@ -7,11 +7,19 @@ class Main {
 	constructor() {
 		if(Laya.Browser.onWeiXin) {
 			//TS或JS版本初始化微信小游戏的适配
-			Laya.MiniAdpter.init();
+			console.log("微信小游戏");
+			// Laya.MiniAdpter.init();
+			Laya3D.init(GameConfig.width, GameConfig.height);
 		}
 		// 根据IDE设置初始化引擎
-		if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
-		else Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
+	 	else if (window["Laya3D"]) {
+			console.log("Laya3D");
+			Laya3D.init(GameConfig.width, GameConfig.height);
+		}
+		else {
+			console.log("WebGL");
+			Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
+		}
 		Laya["Physics"] && Laya["Physics"].enable();
 		Laya["DebugPanel"] && Laya["DebugPanel"].enable();
 		Laya.stage.scaleMode = GameConfig.scaleMode;
@@ -60,17 +68,49 @@ class Main {
 		{
 			var scene3d: Laya.Scene3D;
 			var playerA: Laya.Sprite3D;
-			Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, (sc: Laya.Scene3D)=> {
-				scene3d = sc;
-				scene3d.zOrder = -1;
-				Laya.stage.addChild(scene3d);
-				console.log("场景加载完成");
-				//加载精灵
-				Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
-					playerA = scene3d.addChild(sp) as Laya.Sprite3D;
-				}));
+			
+			// Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, (sc: Laya.Scene3D)=> {
+			// 	scene3d = sc;
+			// 	scene3d.zOrder = -1;
+			// 	Laya.stage.addChild(scene3d);
+			// 	console.log("场景加载完成");
+			// 	//加载摄像机
+			// 	// var cam = scene3d.getChildByName("Main Camera") as Laya.Camera;
+			// 	// console.log("摄像机1：", cam.transform.position);//(6,2,0)和unity中相反
+			// 	// console.log("摄像机2：", cam.transform.rotation);//(0.707,-0.019,0.707,0.019)
+			// 	// console.log("摄像机3：", cam.transform.rotationEuler);//(-3,90,0)
+			// 	//加载灯光
+			// 	// var light = scene3d.getChildByName("Point Light") as Laya.PointLight;
+			// 	// console.log("灯光1：", light.transform.position);//(1,2,0)
+			// 	// console.log("灯光2：", light.transform.rotation);//(-1,0,0,0)
+			// 	// console.log("灯光3：", light.transform.rotationEuler);//(0,0,0)
+			// 	//加载精灵
+			// 	Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
+			// 		playerA = scene3d.addChild(sp) as Laya.Sprite3D;
+			// 	}));
+			// }));
+			
+            //添加3D场景
+            scene3d = Laya.stage.addChild(new Laya.Scene3D()) as Laya.Scene3D;
+            //添加照相机
+            var camera: Laya.Camera = (scene3d.addChild(new Laya.Camera(0, 0.3, 1000))) as Laya.Camera;
+            camera.transform.translate(new Laya.Vector3(6, 2, 0));
+			camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
+			// camera.transform.position = new Laya.Vector3(6, 2, 0);
+			// camera.transform.rotationEuler = new Laya.Vector3(3, 90, 0);
+            //添加方向光
+            var pointLight: Laya.PointLight = scene3d.addChild(new Laya.PointLight()) as Laya.PointLight;
+            // pointLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+            // pointLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+			pointLight.transform.position = new Laya.Vector3(1, 2, 0);
+            pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
+            pointLight.intensity = 2;
+			//加载精灵
+			Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
+				playerA = scene3d.addChild(sp) as Laya.Sprite3D;
 			}));
-		}*/
+		}
+		*/
 	}
 }
 //激活启动类
