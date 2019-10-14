@@ -71,7 +71,7 @@
 				"type":"PointLight",
 				"instanceID":1,
 				"props":{
-					"name":"Directional Light",
+					"name":"Point Light",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -135,30 +135,7 @@
 						}
 					]
 				},
-				"components":[
-					{
-						"type":"PhysicsCollider",
-						"restitution":0,
-						"friction":0.5,
-						"rollingFriction":0,
-						"shapes":[
-							{
-								"type":"BoxColliderShape",
-								"center":[
-									0,
-									0,
-									0
-								],
-								"size":[
-									10,
-									2.220446E-16,
-									10
-								]
-							}
-						],
-						"isTrigger":false
-					}
-				],
+				"components":[],
 				"child":[]
 			}
 		]

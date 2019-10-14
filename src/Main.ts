@@ -5,16 +5,13 @@ import LoadingView from "./scripts/LoadingView";
 
 class Main {
 	constructor() {
-		// 根据IDE设置初始化引擎
 		if(Laya.Browser.onWeiXin) {
 			//TS或JS版本初始化微信小游戏的适配
 			Laya.MiniAdpter.init();
-			//初始化引擎
-			Laya.init(GameConfig.width, GameConfig.height);
-		} else {
-			if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
-			else Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
 		}
+		// 根据IDE设置初始化引擎
+		if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
+		else Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
 		Laya["Physics"] && Laya["Physics"].enable();
 		Laya["DebugPanel"] && Laya["DebugPanel"].enable();
 		Laya.stage.scaleMode = GameConfig.scaleMode;
@@ -54,12 +51,26 @@ class Main {
 		Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
 	}
 
-	public loadView: LoadView;
-
 	onLoaded(): void {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
-		this.loadView = new LoadView(); //加载模式/内嵌模式
-		Laya.stage.addChild(this.loadView);
+		var loadView = new LoadView(); //加载模式/内嵌模式
+		Laya.stage.addChild(loadView);
+
+		/* 测试代码
+		{
+			var scene3d: Laya.Scene3D;
+			var playerA: Laya.Sprite3D;
+			Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, (sc: Laya.Scene3D)=> {
+				scene3d = sc;
+				scene3d.zOrder = -1;
+				Laya.stage.addChild(scene3d);
+				console.log("场景加载完成");
+				//加载精灵
+				Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
+					playerA = scene3d.addChild(sp) as Laya.Sprite3D;
+				}));
+			}));
+		}*/
 	}
 }
 //激活启动类

@@ -748,7 +748,7 @@
             Laya.stage.on("nethandle", this, this.handle);
             this.joystick = new JoystickView();
             Laya.stage.addChild(this.joystick);
-            Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
+            Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 Laya.stage.removeChild(this.joystick);
                 Laya.stage.removeChild(this.scene3d);
@@ -764,7 +764,7 @@
             this.scene3d = sc;
             this.scene3d.zOrder = -1;
             Laya.stage.addChild(this.scene3d);
-            Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerComplete));
+            Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
         onPlayerComplete(sp) {
             var prefabA = Laya.Sprite3D.instantiate(sp);
@@ -1157,14 +1157,11 @@
         constructor() {
             if (Laya.Browser.onWeiXin) {
                 Laya.MiniAdpter.init();
-                Laya.init(GameConfig.width, GameConfig.height);
             }
-            else {
-                if (window["Laya3D"])
-                    Laya3D.init(GameConfig.width, GameConfig.height);
-                else
-                    Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
-            }
+            if (window["Laya3D"])
+                Laya3D.init(GameConfig.width, GameConfig.height);
+            else
+                Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
             Laya["Physics"] && Laya["Physics"].enable();
             Laya["DebugPanel"] && Laya["DebugPanel"].enable();
             Laya.stage.scaleMode = GameConfig.scaleMode;
@@ -1196,8 +1193,8 @@
         }
         onLoaded() {
             Laya.View.uiMap = Laya.Loader.getRes("ui.json");
-            this.loadView = new LoadView();
-            Laya.stage.addChild(this.loadView);
+            var loadView = new LoadView();
+            Laya.stage.addChild(loadView);
         }
     }
     new Main();

@@ -38,7 +38,7 @@ export default class MatchView extends ui.MatchUI {
 
         // 添加3D场景
         // https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1
-        Laya.Scene3D.load("res/scenes/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
+        Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
 
         this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             Laya.stage.removeChild(this.joystick);
@@ -58,7 +58,7 @@ export default class MatchView extends ui.MatchUI {
         Laya.stage.addChild(this.scene3d);
         // console.log("场景加载完成");
         //加载精灵
-        Laya.Sprite3D.load("res/prefabs/RPG-CharacterA.lh", Laya.Handler.create(this, this.onPlayerComplete));
+        Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
     }
 
     onPlayerComplete(sp: Laya.Sprite3D): void {
