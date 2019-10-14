@@ -4,8 +4,8 @@ import LogManager from "./scripts/LogManager"
 * 游戏初始化配置;
 */
 export default class GameConfig{
-    static width:number=1280;
-    static height:number=720;
+    static width:number=1136;
+    static height:number=640;
     static scaleMode:string="fixedheight";
     static screenMode:string="horizontal";
     static alignV:string="top";

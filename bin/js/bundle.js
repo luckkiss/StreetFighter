@@ -32,8 +32,8 @@
             reg("scripts/LogManager.ts", LogManager);
         }
     }
-    GameConfig.width = 1280;
-    GameConfig.height = 720;
+    GameConfig.width = 1136;
+    GameConfig.height = 640;
     GameConfig.scaleMode = "fixedheight";
     GameConfig.screenMode = "horizontal";
     GameConfig.alignV = "top";
