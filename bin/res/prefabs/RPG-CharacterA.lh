@@ -4,7 +4,7 @@
 		"type":"Sprite3D",
 		"instanceID":3,
 		"props":{
-			"name":"RPG-CharacterA",
+			"name":"RPG-Character",
 			"active":true,
 			"isStatic":false,
 			"layer":0,
@@ -26,26 +26,6 @@
 			]
 		},
 		"components":[
-			{
-				"type":"PhysicsCollider",
-				"restitution":0,
-				"friction":0.5,
-				"rollingFriction":0,
-				"shapes":[
-					{
-						"type":"CapsuleColliderShape",
-						"center":[
-							0,
-							1.25,
-							0
-						],
-						"radius":0.5,
-						"height":2.5,
-						"orientation":1
-					}
-				],
-				"isTrigger":false
-			},
 			{
 				"type":"Animator",
 				"layers":[
