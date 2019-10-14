@@ -23,11 +23,13 @@ export default class PlayerController extends Laya.Script3D {
         "Unarmed-Strafe-Backward",  //后退2
         "Unarmed-Jump",             //跳跃3
         "Unarmed-Land",             //着陆4
-        "Unarmed-Attack-L1",        //重拳5//距离2.5以内//伤害10
-        "Unarmed-Attack-L2",        //重拳6//距离2.5以内//伤害15
-        "Unarmed-Attack-L3",        //重拳7//距离2.5以内//伤害20
-        "Unarmed-Attack-Kick-L1",   //踢腿8//距离2.0以内//伤害20，破防
+        "Unarmed-Attack-L1",        //重拳5 //距离2.5以内//伤害10
+        "Unarmed-Attack-L2",        //重拳6 //距离2.5以内//伤害15
+        "Unarmed-Attack-L3",        //重拳7 //距离2.5以内//伤害20
+        "Unarmed-Attack-Kick-L1",   //踢腿8 //距离2.0以内//伤害20，破防
         "Unarmed-Defend",           //防御9
+        "Unarmed-GetHit-F1",        //受击10
+        "Unarmed-Death1",           //死亡11
     ];
     private currentMotion = 0;
     private animLastTime: number = 0; //动画时长

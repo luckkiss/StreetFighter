@@ -312,6 +312,8 @@
                 "Unarmed-Attack-L3",
                 "Unarmed-Attack-Kick-L1",
                 "Unarmed-Defend",
+                "Unarmed-GetHit-F1",
+                "Unarmed-Death1",
             ];
             this.currentMotion = 0;
             this.animLastTime = 0;
