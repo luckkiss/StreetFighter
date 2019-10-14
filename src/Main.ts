@@ -2,13 +2,19 @@ import GameConfig from "./GameConfig";
 import LoadView from "./scripts/LoadView";
 import JoystickView from "./scripts/JoystickView";
 import LoadingView from "./scripts/LoadingView";
-// import UIManager from "./UIManager";
 
 class Main {
 	constructor() {
-		//根据IDE设置初始化引擎		
-		if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
-		else Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
+		//根据IDE设置初始化引擎
+		if(Laya.Browser.onWeiXin) {
+			//TS或JS版本初始化微信小游戏的适配
+			Laya.MiniAdpter.init();
+			//初始化引擎
+			Laya.init(GameConfig.width, GameConfig.height);
+		} else {
+			if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
+			else Laya.init(GameConfig.width, GameConfig.height, Laya["WebGL"]);
+		}
 		Laya["Physics"] && Laya["Physics"].enable();
 		Laya["DebugPanel"] && Laya["DebugPanel"].enable();
 		Laya.stage.scaleMode = GameConfig.scaleMode;

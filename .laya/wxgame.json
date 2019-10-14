@@ -3,21 +3,21 @@
         "../bin/**/*.*"
     ],
     "openDataZone": false,
-    "compressJson": false,
+    "compressJson": true,
     "compressJsonFilter": [
         "$basePath/**/*.{json,atlas}"
     ],
     "compressJsonNoteList": [
         ""
     ],
-    "compressImage": false,
+    "compressImage": true,
     "compressImageFilter": [
         "$basePath/**/*.{png,jpg}"
     ],
     "compressImageNoteList": [
         ""
     ],
-    "compressJs": false,
+    "compressJs": true,
     "compressJsFilter": [
         "$basePath/**/*.js"
     ],
@@ -49,7 +49,11 @@
         ""
     ],
     "packfileFullValue": [
-        "$basePath/**/*.*"
+        "$basePath/**/*.*",
+        "$basePath/game.js",
+        "$basePath/game.json",
+        "$basePath/project.config.json",
+        "$basePath/weapp-adapter.js"
     ],
     "packfileTargetValue": "",
     "packfileNoteList": [
@@ -60,5 +64,5 @@
     "forceCompile": false,
     "onlyIndexJS": true,
     "projectType": "ts",
-    "pubTime": 1571028337290
+    "pubTime": 1571026985435
 }

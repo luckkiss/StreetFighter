@@ -1,10 +1,10 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":52,
-    "selecteID":57,
+    "selectedBox":2,
+    "selecteID":22,
     "searchKey":"Scene,Lobby,Lobby",
-    "props":{"width":1280,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":720},
+    "props":{"width":1136,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":640},
     "nodeParent":-1,
     "maxID":64,
     "label":"Lobby",
@@ -20,7 +20,7 @@
             "switchAble":true,
             "searchKey":"Widget",
             "removeAble":true,
-            "props":{"y":0,"x":0},
+            "props":{"top":0,"right":0,"left":0,"bottom":0},
             "nodeParent":2,
             "label":"Widget",
             "isDirectory":false,
@@ -34,60 +34,61 @@
             "x":15,
             "type":"Clip",
             "searchKey":"Clip,Background",
-            "props":{"y":361,"x":0,"skin":"ui/bg2.jpg","scaleY":1.26,"scaleX":1.26,"name":"Background","clipWidth":1015,"anchorY":0.5},
+            "props":{"y":0,"x":0,"skin":"ui/bg2.jpg","scaleY":1.12,"scaleX":1.12,"name":"Background","clipWidth":1015},
             "nodeParent":2,
             "label":"Background",
-            "isDirectory":false,
+            "isOpen":false,
+            "isDirectory":true,
             "isAniNode":true,
-            "hasChild":false,
+            "hasChild":true,
             "compId":44,
             "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Button",
-            "searchKey":"Button,Sign,signBtn",
-            "props":{"x":1191,"var":"signBtn","skin":"comp/button.png","name":"Sign","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"签到","centerY":-318,"anchorY":0.5,"anchorX":0.5},
-            "nodeParent":2,
-            "label":"Sign",
-            "isOpen":true,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":3,
-            "child":[
-                ]
-        },
-        {
-            "x":15,
-            "type":"Button",
-            "searchKey":"Button,Match,matchBtn",
-            "props":{"y":670,"x":1191,"var":"matchBtn","skin":"comp/button.png","name":"Match","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"匹配","anchorY":0.5,"anchorX":0.5},
-            "nodeParent":2,
-            "label":"Match",
-            "isOpen":true,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":4,
-            "child":[
-                ]
+                {
+                    "x":30,
+                    "type":"Button",
+                    "searchKey":"Button,Sign,signBtn",
+                    "props":{"width":100,"var":"signBtn","top":20,"skin":"comp/button.png","right":20,"name":"Sign","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"签到","anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":44,
+                    "label":"Sign",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":3,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Button",
+                    "searchKey":"Button,Match,matchBtn",
+                    "props":{"width":100,"var":"matchBtn","skin":"comp/button.png","right":20,"name":"Match","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"匹配","bottom":20,"anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":44,
+                    "label":"Match",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":4,
+                    "child":[
+                        ]
+                }]
         },
         {
             "x":15,
             "type":"Image",
             "searchKey":"Image,UserPanel",
-            "props":{"y":360,"x":640,"width":1280,"name":"UserPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "props":{"width":1136,"top":0,"name":"UserPanel","left":0,"height":640,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"UserPanel",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":22,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,HeadImg",
                     "props":{"y":20,"width":80,"skin":"comp/img_bg5.png","sizeGrid":"10,10,10,10","name":"HeadImg","left":20,"height":80},
@@ -118,20 +119,19 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,RegisterPanel,registerPanel",
-            "props":{"y":360,"x":640,"width":1280,"var":"registerPanel","skin":"comp/img_blank.png","name":"RegisterPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "props":{"y":320,"x":568,"width":1136,"var":"registerPanel","skin":"comp/img_blank.png","name":"RegisterPanel","height":640,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"RegisterPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":9,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
-                    "props":{"y":363,"x":640,"width":640,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":320,"x":568,"width":600,"skin":"comp/img_blank.png","name":"Page","height":320,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":9,
                     "label":"Page",
                     "isOpen":false,
@@ -143,7 +143,7 @@
                         {
                             "type":"Text",
                             "searchKey":"Text",
-                            "props":{"y":84,"x":150,"text":"用户名","fontSize":22,"color":"#ffffff","align":"center"},
+                            "props":{"y":64,"x":150,"text":"用户名","fontSize":22,"color":"#ffffff","align":"center"},
                             "nodeParent":10,
                             "label":"Text",
                             "isOpen":true,
@@ -157,7 +157,7 @@
                         {
                             "type":"TextInput",
                             "searchKey":"TextInput,NicknameInput,nicknameInput",
-                            "props":{"y":80,"x":240,"width":160,"var":"nicknameInput","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"NicknameInput","height":30,"fontSize":22,"font":"Arial"},
+                            "props":{"y":60,"x":240,"width":160,"var":"nicknameInput","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"NicknameInput","height":30,"fontSize":22,"font":"Arial"},
                             "nodeParent":10,
                             "label":"NicknameInput",
                             "isOpen":false,
@@ -184,7 +184,7 @@
                         {
                             "type":"Text",
                             "searchKey":"Text",
-                            "props":{"y":144,"x":172,"text":"密码","fontSize":22,"color":"#ffffff","align":"center"},
+                            "props":{"y":124,"x":172,"text":"密码","fontSize":22,"color":"#ffffff","align":"center"},
                             "nodeParent":10,
                             "label":"Text",
                             "isOpen":true,
@@ -198,7 +198,7 @@
                         {
                             "type":"TextInput",
                             "searchKey":"TextInput,Password,passwordInput",
-                            "props":{"y":140,"x":240,"width":160,"var":"passwordInput","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"Password","height":30,"fontSize":22,"font":"Arial"},
+                            "props":{"y":120,"x":240,"width":160,"var":"passwordInput","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"Password","height":30,"fontSize":22,"font":"Arial"},
                             "nodeParent":10,
                             "label":"Password",
                             "isOpen":false,
@@ -225,7 +225,7 @@
                         {
                             "type":"Text",
                             "searchKey":"Text",
-                            "props":{"y":204,"x":128,"text":"确认密码","fontSize":22,"color":"#ffffff","align":"center"},
+                            "props":{"y":184,"x":128,"text":"确认密码","fontSize":22,"color":"#ffffff","align":"center"},
                             "nodeParent":10,
                             "label":"Text",
                             "isDirectory":false,
@@ -238,7 +238,7 @@
                         {
                             "type":"TextInput",
                             "searchKey":"TextInput,Password2,password2Input",
-                            "props":{"y":200,"x":240,"width":160,"var":"password2Input","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"Password2","height":30,"fontSize":22,"font":"Arial"},
+                            "props":{"y":180,"x":240,"width":160,"var":"password2Input","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"Password2","height":30,"fontSize":22,"font":"Arial"},
                             "nodeParent":10,
                             "label":"Password2",
                             "isDirectory":false,
@@ -251,7 +251,7 @@
                         {
                             "type":"Button",
                             "searchKey":"Button,RegisterBtn,registerBtn",
-                            "props":{"y":280,"x":320,"width":160,"var":"registerBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"RegisterBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即注册","height":40,"anchorY":0.5,"anchorX":0.5},
+                            "props":{"x":320,"width":160,"var":"registerBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"RegisterBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即注册","height":40,"bottom":50,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":10,
                             "label":"RegisterBtn",
                             "isOpen":true,
@@ -283,30 +283,28 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,LoginPanel,loginPanel",
-            "props":{"y":360,"x":640,"width":1280,"var":"loginPanel","skin":"comp/img_blank.png","name":"LoginPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "props":{"y":320,"x":568,"width":1136,"var":"loginPanel","skin":"comp/img_blank.png","name":"LoginPanel","height":640,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"LoginPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":51,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
-                    "props":{"y":363,"x":640,"width":640,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":320,"x":568,"width":600,"skin":"comp/img_blank.png","name":"Page","height":320,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":51,
                     "label":"Page",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":52,
                     "child":[
                         {
-                            "x":45,
                             "type":"Text",
                             "searchKey":"Text",
                             "props":{"y":84,"x":150,"text":"用户名","fontSize":22,"color":"#ffffff","align":"center"},
@@ -321,7 +319,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"TextInput",
                             "searchKey":"TextInput,LoginNickname,loginNickname",
                             "props":{"y":80,"x":240,"width":160,"var":"loginNickname","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"LoginNickname","height":30,"fontSize":22,"font":"Arial"},
@@ -349,7 +346,6 @@
                                 }]
                         },
                         {
-                            "x":45,
                             "type":"Text",
                             "searchKey":"Text",
                             "props":{"y":144,"x":172,"text":"密码","fontSize":22,"color":"#ffffff","align":"center"},
@@ -364,7 +360,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"TextInput",
                             "searchKey":"TextInput,LoginPassword,loginPassword",
                             "props":{"y":140,"x":240,"width":160,"var":"loginPassword","valign":"middle","skin":"comp/textinput.png","sizeGrid":"10,10,10,10","name":"LoginPassword","height":30,"fontSize":22,"font":"Arial"},
@@ -392,10 +387,9 @@
                                 }]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,LoginBtn,loginBtn",
-                            "props":{"y":280,"x":320,"width":160,"var":"loginBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"LoginBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即登录","height":40,"anchorY":0.5,"anchorX":0.5},
+                            "props":{"x":320,"width":160,"var":"loginBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"LoginBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即登录","height":40,"bottom":50,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":52,
                             "label":"LoginBtn",
                             "isDirectory":false,
@@ -406,7 +400,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,GoRegisterBtn,goRegisterBtn",
                             "props":{"width":160,"var":"goRegisterBtn","valign":"middle","text":"去注册","styleSkin":"comp/button.png","sizeGrid":"10,10,10,10","right":0,"name":"GoRegisterBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"去登陆","height":40,"fontSize":22,"color":"#ffffff","bottom":0,"anchorY":1,"anchorX":1,"align":"center"},
@@ -420,28 +413,29 @@
                                 ]
                         }]
                 }],
-            "$HIDDEN":false
+            "$HIDDEN":true
         },
         {
             "x":15,
             "type":"Image",
             "searchKey":"Image,AwardPanel,awardPanel",
-            "props":{"zOrder":1,"y":360,"x":640,"width":1280,"var":"awardPanel","skin":"comp/img_blank.png","name":"AwardPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "props":{"zOrder":1,"y":320,"x":568,"width":1136,"var":"awardPanel","skin":"comp/img_blank.png","name":"AwardPanel","height":640,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"AwardPanel",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":25,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
-                    "props":{"y":360,"x":640,"width":320,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":320,"x":568,"width":320,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":25,
                     "label":"Page",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
@@ -508,7 +502,7 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,MatchPanel,matchPanel",
-            "props":{"zOrder":1,"y":360,"x":640,"width":1280,"var":"matchPanel","skin":"comp/img_blank.png","name":"MatchPanel","height":720,"anchorY":0.5,"anchorX":0.5},
+            "props":{"zOrder":1,"y":320,"x":568,"width":1136,"var":"matchPanel","skin":"comp/img_blank.png","name":"MatchPanel","height":640,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"MatchPanel",
             "isOpen":false,
@@ -520,7 +514,7 @@
                 {
                     "type":"Image",
                     "searchKey":"Image,Page",
-                    "props":{"y":360,"x":640,"width":320,"skin":"comp/img_blank.png","name":"Page","height":240,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":320,"x":568,"width":320,"skin":"comp/img_blank.png","name":"Page","height":240,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":45,
                     "label":"Page",
                     "isOpen":true,

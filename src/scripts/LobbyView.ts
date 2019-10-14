@@ -103,6 +103,7 @@ export default class LobbyView extends ui.LobbyUI {
             case "sc_login_failed": { //登录失败
                 TipsView.getInstance().showText(1000, "登陆失败");
                 UserData.getInstance().playerStatus = PlayerStatus.DISCONNECT;
+                this.loginPanel.visible = true;
                 break;
             }
             case "sc_sign_success": { //签到成功

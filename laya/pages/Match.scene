@@ -1,10 +1,10 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":88,
-    "selecteID":89,
+    "selectedBox":2,
+    "selecteID":73,
     "searchKey":"Scene,Main,Main",
-    "props":{"width":1280,"var":"Main","sceneColor":"#000000","name":"Main","height":720},
+    "props":{"width":1136,"var":"Main","sceneColor":"#000000","name":"Main","height":640},
     "nodeParent":-1,
     "maxID":90,
     "label":"Main",
@@ -147,7 +147,7 @@
             "x":15,
             "type":"Button",
             "searchKey":"Button,Exit,exitBtn",
-            "props":{"var":"exitBtn","skin":"comp/button.png","name":"Exit","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"离开"},
+            "props":{"width":70,"var":"exitBtn","top":10,"skin":"comp/button.png","name":"Exit","left":10,"labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"离开"},
             "nodeParent":2,
             "label":"Exit",
             "isOpen":true,
@@ -162,7 +162,7 @@
             "x":15,
             "type":"Label",
             "searchKey":"Label,VS",
-            "props":{"y":65,"x":640,"text":"VS","styleSkin":"comp/button.png","name":"VS","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"离开","fontSize":44,"color":"#ffcc00","anchorY":0.5,"anchorX":0.5},
+            "props":{"top":45,"text":"VS","styleSkin":"comp/button.png","name":"VS","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"离开","fontSize":44,"color":"#ffcc00","centerX":0.5,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"VS",
             "isDirectory":false,
@@ -176,10 +176,10 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,LeftHPPanel,leftHPPanel",
-            "props":{"y":360,"x":640,"width":1280,"var":"leftHPPanel","name":"LeftHPPanel","height":720,"clipWidth":10,"anchorY":0.5,"anchorX":0.5},
+            "props":{"width":1136,"var":"leftHPPanel","top":0,"name":"LeftHPPanel","height":640,"clipWidth":10,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"LeftHPPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
@@ -207,14 +207,13 @@
                     "props":{"y":16,"width":310,"top":50,"skin":"comp/progress$bar.png","sizeGrid":"10,10,10,10","name":"Background","left":200,"height":32,"clipWidth":10,"anchorY":0.5},
                     "nodeParent":79,
                     "label":"Background",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":77,
                     "child":[
                         {
-                            "x":45,
                             "type":"Clip",
                             "searchKey":"Clip,FillImage0,fillImage0",
                             "props":{"y":16,"x":5,"width":300,"var":"fillImage0","skin":"comp/progress.png","sizeGrid":"10,10,10,10","name":"FillImage0","height":24,"anchorY":0.5,"anchorX":0},
@@ -230,7 +229,6 @@
                             "$HIDDEN":false
                         },
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,HP0Text,hp0Text",
                             "props":{"var":"hp0Text","text":"300","styleSkin":"comp/label.png","name":"HP0Text","fontSize":24,"color":"#ff0400","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5,"align":"right"},
@@ -249,17 +247,16 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,RightHPPanel,rightHPPanel",
-            "props":{"y":360,"x":640,"width":1280,"var":"rightHPPanel","name":"RightHPPanel","height":720,"clipWidth":10,"anchorY":0.5,"anchorX":0.5},
+            "props":{"width":1136,"var":"rightHPPanel","top":0,"name":"RightHPPanel","height":640,"clipWidth":10,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"RightHPPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":85,
             "child":[
                 {
-                    "x":30,
                     "type":"Label",
                     "searchKey":"Label,Name1Text,name1Text",
                     "props":{"var":"name1Text","top":30,"text":"Player1","styleSkin":"comp/label.png","right":200,"name":"Name1Text","fontSize":22,"color":"#ffffff","anchorY":0.5,"anchorX":1},
@@ -274,7 +271,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Background",
                     "props":{"width":310,"top":50,"skin":"comp/progress$bar.png","sizeGrid":"10,10,10,10","right":200,"name":"Background","height":32,"clipWidth":10,"anchorY":0.5,"anchorX":1},
@@ -287,7 +283,6 @@
                     "compId":88,
                     "child":[
                         {
-                            "x":45,
                             "type":"Clip",
                             "searchKey":"Clip,FillImage1,fillImage1",
                             "props":{"y":16,"x":305,"width":300,"var":"fillImage1","skin":"comp/progress.png","sizeGrid":"10,10,10,10","name":"FillImage1","height":24,"anchorY":0.5,"anchorX":1},
@@ -303,7 +298,6 @@
                             "$HIDDEN":false
                         },
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,HP1Text,hp1Text",
                             "props":{"var":"hp1Text","text":"300","styleSkin":"comp/label.png","name":"HP1Text","fontSize":24,"color":"#ff0400","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
