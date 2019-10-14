@@ -15,10 +15,11 @@ export default class LobbyView extends ui.LobbyUI {
     constructor() {
         super();
         LobbyView.instance = this;
-        this.createView(Laya.View.uiMap["Lobby"]);
+        // this.createView(Laya.View.uiMap["Lobby"]);
 
-        Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
-        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
+        // Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
+        // Laya.SoundManager.playMusic("http://192.168.1.101/web/res/audios/bgm.mp3", 0);
+        // Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
         console.log("播放音乐.");
         
         // 添加WebSocket
@@ -88,6 +89,7 @@ export default class LobbyView extends ui.LobbyUI {
             }
             case "sc_register_failed": { //注册失败
                 TipsView.getInstance().showText(1000, "注册失败，昵称被占用");
+		        Laya.stage.removeChild(LoadingView.getInstance());
                 break;
             }
             case "sc_login_success": { //登录成功
@@ -104,6 +106,7 @@ export default class LobbyView extends ui.LobbyUI {
                 TipsView.getInstance().showText(1000, "登陆失败");
                 UserData.getInstance().playerStatus = PlayerStatus.DISCONNECT;
                 this.loginPanel.visible = true;
+		        Laya.stage.removeChild(LoadingView.getInstance());
                 break;
             }
             case "sc_sign_success": { //签到成功

@@ -4,9 +4,9 @@ import JoystickView from "./JoystickView";
 import LobbyView from "./LobbyView";
 import WebSocketClient from "../WebSocketClient";
 
-export default class MainView extends ui.MatchUI {
+export default class MatchView extends ui.MatchUI {
 	/*界面实例*/
-    public static instance: MainView;
+    public static instance: MatchView;
     
     /*2D界面*/
     private joystick: JoystickView;
@@ -25,8 +25,8 @@ export default class MainView extends ui.MatchUI {
 
     constructor() {
         super();
-        this.createView(Laya.View.uiMap["Main"]);
-        MainView.instance = this;
+        // this.createView(Laya.View.uiMap["Match"]);
+        MatchView.instance = this;
 
         this.uid = Laya.LocalStorage.getItem("uid");
         Laya.stage.offAll("nethandle");

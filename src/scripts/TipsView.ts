@@ -17,6 +17,7 @@ export default class TipsView extends ui.TipsUI {
 
     constructor() {
         super();
+		// this.createView(Laya.View.uiMap["Tips"]);
     }
     
     public showText(timer: number, msg: string): void {

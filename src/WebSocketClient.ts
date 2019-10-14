@@ -1,4 +1,4 @@
-import GameConfig from "./GameConfig";
+// import GameConfig from "./GameConfig";
 
 export default class WebSocketClient extends Laya.Script {
     public static getInstance(): WebSocketClient {

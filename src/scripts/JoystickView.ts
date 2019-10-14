@@ -16,7 +16,7 @@ export default class JoystickView extends ui.JoystickUI {
 
     constructor() {
         super();
-		this.createView(Laya.View.uiMap["Joystick"]);
+		// this.createView(Laya.View.uiMap["Joystick"]);
         JoystickView.instance = this;
 
         this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);

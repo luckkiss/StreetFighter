@@ -5,7 +5,7 @@ import LoadingView from "./scripts/LoadingView";
 
 class Main {
 	constructor() {
-		//根据IDE设置初始化引擎
+		// 根据IDE设置初始化引擎
 		if(Laya.Browser.onWeiXin) {
 			//TS或JS版本初始化微信小游戏的适配
 			Laya.MiniAdpter.init();

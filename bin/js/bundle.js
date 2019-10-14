@@ -1,35 +1,10 @@
 (function () {
     'use strict';
 
-    class LogManager extends Laya.Script {
-        constructor() {
-            super();
-            LogManager.instance = this;
-        }
-        onAwake() {
-            this.content = "";
-            this.logText = this.logNode;
-            Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
-        }
-        vConsole(msg) {
-            if (msg == this.lastmsg) ;
-            else {
-                this.content += "\n" + msg;
-            }
-            this.logText.text = this.content;
-            this.lastmsg = msg;
-        }
-        resetConsole() {
-            this.content = "";
-            this.logText.text = this.content;
-        }
-    }
-
     class GameConfig {
         constructor() { }
         static init() {
             var reg = Laya.ClassUtils.regClass;
-            reg("scripts/LogManager.ts", LogManager);
         }
     }
     GameConfig.width = 1136;
@@ -121,6 +96,30 @@
         REG("ui.TipsUI", TipsUI);
     })(ui || (ui = {}));
 
+    class LogManager extends Laya.Script {
+        constructor() {
+            super();
+            LogManager.instance = this;
+        }
+        onAwake() {
+            this.content = "";
+            this.logText = this.logNode;
+            Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
+        }
+        vConsole(msg) {
+            if (msg == this.lastmsg) ;
+            else {
+                this.content += "\n" + msg;
+            }
+            this.logText.text = this.content;
+            this.lastmsg = msg;
+        }
+        resetConsole() {
+            this.content = "";
+            this.logText.text = this.content;
+        }
+    }
+
     class JoystickView extends ui.JoystickUI {
         constructor() {
             super();
@@ -132,7 +131,6 @@
             this.myIndex = -1;
             this.lastX = 0;
             this.lastY = 0;
-            this.createView(Laya.View.uiMap["Joystick"]);
             JoystickView.instance = this;
             this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
@@ -351,14 +349,14 @@
             this.client.sendData(obj);
         }
         checkDistance() {
-            this.distance = MainView.instance.checkDistance();
+            this.distance = MatchView.instance.checkDistance();
         }
         getOtherPlayer() {
-            if (this == MainView.instance.scriptA) {
-                return MainView.instance.scriptB;
+            if (this == MatchView.instance.scriptA) {
+                return MatchView.instance.scriptB;
             }
-            else if (this == MainView.instance.scriptB) {
-                return MainView.instance.scriptA;
+            else if (this == MatchView.instance.scriptB) {
+                return MatchView.instance.scriptA;
             }
             return null;
         }
@@ -416,7 +414,7 @@
                         }
                         else if (obj.damage > 0) {
                             console.log(obj.uid + "受伤了(-" + obj.damage + ")，让他播放挨打硬直");
-                            MainView.instance.updateHP(this, obj.damage);
+                            MatchView.instance.updateHP(this, obj.damage);
                         }
                     }
                 }
@@ -425,7 +423,7 @@
         setUid(modelid, side) {
             console.log("设置uid：" + modelid);
             this.modelUid = modelid;
-            this.clientUid = MainView.instance.uid;
+            this.clientUid = MatchView.instance.uid;
             this.isLocalPlayer = (this.modelUid == this.clientUid);
             this.direction = (side == 0) ? 1 : -1;
             this.gameObject = this.owner;
@@ -742,14 +740,13 @@
         }
     }
 
-    class MainView extends ui.MatchUI {
+    class MatchView extends ui.MatchUI {
         constructor() {
             super();
             this.hpA = 300;
             this.hpB = 300;
             this.uid = "";
-            this.createView(Laya.View.uiMap["Main"]);
-            MainView.instance = this;
+            MatchView.instance = this;
             this.uid = Laya.LocalStorage.getItem("uid");
             Laya.stage.offAll("nethandle");
             Laya.stage.on("nethandle", this, this.handle);
@@ -924,9 +921,6 @@
             this.array = ["", "。", "。。", "。。。"];
             this.tick = 0;
             LobbyView.instance = this;
-            this.createView(Laya.View.uiMap["Lobby"]);
-            Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
-            Laya.SoundManager.autoStopMusic = true;
             console.log("播放音乐.");
             this.client = WebSocketClient.getInstance();
             this.client.initSocket();
@@ -985,6 +979,7 @@
                 }
                 case "sc_register_failed": {
                     TipsView.getInstance().showText(1000, "注册失败，昵称被占用");
+                    Laya.stage.removeChild(LoadingView.getInstance());
                     break;
                 }
                 case "sc_login_success": {
@@ -1001,6 +996,7 @@
                     TipsView.getInstance().showText(1000, "登陆失败");
                     UserData.getInstance().playerStatus = PlayerStatus.DISCONNECT;
                     this.loginPanel.visible = true;
+                    Laya.stage.removeChild(LoadingView.getInstance());
                     break;
                 }
                 case "sc_sign_success": {
@@ -1114,7 +1110,7 @@
         onSign() { }
         onMatch() { }
         onEnterGame() {
-            var matchView = new MainView();
+            var matchView = new MatchView();
             Laya.stage.addChild(matchView);
             Laya.stage.removeChild(this);
             Laya.timer.clearAll(this);
@@ -1142,7 +1138,6 @@
             var res = [
                 { url: "res/atlas/ui.atlas", type: Laya.Loader.ATLAS },
                 { url: "res/atlas/ui.png", type: Laya.Loader.IMAGE },
-                { url: "res/audios/bgm.mp3", type: Laya.Loader.SOUND },
             ];
             Laya.loader.load(res, null, Laya.Handler.create(this, this.onProgress, null, false));
         }
@@ -1155,6 +1150,7 @@
             }
         }
         onComplete() {
+            console.log("加载完成，进入大厅");
             var lobbyView = new LobbyView();
             Laya.stage.addChild(lobbyView);
             Laya.stage.removeChild(this);
