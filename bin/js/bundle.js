@@ -1,10 +1,35 @@
 (function () {
     'use strict';
 
+    class LogManager extends Laya.Script {
+        constructor() {
+            super();
+            LogManager.instance = this;
+        }
+        onAwake() {
+            this.content = "";
+            this.logText = this.logNode;
+            Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
+        }
+        vConsole(msg) {
+            if (msg == this.lastmsg) ;
+            else {
+                this.content += "\n" + msg;
+            }
+            this.logText.text = this.content;
+            this.lastmsg = msg;
+        }
+        resetConsole() {
+            this.content = "";
+            this.logText.text = this.content;
+        }
+    }
+
     class GameConfig {
         constructor() { }
         static init() {
             var reg = Laya.ClassUtils.regClass;
+            reg("scripts/LogManager.ts", LogManager);
         }
     }
     GameConfig.width = 1136;
@@ -81,7 +106,7 @@
                 this.createView(MatchUI.uiView);
             }
         }
-        MatchUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Main", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Text", "props": { "x": 100, "presetID": 1, "y": 0, "width": 1080, "text": "log", "name": "Console", "isPresetRoot": true, "height": 720, "fontSize": 16, "color": "#ff0400", "runtime": "laya.display.Text" }, "compId": 71 }] }, { "type": "Image", "props": { "width": 240, "skin": "ui/joystickBg.png", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Image", "props": { "y": 50, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Jump", "labelSize": 30, "label": "跳跃", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Image", "props": { "y": 120, "x": 50, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Defend", "labelSize": 30, "label": "防御", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Image", "props": { "y": 120, "x": 190, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Kick", "labelSize": 30, "label": "踢腿", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Image", "props": { "y": 190, "x": 120, "width": 100, "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "Fist", "labelSize": 30, "label": "重拳", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Button", "props": { "width": 70, "var": "exitBtn", "top": 10, "skin": "comp/button.png", "name": "Exit", "left": 10, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开" }, "compId": 73 }, { "type": "Label", "props": { "top": 45, "text": "VS", "styleSkin": "comp/button.png", "name": "VS", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开", "fontSize": 44, "color": "#ffcc00", "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 84 }, { "type": "Image", "props": { "width": 1136, "var": "leftHPPanel", "top": 0, "name": "LeftHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 79, "child": [{ "type": "Label", "props": { "y": 40, "x": 200, "var": "name0Text", "text": "Player0", "styleSkin": "comp/label.png", "name": "Name0Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 0 }, "compId": 82 }, { "type": "Image", "props": { "y": 16, "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "name": "Background", "left": 200, "height": 32, "clipWidth": 10, "anchorY": 0.5 }, "compId": 77, "child": [{ "type": "Clip", "props": { "y": 16, "x": 5, "width": 300, "var": "fillImage0", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage0", "height": 24, "anchorY": 0.5, "anchorX": 0 }, "compId": 78 }, { "type": "Label", "props": { "var": "hp0Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP0Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "align": "right" }, "compId": 83 }] }] }, { "type": "Image", "props": { "width": 1136, "var": "rightHPPanel", "top": 0, "name": "RightHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 85, "child": [{ "type": "Label", "props": { "var": "name1Text", "top": 30, "text": "Player1", "styleSkin": "comp/label.png", "right": 200, "name": "Name1Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 1 }, "compId": 86 }, { "type": "Image", "props": { "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "right": 200, "name": "Background", "height": 32, "clipWidth": 10, "anchorY": 0.5, "anchorX": 1 }, "compId": 88, "child": [{ "type": "Clip", "props": { "y": 16, "x": 305, "width": 300, "var": "fillImage1", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage1", "height": 24, "anchorY": 0.5, "anchorX": 1 }, "compId": 89 }, { "type": "Label", "props": { "var": "hp1Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP1Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 87 }] }] }], "loadList": ["prefab/Console.prefab", "ui/joystickBg.png", "ui/joystickPoint.png", "comp/button.png", "comp/label.png", "comp/progress$bar.png", "comp/progress.png"], "loadList3D": [] };
+        MatchUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Main", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Label", "props": { "y": 320, "x": 568, "width": 936, "text": "log", "name": "Console", "height": 640, "fontSize": 16, "color": "#ff0400", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 71 }] }, { "type": "Image", "props": { "width": 240, "var": "gamePad", "skin": "ui/joystickBg.png", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Image", "props": { "y": 50, "x": 120, "width": 100, "var": "jumpBtn", "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "JumpBtn", "labelSize": 30, "label": "跳跃", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Image", "props": { "y": 120, "x": 50, "width": 100, "var": "defendBtn", "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "DefendBtn", "labelSize": 30, "label": "防御", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Image", "props": { "y": 120, "x": 190, "width": 100, "var": "kickBtn", "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "KickBtn", "labelSize": 30, "label": "踢腿", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Image", "props": { "y": 190, "x": 120, "width": 100, "var": "fistBtn", "stateNum": 3, "skin": "ui/joystickPoint.png", "name": "FistBtn", "labelSize": 30, "label": "重拳", "height": 100, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Button", "props": { "width": 70, "var": "exitBtn", "top": 10, "skin": "comp/button.png", "name": "Exit", "left": 10, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开" }, "compId": 73 }, { "type": "Label", "props": { "top": 45, "text": "VS", "styleSkin": "comp/button.png", "name": "VS", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开", "fontSize": 44, "color": "#ffcc00", "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 84 }, { "type": "Image", "props": { "width": 1136, "var": "leftHPPanel", "top": 0, "name": "LeftHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 79, "child": [{ "type": "Label", "props": { "y": 40, "x": 200, "var": "name0Text", "text": "Player0", "styleSkin": "comp/label.png", "name": "Name0Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 0 }, "compId": 82 }, { "type": "Image", "props": { "y": 16, "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "name": "Background", "left": 200, "height": 32, "clipWidth": 10, "anchorY": 0.5 }, "compId": 77, "child": [{ "type": "Clip", "props": { "y": 16, "x": 5, "width": 300, "var": "fillImage0", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage0", "height": 24, "anchorY": 0.5, "anchorX": 0 }, "compId": 78 }, { "type": "Label", "props": { "var": "hp0Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP0Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "align": "right" }, "compId": 83 }] }] }, { "type": "Image", "props": { "width": 1136, "var": "rightHPPanel", "top": 0, "name": "RightHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 85, "child": [{ "type": "Label", "props": { "var": "name1Text", "top": 30, "text": "Player1", "styleSkin": "comp/label.png", "right": 200, "name": "Name1Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 1 }, "compId": 86 }, { "type": "Image", "props": { "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "right": 200, "name": "Background", "height": 32, "clipWidth": 10, "anchorY": 0.5, "anchorX": 1 }, "compId": 88, "child": [{ "type": "Clip", "props": { "y": 16, "x": 305, "width": 300, "var": "fillImage1", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage1", "height": 24, "anchorY": 0.5, "anchorX": 1 }, "compId": 89 }, { "type": "Label", "props": { "var": "hp1Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP1Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 87 }] }] }], "loadList": ["ui/joystickBg.png", "ui/joystickPoint.png", "comp/button.png", "comp/label.png", "comp/progress$bar.png", "comp/progress.png"], "loadList3D": [] };
         ui.MatchUI = MatchUI;
         REG("ui.MatchUI", MatchUI);
         class TipsUI extends Laya.Scene {
@@ -95,30 +120,6 @@
         ui.TipsUI = TipsUI;
         REG("ui.TipsUI", TipsUI);
     })(ui || (ui = {}));
-
-    class LogManager extends Laya.Script {
-        constructor() {
-            super();
-            LogManager.instance = this;
-        }
-        onAwake() {
-            this.content = "";
-            this.logText = this.logNode;
-            Laya.stage.on(Laya.Event.DOUBLE_CLICK, this, this.resetConsole);
-        }
-        vConsole(msg) {
-            if (msg == this.lastmsg) ;
-            else {
-                this.content += "\n" + msg;
-            }
-            this.logText.text = this.content;
-            this.lastmsg = msg;
-        }
-        resetConsole() {
-            this.content = "";
-            this.logText.text = this.content;
-        }
-    }
 
     class JoystickView extends ui.JoystickUI {
         constructor() {
@@ -435,15 +436,10 @@
             this.posz = 0;
             this._clickTime = 0;
             if (this.isLocalPlayer) {
-                var gamePad = LogManager.instance.gamePad;
-                this.fistBtn = gamePad.getChildByName("Fist");
-                this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
-                this.kickBtn = gamePad.getChildByName("Kick");
-                this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
-                this.jumpBtn = gamePad.getChildByName("Jump");
-                this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
-                this.defendBtn = gamePad.getChildByName("Defend");
-                this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
+                MatchView.instance.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
+                MatchView.instance.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
+                MatchView.instance.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
+                MatchView.instance.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
                 Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
                 if (this.isLocalPlayer) {
                     JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);

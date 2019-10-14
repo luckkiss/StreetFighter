@@ -12,10 +12,10 @@ export default class PlayerController extends Laya.Script3D {
 
     private myIndex: number = -1; //控制摇杆的手指
     private _clickTime: number; //限制点击次数
-    private fistBtn: Laya.Image;
-    private kickBtn: Laya.Image;
-    private jumpBtn: Laya.Image;
-    private defendBtn: Laya.Image;
+    // private fistBtn: Laya.Image;
+    // private kickBtn: Laya.Image;
+    // private jumpBtn: Laya.Image;
+    // private defendBtn: Laya.Image;
     
     private motions: Array<string> = [
         "Unarmed-Idle",             //待机0
@@ -177,15 +177,15 @@ export default class PlayerController extends Laya.Script3D {
 
         this._clickTime = 0;
         if(this.isLocalPlayer) {
-            var gamePad: Laya.Node = LogManager.instance.gamePad;
-            this.fistBtn = gamePad.getChildByName("Fist") as Laya.Image;
-            this.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
-            this.kickBtn = gamePad.getChildByName("Kick") as Laya.Image;
-            this.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
-            this.jumpBtn = gamePad.getChildByName("Jump") as Laya.Image;
-            this.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
-            this.defendBtn = gamePad.getChildByName("Defend") as Laya.Image;
-            this.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
+            // var gamePad: Laya.Node = LogManager.instance.gamePad;
+            // this.fistBtn = gamePad.getChildByName("Fist") as Laya.Image;
+            MatchView.instance.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
+            // this.kickBtn = gamePad.getChildByName("Kick") as Laya.Image;
+            MatchView.instance.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
+            // this.jumpBtn = gamePad.getChildByName("Jump") as Laya.Image;
+            MatchView.instance.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
+            // this.defendBtn = gamePad.getChildByName("Defend") as Laya.Image;
+            MatchView.instance.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
             // 全局
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
             if(this.isLocalPlayer) {
