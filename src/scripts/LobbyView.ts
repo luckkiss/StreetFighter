@@ -62,6 +62,9 @@ export default class LobbyView extends ui.LobbyUI {
         this.closeAwardBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             this.awardPanel.visible = false;
         });
+        this.doubleAwardBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            TipsView.getInstance().showText(2000, "UV不足1000，敬请支持");
+        });
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
         this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
         

@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":2,
-    "selecteID":22,
+    "selectedBox":26,
+    "selecteID":35,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1136,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":640},
     "nodeParent":-1,
@@ -44,7 +44,6 @@
             "compId":44,
             "child":[
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,Sign,signBtn",
                     "props":{"width":100,"var":"signBtn","top":20,"skin":"comp/button.png","right":20,"name":"Sign","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"签到","anchorY":0.5,"anchorX":0.5},
@@ -59,7 +58,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,Match,matchBtn",
                     "props":{"width":100,"var":"matchBtn","skin":"comp/button.png","right":20,"name":"Match","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"匹配","bottom":20,"anchorY":0.5,"anchorX":0.5},
@@ -435,13 +433,14 @@
                     "props":{"y":320,"x":568,"width":320,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":25,
                     "label":"Page",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":26,
                     "child":[
                         {
+                            "x":45,
                             "type":"Text",
                             "searchKey":"Text",
                             "props":{"y":40,"x":116,"text":"恭喜获得","pivotX":0.5,"fontSize":22,"color":"#ffffff","align":"center"},
@@ -456,6 +455,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,AwardImg",
                             "props":{"y":100,"x":110,"width":100,"skin":"comp/img_bg4.png","sizeGrid":"10,10,10,10","name":"AwardImg","height":100},
@@ -469,11 +469,12 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Button",
-                            "searchKey":"Button,Register",
-                            "props":{"y":260,"width":160,"skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"Register","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"领取双倍","height":40,"centerX":1,"anchorY":0.5,"anchorX":0.5},
+                            "searchKey":"Button,DoubleAwardBtn,doubleAwardBtn",
+                            "props":{"y":260,"width":160,"var":"doubleAwardBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"DoubleAwardBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"领取双倍","height":40,"centerX":1,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":26,
-                            "label":"Register",
+                            "label":"DoubleAwardBtn",
                             "isDirectory":false,
                             "isAniNode":true,
                             "hasChild":false,
@@ -482,6 +483,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,CloseAward,closeAwardBtn",
                             "props":{"y":313,"x":160,"var":"closeAwardBtn","text":"直接关闭","name":"CloseAward","fontSize":14,"color":"#ffffff","centerX":1,"bottom":40,"anchorY":0.5,"anchorX":0.5,"align":"center"},
