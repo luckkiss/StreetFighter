@@ -10,7 +10,7 @@
 	"compileType": "game",
 	"libVersion": "game",
 	"appid": "wx838c74f50f826e02",
-	"projectname": "layaWXTest",
+	"projectname": "budokai",
 	"condition": {
 		"search": {
 			"current": -1,

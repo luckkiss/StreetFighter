@@ -1,8 +1,8 @@
-import {ui} from "./ui/layaMaxUI";
-import GameConfig from "./GameConfig";
-import LoadView from "./scripts/LoadView";
-import LobbyView from "./scripts/LobbyView";
-import MatchView from "./scripts/MatchView";
+import {ui} from "../ui/layaMaxUI";
+import GameConfig from "../GameConfig";
+import LoadView from "../scripts/LoadView";
+import LobbyView from "../scripts/LobbyView";
+import MatchView from "../scripts/MatchView";
 
 export default class UIManager {
     //ui列表

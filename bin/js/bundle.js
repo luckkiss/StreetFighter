@@ -41,7 +41,7 @@
     GameConfig.startScene = "Load.scene";
     GameConfig.sceneRoot = "";
     GameConfig.debug = false;
-    GameConfig.stat = false;
+    GameConfig.stat = true;
     GameConfig.physicsDebug = false;
     GameConfig.exportSceneToJson = true;
     GameConfig.init();
@@ -120,6 +120,80 @@
         ui.TipsUI = TipsUI;
         REG("ui.TipsUI", TipsUI);
     })(ui || (ui = {}));
+
+    class WebSocketClient extends Laya.Script {
+        constructor() {
+            super();
+            this.url = "ws://192.168.1.101:3001";
+        }
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new WebSocketClient();
+            }
+            return this.instance;
+        }
+        get isConnected() {
+            if (this.socket != null && this.socket.connected) {
+                return true;
+            }
+            return false;
+        }
+        reconnect() {
+            if (this.socket == null)
+                this.socket = new Laya.Socket();
+            this.socket.connectByUrl(this.url);
+        }
+        initSocket() {
+            this.byte = new Laya.Byte();
+            this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
+            this.socket = new Laya.Socket();
+            this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
+            this.socket.connectByUrl(this.url);
+            this.socket.on(Laya.Event.OPEN, this, this.openHandler);
+            this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
+            this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
+            this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
+        }
+        sendData(obj) {
+            if (!this.socket.connected) {
+                console.error("已经断开连接.");
+                return;
+            }
+            this.socket.send(JSON.stringify(obj));
+        }
+        openHandler(event = null) {
+            console.log("正确建立连接；");
+            var obj = {
+                "type": "connected"
+            };
+            Laya.stage.event("nethandle", obj);
+        }
+        receiveHandler(msg = null) {
+            var obj = JSON.parse(msg);
+            Laya.stage.event("nethandle", obj);
+        }
+        closeHandler(e = null) {
+            console.log("关闭事件");
+        }
+        errorHandler(e = null) {
+            console.log("连接出错");
+        }
+    }
+
+    class LoadingView extends ui.LoadingUI {
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new LoadingView();
+            }
+            return this.instance;
+        }
+        constructor() {
+            super();
+            Laya.timer.frameLoop(1, this, () => {
+                this.loadingImage.rotation += 5;
+            });
+        }
+    }
 
     class JoystickView extends ui.JoystickUI {
         constructor() {
@@ -235,65 +309,6 @@
             let dy = centerY - mouseY;
             let distance = Math.sqrt(dx * dx + dy * dy);
             return distance;
-        }
-    }
-
-    class WebSocketClient extends Laya.Script {
-        constructor() {
-            super();
-            this.url = "ws://192.168.1.101:3001";
-        }
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new WebSocketClient();
-            }
-            return this.instance;
-        }
-        get isConnected() {
-            if (this.socket != null && this.socket.connected) {
-                return true;
-            }
-            return false;
-        }
-        reconnect() {
-            if (this.socket == null)
-                this.socket = new Laya.Socket();
-            this.socket.connectByUrl(this.url);
-        }
-        initSocket() {
-            this.byte = new Laya.Byte();
-            this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
-            this.socket = new Laya.Socket();
-            this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
-            this.socket.connectByUrl(this.url);
-            this.socket.on(Laya.Event.OPEN, this, this.openHandler);
-            this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
-            this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
-            this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
-        }
-        sendData(obj) {
-            if (!this.socket.connected) {
-                console.error("已经断开连接.");
-                return;
-            }
-            this.socket.send(JSON.stringify(obj));
-        }
-        openHandler(event = null) {
-            console.log("正确建立连接；");
-            var obj = {
-                "type": "connected"
-            };
-            Laya.stage.event("nethandle", obj);
-        }
-        receiveHandler(msg = null) {
-            var obj = JSON.parse(msg);
-            Laya.stage.event("nethandle", obj);
-        }
-        closeHandler(e = null) {
-            console.log("关闭事件");
-        }
-        errorHandler(e = null) {
-            console.log("连接出错");
         }
     }
 
@@ -760,7 +775,7 @@
                 pointLight.transform.position = new Laya.Vector3(1, 2, 0);
                 pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
                 pointLight.intensity = 2;
-                Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+                Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
             }
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 Laya.stage.removeChild(this.joystick);
@@ -779,7 +794,7 @@
             Laya.stage.addChild(this.scene3d);
             var cam = Laya.stage.getChildByName("Main Camera");
             console.log("摄像机：" + cam.transform.position);
-            Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+            Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
         onPlayerComplete(sp) {
             var prefabA = Laya.Sprite3D.instantiate(sp);
@@ -851,11 +866,19 @@
         }
         updateHP(player, damage) {
             if (player == this.scriptA) {
+                if (this.hpA <= damage) {
+                    console.log("玩家A已死亡");
+                    return;
+                }
                 this.hpA -= damage;
                 this.hp0Text.text = this.hpA.toString();
                 this.fillImage0.width = this.hpA;
             }
             else if (player == this.scriptB) {
+                if (this.hpB <= damage) {
+                    console.log("玩家B已死亡");
+                    return;
+                }
                 this.hpB -= damage;
                 this.hp1Text.text = this.hpB.toString();
                 this.fillImage1.width = this.hpB;
@@ -888,21 +911,6 @@
         }
     }
 
-    class LoadingView extends ui.LoadingUI {
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new LoadingView();
-            }
-            return this.instance;
-        }
-        constructor() {
-            super();
-            Laya.timer.frameLoop(1, this, () => {
-                this.loadingImage.rotation += 5;
-            });
-        }
-    }
-
     class UserData {
         constructor() {
             this.uid = "";
@@ -932,6 +940,8 @@
             this.array = ["", "。", "。。", "。。。"];
             this.tick = 0;
             LobbyView.instance = this;
+            Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
+            Laya.SoundManager.autoStopMusic = true;
             console.log("播放音乐.");
             this.client = WebSocketClient.getInstance();
             this.client.initSocket();
@@ -1140,7 +1150,6 @@
         }
         constructor() {
             super();
-            this.createView(Laya.View.uiMap["Load"]);
             this.progressBar.value = 0;
             this.progressLabel.text = "0%";
             Laya.timer.once(1000, this, this.onProLoaded);
@@ -1149,6 +1158,7 @@
             var res = [
                 { url: "res/atlas/ui.atlas", type: Laya.Loader.ATLAS },
                 { url: "res/atlas/ui.png", type: Laya.Loader.IMAGE },
+                { url: "remote/audios/bgm.mp3", type: Laya.Loader.SOUND },
             ];
             Laya.loader.load(res, null, Laya.Handler.create(this, this.onProgress, null, false));
         }
@@ -1171,10 +1181,22 @@
     class Main {
         constructor() {
             if (Laya.Browser.onWeiXin) {
-                console.log("微信小游戏");
-                Laya3D.init(GameConfig.width, GameConfig.height);
+                console.log("微信浏览器");
+                Laya.MiniAdpter.init();
+                Laya.URL.basePath = "http://192.168.1.101/remote/";
+                Laya["MiniAdpter"].nativefiles = [
+                    "wxlocal",
+                    "ui.json",
+                    "res/atlas/comp.atlas",
+                    "res/atlas/comp.png",
+                    "res/atlas/ui.atlas",
+                    "res/atlas/ui.png",
+                ];
             }
-            else if (window["Laya3D"]) {
+            else {
+                console.log("普通浏览器");
+            }
+            if (window["Laya3D"]) {
                 console.log("Laya3D");
                 Laya3D.init(GameConfig.width, GameConfig.height);
             }
@@ -1206,8 +1228,6 @@
                 { url: "ui.json", type: Laya.Loader.JSON },
                 { url: "res/atlas/comp.atlas", type: Laya.Loader.ATLAS },
                 { url: "res/atlas/comp.png", type: Laya.Loader.IMAGE },
-                { url: "res/atlas/ui.atlas", type: Laya.Loader.ATLAS },
-                { url: "res/atlas/ui.png", type: Laya.Loader.IMAGE },
             ];
             Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
         }

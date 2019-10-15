@@ -13,7 +13,7 @@ export default class LoadView extends ui.LoadUI {
 	
     constructor() {
 		super();
-		this.createView(Laya.View.uiMap["Load"]);
+		// this.createView(Laya.View.uiMap["Load"]);
 		this.progressBar.value = 0;
 		this.progressLabel.text = "0%";
 		Laya.timer.once(1000, this, this.onProLoaded);
@@ -23,11 +23,9 @@ export default class LoadView extends ui.LoadUI {
 
     public onProLoaded(): void {
         var res: Array<any> = [
-			// {url:"res/atlas/comp.atlas",  type:Laya.Loader.ATLAS},
-			// {url:"res/atlas/comp.png",  type:Laya.Loader.IMAGE},
 			{url:"res/atlas/ui.atlas",  type:Laya.Loader.ATLAS},
 			{url:"res/atlas/ui.png",  type:Laya.Loader.IMAGE},
-			// {url:"res/audios/bgm.mp3",  type:Laya.Loader.SOUND}, //太大，通过网络加载
+			{url:"remote/audios/bgm.mp3",  type:Laya.Loader.SOUND}, //太大，通过网络加载
         ];
 		// Handler第4个参数为true，根据加载文件个数获取加载进度
 		Laya.loader.load(res, null, Laya.Handler.create(this, this.onProgress, null, false));

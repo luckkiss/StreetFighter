@@ -1,8 +1,8 @@
 import {ui} from "../ui/layaMaxUI";
+import WebSocketClient from "../WebSocketClient";
+import LoadingView from "./LoadingView";
 import MatchView from "./MatchView";
 import TipsView from "./TipsView";
-import LoadingView from "./LoadingView";
-import WebSocketClient from "../WebSocketClient";
 import UserData, { PlayerStatus } from "../backup/UserData";
 // const crypto = require('crypto');
 
@@ -17,9 +17,9 @@ export default class LobbyView extends ui.LobbyUI {
         LobbyView.instance = this;
         // this.createView(Laya.View.uiMap["Lobby"]);
 
-        // Laya.SoundManager.playMusic("res/audios/bgm.mp3", 0);
         // Laya.SoundManager.playMusic("http://192.168.1.101/web/res/audios/bgm.mp3", 0);
-        // Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
+        Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
+        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
         console.log("播放音乐.");
         
         // 添加WebSocket

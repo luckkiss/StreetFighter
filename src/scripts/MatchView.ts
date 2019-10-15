@@ -1,8 +1,8 @@
 import {ui} from "../ui/layaMaxUI";
+import WebSocketClient from "../WebSocketClient";
 import PlayerController from "./PlayerController";
 import JoystickView from "./JoystickView";
 import LobbyView from "./LobbyView";
-import WebSocketClient from "../WebSocketClient";
 
 export default class MatchView extends ui.MatchUI {
 	/*界面实例*/
@@ -38,7 +38,7 @@ export default class MatchView extends ui.MatchUI {
 
         // 添加3D场景
         // https://ldc2.layabox.com/doc/?nav=zh-ts-4-3-1
-        // Laya.Scene3D.load("res/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
+        // Laya.Scene3D.load("remote/unity3d/Empty.ls", Laya.Handler.create(this, this.onScene3DComplete));
         // /* 测试手动创建场景
         {
             //添加3D场景
@@ -59,12 +59,8 @@ export default class MatchView extends ui.MatchUI {
 			pointLight.transform.position = new Laya.Vector3(1, 2, 0);
             pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
             pointLight.intensity = 2;
-            // pointLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
 			//加载精灵
-            Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
-			// Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
-			// 	playerA = scene3d.addChild(sp) as Laya.Sprite3D;
-			// }));
+            Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
         // */
 
@@ -90,7 +86,7 @@ export default class MatchView extends ui.MatchUI {
 
         // console.log("场景加载完成");
         //加载精灵
-        Laya.Sprite3D.load("res/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+        Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
     }
 
     onPlayerComplete(sp: Laya.Sprite3D): void {
@@ -177,10 +173,18 @@ export default class MatchView extends ui.MatchUI {
 
     public updateHP(player: PlayerController, damage: number): void {
         if(player == this.scriptA) {
+            if(this.hpA <= damage) {
+                console.log("玩家A已死亡");
+                return;
+            }
             this.hpA -= damage;
             this.hp0Text.text = this.hpA.toString();
             this.fillImage0.width = this.hpA;
         } else if (player == this.scriptB) {
+            if(this.hpB <= damage) {
+                console.log("玩家B已死亡");
+                return;
+            }
             this.hpB -= damage;
             this.hp1Text.text = this.hpB.toString();
             this.fillImage1.width = this.hpB;
