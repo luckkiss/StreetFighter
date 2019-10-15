@@ -5,24 +5,6 @@ import LoadingView from "./scripts/LoadingView";
 
 class Main {
 	constructor() {
-		//TS或JS版本初始化微信小游戏的适配
-		if(Laya.Browser.onWeiXin) {
-			console.log("微信浏览器");
-			Laya.MiniAdpter.init();
-			// 远程动态资源，及本地白名单
-			Laya.URL.basePath = "http://192.168.1.101/remote/"; //设置这句，所有资源路径默认都走远程
-			Laya["MiniAdpter"].nativefiles = [ //通过白名单，让部分资源走本地
-				"wxlocal",
-				"ui.json",
-				"res/atlas/comp.atlas",
-				"res/atlas/comp.png",
-				"res/atlas/ui.atlas",
-				"res/atlas/ui.png",
-			];
-		} else {
-			console.log("普通浏览器");
-		}
-
 		// 根据IDE设置初始化引擎
 	 	if (window["Laya3D"]) {
 			console.log("Laya3D");
@@ -67,6 +49,24 @@ class Main {
 			{url:"res/atlas/comp.png",  type:Laya.Loader.IMAGE},
         ];
 		Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
+		Laya.URL.basePath = "http://192.168.1.101/budokai/";
+		// if(Laya.Browser.onWeiXin) {
+		// 	console.log("微信浏览器");
+		// 	// Laya.MiniAdpter.init();
+		// 	// 远程动态资源，及本地白名单
+		// 	Laya.URL.basePath = "http://192.168.1.101/budokai/"; //设置这句，所有资源路径默认都走远程
+		// 	Laya.MiniAdpter.nativefiles = [ //通过白名单，让部分资源走本地
+		// 		"wxlocal",
+		// 		"ui.json",
+		// 		"res/atlas/comp.atlas",
+		// 		"res/atlas/comp.png",
+		// 		// "res/atlas/ui.atlas",
+		// 		// "res/atlas/ui.png",
+		// 	];
+		// 	console.log("本地白名单：", Laya.MiniAdpter.nativefiles);
+		// } else {
+		// 	console.log("普通浏览器");
+		// }
 	}
 
 	onLoaded(): void {

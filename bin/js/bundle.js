@@ -41,7 +41,7 @@
     GameConfig.startScene = "Load.scene";
     GameConfig.sceneRoot = "";
     GameConfig.debug = false;
-    GameConfig.stat = true;
+    GameConfig.stat = false;
     GameConfig.physicsDebug = false;
     GameConfig.exportSceneToJson = true;
     GameConfig.init();
@@ -1180,22 +1180,6 @@
 
     class Main {
         constructor() {
-            if (Laya.Browser.onWeiXin) {
-                console.log("微信浏览器");
-                Laya.MiniAdpter.init();
-                Laya.URL.basePath = "http://192.168.1.101/remote/";
-                Laya["MiniAdpter"].nativefiles = [
-                    "wxlocal",
-                    "ui.json",
-                    "res/atlas/comp.atlas",
-                    "res/atlas/comp.png",
-                    "res/atlas/ui.atlas",
-                    "res/atlas/ui.png",
-                ];
-            }
-            else {
-                console.log("普通浏览器");
-            }
             if (window["Laya3D"]) {
                 console.log("Laya3D");
                 Laya3D.init(GameConfig.width, GameConfig.height);
@@ -1230,6 +1214,7 @@
                 { url: "res/atlas/comp.png", type: Laya.Loader.IMAGE },
             ];
             Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
+            Laya.URL.basePath = "http://192.168.1.101/budokai/";
         }
         onLoaded() {
             Laya.View.uiMap = Laya.Loader.getRes("ui.json");
