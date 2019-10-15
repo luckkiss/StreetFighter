@@ -771,10 +771,10 @@
                 var camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100)));
                 camera.transform.translate(new Laya.Vector3(6, 2, 0));
                 camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
-                var pointLight = this.scene3d.addChild(new Laya.PointLight());
-                pointLight.transform.position = new Laya.Vector3(1, 2, 0);
-                pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
-                pointLight.intensity = 2;
+                var directionLight = this.scene3d.addChild(new Laya.DirectionLight());
+                directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+                directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+                Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
                 Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
             }
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
@@ -788,13 +788,8 @@
                 console.log("离开游戏");
             });
         }
-        onScene3DComplete(sc) {
-            this.scene3d = sc;
-            this.scene3d.zOrder = -1;
-            Laya.stage.addChild(this.scene3d);
-            var cam = Laya.stage.getChildByName("Main Camera");
-            console.log("摄像机：" + cam.transform.position);
-            Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+        onBackgroundComplete(sp) {
+            this.background = this.scene3d.addChild(sp);
         }
         onPlayerComplete(sp) {
             var prefabA = Laya.Sprite3D.instantiate(sp);

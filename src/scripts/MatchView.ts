@@ -13,6 +13,7 @@ export default class MatchView extends ui.MatchUI {
 
     /*3D场景*/
     public scene3d: Laya.Scene3D;
+    public background: Laya.Sprite3D;
     public playerA: Laya.Sprite3D;
     public scriptA: PlayerController;
     private hpA: number = 300;
@@ -51,15 +52,11 @@ export default class MatchView extends ui.MatchUI {
 			// camera.transform.position = new Laya.Vector3(6, 2, 0);
 			// camera.transform.rotationEuler = new Laya.Vector3(3, 90, 0);
             // //添加方向光
-            // var directionLight: Laya.DirectionLight = this.scene3d.addChild(new Laya.DirectionLight()) as Laya.DirectionLight;
-            // directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-            // directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
-            //添加点光源
-            var pointLight: Laya.PointLight = this.scene3d.addChild(new Laya.PointLight()) as Laya.PointLight;
-			pointLight.transform.position = new Laya.Vector3(1, 2, 0);
-            pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
-            pointLight.intensity = 2;
+            var directionLight: Laya.DirectionLight = this.scene3d.addChild(new Laya.DirectionLight()) as Laya.DirectionLight;
+            directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
 			//加载精灵
+            Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
             Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
         // */
@@ -76,17 +73,8 @@ export default class MatchView extends ui.MatchUI {
         });
     }
 
-    onScene3DComplete(sc: Laya.Scene3D): void {
-        this.scene3d = sc;
-        this.scene3d.zOrder = -1;
-        Laya.stage.addChild(this.scene3d);
-
-        var cam = Laya.stage.getChildByName("Main Camera") as Laya.Camera;
-        console.log("摄像机：" + cam.transform.position);
-
-        // console.log("场景加载完成");
-        //加载精灵
-        Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
+    onBackgroundComplete(sp: Laya.Sprite3D): void {
+        this.background = this.scene3d.addChild(sp) as Laya.Sprite3D;
     }
 
     onPlayerComplete(sp: Laya.Sprite3D): void {

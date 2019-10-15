@@ -12,10 +12,6 @@ export default class PlayerController extends Laya.Script3D {
 
     private myIndex: number = -1; //控制摇杆的手指
     private _clickTime: number; //限制点击次数
-    // private fistBtn: Laya.Image;
-    // private kickBtn: Laya.Image;
-    // private jumpBtn: Laya.Image;
-    // private defendBtn: Laya.Image;
     
     private motions: Array<string> = [
         "Unarmed-Idle",             //待机0

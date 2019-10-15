@@ -1,0 +1,38 @@
+{
+	"version":"LAYAHIERARCHY:02",
+	"data":{
+		"type":"MeshSprite3D",
+		"instanceID":2,
+		"props":{
+			"name":"Background",
+			"active":true,
+			"isStatic":false,
+			"layer":0,
+			"position":[
+				0,
+				0,
+				0
+			],
+			"rotation":[
+				0,
+				0,
+				0,
+				-1
+			],
+			"scale":[
+				1,
+				1,
+				2
+			],
+			"meshPath":"Library/unity default resources-Plane.lm",
+			"enableRender":true,
+			"materials":[
+				{
+					"path":"Assets/Scenes/Materials/Background.lmat"
+				}
+			]
+		},
+		"components":[],
+		"child":[]
+	}
+}
