@@ -44,16 +44,27 @@
     "vexcludeNoteList": [
         ""
     ],
-    "packfile": false,
+    "packfile": true,
     "packfileFilter": [
-        ""
+        "fileconfig.json;game.js;index.html;game.json;index.js;js;libs;project.config.json;res;swan-game-adapter.js;ui;unpack.json;ui.json;version.json;weapp-adapter.js;project.swan.json"
     ],
     "packfileFullValue": [
-        "$basePath/**/*.*",
+        "$basePath/fileconfig.json",
         "$basePath/game.js",
+        "$basePath/index.html",
         "$basePath/game.json",
+        "$basePath/index.js",
+        "$basePath/js/**/*.*",
+        "$basePath/libs/**/*.*",
         "$basePath/project.config.json",
-        "$basePath/weapp-adapter.js"
+        "$basePath/res/**/*.*",
+        "$basePath/swan-game-adapter.js",
+        "$basePath/ui/**/*.*",
+        "$basePath/unpack.json",
+        "$basePath/ui.json",
+        "$basePath/version.json",
+        "$basePath/weapp-adapter.js",
+        "$basePath/project.swan.json"
     ],
     "packfileTargetValue": "",
     "packfileNoteList": [
@@ -64,5 +75,5 @@
     "forceCompile": false,
     "onlyIndexJS": true,
     "projectType": "ts",
-    "pubTime": 1571081714883
+    "pubTime": 1571138476106
 }
