@@ -1,3 +1,4 @@
 <res>
    <item name="ui/loading.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="ui/mask_4x4_40%.png" type="Sprite" compress="0" pack="1" quality="80" props="sizeGrid=5,5,5,5" picType="0" scale="0"/>
 </res>

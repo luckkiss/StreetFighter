@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":71,
-    "selecteID":75,
+    "selectedBox":2,
+    "selecteID":25,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1136,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":640},
     "nodeParent":-1,
@@ -52,14 +52,13 @@
             "props":{"var":"userPanel","top":0,"right":0,"name":"UserPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"UserPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":22,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,HeadImg,headImg",
                     "props":{"y":60,"x":60,"width":80,"var":"headImg","skin":"comp/img_bg5.png","sizeGrid":"10,10,10,10","name":"HeadImg","left":20,"height":80,"anchorY":0.5,"anchorX":0.5},
@@ -113,7 +112,6 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,SignBtn,signBtn",
                     "props":{"y":200,"width":100,"var":"signBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"SignBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"签到","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -128,7 +126,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,RankBtn,rankBtn",
                     "props":{"y":300,"width":100,"var":"rankBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"RankBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"排行","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -143,7 +140,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,ShopBtn,shopBtn",
                     "props":{"y":400,"width":100,"var":"shopBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"ShopBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"商城","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -158,7 +154,6 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,SettingsBtn,settingsBtn",
                     "props":{"y":500,"width":100,"var":"settingsBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"SettingsBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"设置","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -173,23 +168,21 @@
                         ]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,LearnBtn,learnBtn",
-                    "props":{"y":350,"width":300,"var":"learnBtn","stateNum":"1","skin":"ui/UI_Panel_Window.png","sizeGrid":"15,15,15,15","right":500,"name":"LearnBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"160","labelColors":"#ffffff","label":"教学模式","height":400,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":350,"width":300,"var":"learnBtn","stateNum":"1","skin":"ui/UI_Panel_Window.png","sizeGrid":"15,15,15,15","name":"LearnBtn","left":300,"labelStrokeColor":"#ffffff","labelSize":30,"labelPadding":"130","labelColors":"#ffffff","label":"教学模式","height":400,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":22,
                     "label":"LearnBtn",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":71,
                     "child":[
                         {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image",
-                            "props":{"y":150,"width":200,"skin":"ui/f02.jpg","height":200,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                            "props":{"y":150,"width":240,"skin":"ui/f02.jpg","height":240,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":71,
                             "label":"Image",
                             "isDirectory":false,
@@ -201,23 +194,21 @@
                         }]
                 },
                 {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,MatchBtn,matchBtn",
-                    "props":{"y":350,"width":300,"var":"matchBtn","stateNum":"1","skin":"ui/UI_Panel_Window.png","sizeGrid":"15,15,15,15","right":150,"name":"MatchBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"160","labelColors":"#ffffff","label":"匹配模式","height":400,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"y":350,"width":300,"var":"matchBtn","stateNum":"1","skin":"ui/UI_Panel_Window.png","sizeGrid":"15,15,15,15","name":"MatchBtn","left":650,"labelStrokeColor":"#ffffff","labelSize":30,"labelPadding":"130","labelColors":"#ffffff","label":"匹配模式","height":400,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":22,
                     "label":"MatchBtn",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":4,
                     "child":[
                         {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image",
-                            "props":{"y":150,"x":-199,"width":200,"skin":"ui/f01.jpg","height":200,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                            "props":{"y":150,"x":-199,"width":240,"skin":"ui/f01.jpg","height":240,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":4,
                             "label":"Image",
                             "isOpen":true,
