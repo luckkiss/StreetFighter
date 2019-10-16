@@ -46,18 +46,17 @@
                 {
                     "x":30,
                     "type":"Image",
-                    "searchKey":"Image,Background,bgImage",
-                    "props":{"width":150,"var":"bgImage","text":"消息提示","skin":"ui/mask_4x4_40%.png","name":"Background","height":50,"fontSize":22,"color":"#ffffff","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                    "searchKey":"Image,BgImage,bgImage",
+                    "props":{"width":150,"var":"bgImage","text":"消息提示","skin":"ui/mask_4x4_40%.png","name":"BgImage","height":50,"fontSize":22,"color":"#ffffff","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":4,
-                    "label":"Background",
-                    "isOpen":true,
+                    "label":"BgImage",
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":6,
                     "child":[
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,MessageText,messageText",
                             "props":{"y":26,"x":76,"var":"messageText","text":"消息提示","name":"MessageText","fontSize":22,"color":"#ffffff","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
@@ -70,7 +69,8 @@
                             "compId":5,
                             "child":[
                                 ]
-                        }]
+                        }],
+                    "$HIDDEN":true
                 }]
         }],
     "animations":[

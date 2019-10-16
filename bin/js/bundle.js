@@ -116,7 +116,7 @@
                 this.createView(TipsUI.uiView);
             }
         }
-        TipsUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Tips", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 7 }, { "type": "Image", "props": { "zOrder": 99, "width": 1136, "name": "TipsPanel", "height": 640, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4, "child": [{ "type": "Image", "props": { "width": 150, "var": "bgImage", "text": "消息提示", "skin": "ui/mask_4x4_40%.png", "name": "Background", "height": 50, "fontSize": 22, "color": "#ffffff", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 6, "child": [{ "type": "Label", "props": { "y": 26, "x": 76, "var": "messageText", "text": "消息提示", "name": "MessageText", "fontSize": 22, "color": "#ffffff", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 5 }] }] }], "loadList": ["ui/mask_4x4_40%.png"], "loadList3D": [] };
+        TipsUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Tips", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 7 }, { "type": "Image", "props": { "zOrder": 99, "width": 1136, "name": "TipsPanel", "height": 640, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4, "child": [{ "type": "Image", "props": { "width": 150, "var": "bgImage", "text": "消息提示", "skin": "ui/mask_4x4_40%.png", "name": "BgImage", "height": 50, "fontSize": 22, "color": "#ffffff", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 6, "child": [{ "type": "Label", "props": { "y": 26, "x": 76, "var": "messageText", "text": "消息提示", "name": "MessageText", "fontSize": 22, "color": "#ffffff", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 5 }] }] }], "loadList": ["ui/mask_4x4_40%.png"], "loadList3D": [] };
         ui.TipsUI = TipsUI;
         REG("ui.TipsUI", TipsUI);
     })(ui || (ui = {}));
@@ -1005,7 +1005,7 @@
     class TipsView extends ui.TipsUI {
         constructor() {
             super();
-            this.delay = 0;
+            this.delay = 1000;
         }
         static getInstance() {
             if (this.instance == null) {
@@ -1013,17 +1013,25 @@
             }
             return this.instance;
         }
-        showText(timer, msg) {
+        onDisable() {
+            Laya.timer.clearAll(this);
+        }
+        showText(tm = 1000, msg) {
+            Laya.timer.clearAll(this);
+            this.bgImage.y = Laya.stage.height * 0.7;
+            this.bgImage.alpha = 0;
+            Laya.Tween.to(this.bgImage, { "y": Laya.stage.height * 0.5 }, 200);
+            Laya.Tween.to(this.bgImage, { "alpha": 1 }, 300);
             this.messageText.text = msg;
-            this.delay = timer;
-            this.bgImage.width = 25 * msg.length;
+            this.delay = tm;
+            this.bgImage.width = 26 * msg.length;
             Laya.stage.addChild(TipsView.getInstance());
             if (this.delay > 0)
                 Laya.timer.once(this.delay, this, this.autoDestroy);
         }
         autoDestroy() {
             console.log("自动销毁");
-            Laya.stage.removeChild(this);
+            this.removeSelf();
         }
     }
 
