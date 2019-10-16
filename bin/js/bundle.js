@@ -145,6 +145,7 @@
         constructor() {
             super();
             this.url = "ws://192.168.1.101:3001";
+            this.timeout = 5000;
         }
         static getInstance() {
             if (this.instance == null) {
@@ -152,19 +153,8 @@
             }
             return this.instance;
         }
-        get isConnected() {
-            if (this.socket != null && this.socket.connected) {
-                return true;
-            }
-            return false;
-        }
-        reconnect() {
-            if (this.socket == null)
-                this.socket = new Laya.Socket();
-            this.socket.connectByUrl(this.url);
-        }
         initSocket() {
-            if (WebSocketClient.getInstance().isConnected) {
+            if (this.isConnected) {
                 console.log("网络状态良好");
                 return;
             }
@@ -179,9 +169,34 @@
             this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
             this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
         }
+        get isConnected() {
+            if (this.socket != null && this.socket.connected) {
+                return true;
+            }
+            return false;
+        }
+        reconnect() {
+            if (this.socket == null) {
+                console.log("新建socket");
+                this.socket = new Laya.Socket();
+                this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
+                this.socket.on(Laya.Event.OPEN, this, this.openHandler);
+                this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
+                this.socket.on(Laya.Event.CLOSE, this, this.closeHandler);
+                this.socket.on(Laya.Event.ERROR, this, this.errorHandler);
+            }
+            Laya.stage.addChild(LoadingView.getInstance());
+            this.socket.connectByUrl(this.url);
+            console.log("重连一次");
+        }
+        disconnect() {
+            if (this.socket != null) {
+                this.socket.close();
+            }
+        }
         sendData(obj) {
-            if (!this.socket.connected) {
-                console.error("已经断开连接.");
+            if (!this.isConnected) {
+                console.error("已断开，无法发送");
                 return;
             }
             this.socket.send(JSON.stringify(obj));
@@ -192,16 +207,45 @@
                 "type": "connected"
             };
             Laya.stage.event("nethandle", obj);
+            this.sendHeart();
         }
         receiveHandler(msg = null) {
             var obj = JSON.parse(msg);
-            Laya.stage.event("nethandle", obj);
+            switch (obj.type) {
+                case "boop": {
+                    console.log("收到心跳");
+                    break;
+                }
+                default: {
+                    Laya.stage.event("nethandle", obj);
+                    break;
+                }
+            }
+            this.resetHeart();
         }
         closeHandler(e = null) {
-            console.log("关闭事件");
+            console.log("连接关闭");
+            this.reconnect();
         }
         errorHandler(e = null) {
             console.log("连接出错");
+            this.reconnect();
+        }
+        sendHeart() {
+            console.log("发送一次心跳");
+            var obj = {
+                "type": "beep",
+            };
+            this.sendData(obj);
+        }
+        startHeart() {
+            console.log("开启心跳");
+            Laya.timer.loop(this.timeout, this, this.sendHeart);
+        }
+        resetHeart() {
+            console.log("重置心跳");
+            Laya.timer.clear(this, this.sendHeart);
+            this.startHeart();
         }
     }
 
@@ -829,32 +873,32 @@
             Laya.stage.on("nethandle", this, this.handle);
             this.joystick = new JoystickView();
             Laya.stage.addChild(this.joystick);
-            {
-                this.scene3d = Laya.stage.addChild(new Laya.Scene3D());
-                this.scene3d.zOrder = -1;
-                var camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100)));
-                camera.transform.translate(new Laya.Vector3(6, 2, 0));
-                camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
-                var directionLight = this.scene3d.addChild(new Laya.DirectionLight());
-                directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-                directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
-                Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
-                Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
-            }
+            this.scene3d = Laya.stage.addChild(new Laya.Scene3D());
+            this.scene3d.zOrder = -1;
+            var camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100)));
+            camera.transform.translate(new Laya.Vector3(6, 2, 0));
+            camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
+            var directionLight = this.scene3d.addChild(new Laya.DirectionLight());
+            directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
+            Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
+            Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
             this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
-                Laya.stage.removeChild(this.joystick);
-                Laya.stage.removeChild(this.scene3d);
-                Laya.stage.removeChild(this.playerA);
-                Laya.stage.removeChild(this.playerB);
                 this.removeSelf();
+                console.log("确保先执行Disable，再执行到这里。");
                 console.log("跳转.LobbyView");
                 Laya.stage.addChild(LobbyView.getInstance());
             });
             this.endBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                console.log("跳转.LobbyView");
             });
         }
         onDisable() {
             console.log("MatchView.Disable");
+            Laya.stage.removeChild(this.joystick);
+            Laya.stage.removeChild(this.scene3d);
+            Laya.stage.removeChild(this.playerA);
+            Laya.stage.removeChild(this.playerB);
             Laya.stage.offAll();
         }
         onBackgroundComplete(sp) {
@@ -1010,12 +1054,18 @@
             Laya.stage.on("nethandle", this, this.handle);
             Laya.SoundManager.playMusic("remote/audios/bgm.mp3");
             Laya.SoundManager.autoStopMusic = true;
-            console.log("播放音乐.");
         }
         onDisable() {
             console.log("LobbyView.Disable");
             Laya.stage.offAll();
             Laya.timer.clearAll(this);
+        }
+        enterGame() {
+            UserData.getInstance().playerStatus = PlayerStatus.GAME;
+            this.removeSelf();
+            console.log("确保先执行Disable，再执行到这里。");
+            console.log("跳转.MatchView");
+            Laya.stage.addChild(MatchView.getInstance());
         }
         addUIListener() {
             this.nicknameInput.on(Laya.Event.BLUR, this, () => {
@@ -1117,12 +1167,6 @@
                     break;
                 }
             }
-        }
-        enterGame() {
-            UserData.getInstance().playerStatus = PlayerStatus.GAME;
-            this.removeSelf();
-            console.log("跳转.MatchView");
-            Laya.stage.addChild(MatchView.getInstance());
         }
         sendCheckNickName() {
             var obj = {

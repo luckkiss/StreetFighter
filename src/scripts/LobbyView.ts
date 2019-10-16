@@ -38,7 +38,7 @@ export default class LobbyView extends ui.LobbyUI {
 
         Laya.SoundManager.playMusic("remote/audios/bgm.mp3");
         Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
-        console.log("播放音乐.");
+        // console.log("播放音乐.");
     }
 
     onDisable(): void {

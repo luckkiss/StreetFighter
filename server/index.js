@@ -84,7 +84,9 @@ var server = ws.createServer(function(conn) {
 				break;
 			}
 			case "beep": { //心跳
-				msg.type = "boop";
+				response = {
+					"type": "boop",
+				};
 				var jsonStr = JSON.stringify(response);
 				conn.sendText(jsonStr);
 				break;
