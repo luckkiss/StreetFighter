@@ -2,6 +2,7 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
+    "selecteID":3,
     "searchKey":"Scene,Joystick,Joystick",
     "props":{"zOrder":1,"width":1136,"var":"Joystick","sceneColor":"#000000","name":"Joystick","mouseThrough":true,"height":640},
     "nodeParent":-1,
@@ -13,21 +14,6 @@
     "hasChild":true,
     "compId":2,
     "child":[
-        {
-            "x":15,
-            "type":"Image",
-            "searchKey":"Image,Stick,stickImage",
-            "props":{"width":180,"var":"stickImage","skin":"ui/joystickPoint.png","name":"Stick","left":50,"height":180,"bottom":50,"anchorY":0.5,"anchorX":0.5},
-            "nodeParent":2,
-            "label":"Stick",
-            "isOpen":true,
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":3,
-            "child":[
-                ]
-        },
         {
             "x":15,
             "type":"Image",
@@ -43,6 +29,21 @@
             "child":[
                 ],
             "$HIDDEN":false
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,Stick,stickImage",
+            "props":{"y":500,"x":140,"width":180,"var":"stickImage","skin":"ui/joystickPoint.png","name":"Stick","left":50,"height":180,"bottom":50,"anchorY":0.5,"anchorX":0.5},
+            "nodeParent":2,
+            "label":"Stick",
+            "isOpen":true,
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":3,
+            "child":[
+                ]
         }],
     "animations":[
         {

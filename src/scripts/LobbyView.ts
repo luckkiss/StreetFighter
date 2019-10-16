@@ -17,7 +17,6 @@ export default class LobbyView extends ui.LobbyUI {
         LobbyView.instance = this;
         // this.createView(Laya.View.uiMap["Lobby"]);
 
-        // Laya.SoundManager.playMusic("http://192.168.1.101/web/res/audios/bgm.mp3", 0);
         Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
         Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
         console.log("播放音乐.");
@@ -30,9 +29,10 @@ export default class LobbyView extends ui.LobbyUI {
         Laya.stage.on("nethandle", this, this.handle);
         
         // UI初始化
-        this.awardPanel.visible = false;
-        this.loginPanel.visible = false;
         this.registerPanel.visible = false;
+        this.loginPanel.visible = false;
+        this.userPanel.visible = false;
+        this.awardPanel.visible = false;
         this.matchPanel.visible = false;
         this.addUIListener();
         Laya.stage.addChild(LoadingView.getInstance());
@@ -44,14 +44,14 @@ export default class LobbyView extends ui.LobbyUI {
             console.log("网络校验昵称 3");
         });
         this.goLoginBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
-            this.loginPanel.visible = true;
             this.registerPanel.visible = false;
+            this.loginPanel.visible = true;
             this.loginNickname.text = "";
             this.loginPassword.text = "";
         });
         this.goRegisterBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
-            this.loginPanel.visible = false;
             this.registerPanel.visible = true;
+            this.loginPanel.visible = false;
             this.nicknameInput.text = "";
             this.passwordInput.text = "";
             this.password2Input.text = "";
@@ -73,6 +73,7 @@ export default class LobbyView extends ui.LobbyUI {
         this.uid = Laya.LocalStorage.getItem("uid");
         console.log("用户信息：" + this.uid);
         this.registerPanel.visible = (this.uid == null); //弹出注册页面
+        this.userPanel.visible = (this.uid != null);
     }
 
     private handle(obj): void {
@@ -99,8 +100,9 @@ export default class LobbyView extends ui.LobbyUI {
                 console.log("登陆成功，写入cookie：" + obj.uid + ": " + obj.pwd);
                 Laya.LocalStorage.setItem("uid", obj.uid);
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
-                this.loginPanel.visible = false;
                 this.registerPanel.visible = false;
+                this.loginPanel.visible = false;
+                this.userPanel.visible = true;
                 this.nickNameText.text = obj.nickname;
                 UserData.getInstance().playerStatus = PlayerStatus.FREE;
                 break;
@@ -270,5 +272,16 @@ export default class LobbyView extends ui.LobbyUI {
         // let hash = crypto.createHash('md5');
         // return hash.update(data).digest('base64');
         return data;
+    }
+
+    // 头像遮罩 https://blog.csdn.net/wangmx1993328/article/details/84971519
+    addMask(): void {
+        //创建遮罩对象(精灵)
+        let maskSprite = new Laya.Sprite();
+        //由遮罩精灵获取绘图对象绘制一个圆形的遮罩区域，遮罩对象坐标系是相对遮罩对象本身的，(95,41)表示圆形的原点坐标，50 表示半径
+        //第三个参数表示填充颜色，或者填充绘图的渐变对象。
+        maskSprite.graphics.drawCircle(95,41,50,"#ff0000");
+        //对 图像实现遮罩效果
+        // this.head.mask = maskSprite;
     }
 }
