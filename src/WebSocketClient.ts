@@ -92,7 +92,7 @@ export default class WebSocketClient extends Laya.Script {
         var obj = JSON.parse(msg);
         switch (obj.type) {
             case "boop": { //心跳包由内部处理
-                console.log("收到心跳");
+                // console.log("收到心跳");
                 break;
             }
             default: {

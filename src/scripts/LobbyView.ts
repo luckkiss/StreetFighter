@@ -84,6 +84,20 @@ export default class LobbyView extends ui.LobbyUI {
         });
         this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
         this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
+
+        // 未完成功能
+        this.rankBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+        });
+        this.shopBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+        });
+        this.settingsBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+        });
+        this.learnBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+        });
         
         // 获取用户信息
         if(UserData.getInstance().uid) {
@@ -120,10 +134,13 @@ export default class LobbyView extends ui.LobbyUI {
                 Laya.LocalStorage.setItem("uid", obj.uid);
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
                 UserData.getInstance().uid = obj.uid;
+                UserData.getInstance().nickname = obj.nickname;
+                this.nickNameText.text = obj.nickname;
+                UserData.getInstance().gold = obj.gold;
+                this.goldText.text = obj.gold;
                 this.registerPanel.visible = false;
                 this.loginPanel.visible = false;
                 this.userPanel.visible = true;
-                this.nickNameText.text = obj.nickname;
                 UserData.getInstance().playerStatus = PlayerStatus.FREE;
                 break;
             }
@@ -137,6 +154,8 @@ export default class LobbyView extends ui.LobbyUI {
             case "sc_sign_success": { //签到成功
                 console.log("签到成功，看广告x2");
                 this.awardPanel.visible = true;
+                UserData.getInstance().updateGold(obj.gold);
+                this.goldText.text = UserData.getInstance().gold.toString();
                 break;
             }
             case "sc_sign_failed": { //签到失败

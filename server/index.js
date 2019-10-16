@@ -114,11 +114,11 @@ var server = ws.createServer(function(conn) {
 						conn.sendText(json);
 					} else { //2.注册成功
 						var curtime = (new Date()).toLocaleString();
-						var sql = 'INSERT INTO db_user (nickname,pwd,createtime) VALUES(?,?,?)';
-						var params = [obj.nick,obj.pwd,curtime];
+						var sql = 'INSERT INTO db_user (nickname,pwd,gold,createtime) VALUES(?,?,?,?)';
+						var params = [obj.nick, obj.pwd, 0, curtime];
 						connection.query(sql, params, (err, rows)=> {
 							if(err) {
-								console.log('[INSER ERROR] - ', err.message);
+								console.log('[INSERT ERROR] - ', err.message);
 								throw err;
 							}
 							console.log('--------------------------INSERT----------------------------');
@@ -138,6 +138,7 @@ var server = ws.createServer(function(conn) {
 									"uid": rows[0].uid,
 									"nickname": rows[0].nickname,
 									"pwd": rows[0].pwd,
+									"gold": rows[0].gold,
 								};
 								var json = JSON.stringify(response);
 								console.log(json);
@@ -181,6 +182,7 @@ var server = ws.createServer(function(conn) {
 						"uid": rows[0].uid,
 						"pwd": rows[0].pwd,
 						"nickname": rows[0].nickname,
+						"gold": rows[0].gold,
 					}
 					var jsonStr = JSON.stringify(response);
 					console.log(jsonStr);
@@ -220,6 +222,7 @@ var server = ws.createServer(function(conn) {
 						"uid": rows[0].uid,
 						"pwd": rows[0].pwd,
 						"nickname": rows[0].nickname,
+						"gold": rows[0].gold,
 					}
 					var json = JSON.stringify(response);
 					console.log(json);
@@ -252,29 +255,71 @@ var server = ws.createServer(function(conn) {
 						}
 						conn.sendText(JSON.stringify(response));
 					} else {
-						//写入签到记录到SQL
-						var sql = "INSERT INTO db_sign (uid,date) VALUES (?,?)";
-						var params = [obj.uid, curdate];
-						connection.query(sql, params, (err, rows, fields)=> {
+						//开启事务
+						connection.beginTransaction(err => {
 							if(err) {
-								//写入失败
-								var response = {
-									"type": "sc_sign_failed",
-									"code": 2
-								}
-								conn.sendText(JSON.stringify(response));
-								console.log('[INSERT ERROR] - ', err.message);
-								throw err;
+								return '开启事务失败';
+							} else {
+								/*
+								//事务
+								connection.query(`INSERT INTO ${tablename} SET ?`, vals, (e, rows, fields) => {
+									if(e) {
+										return connection.rollback(() => {
+											console.log('插入失败数据回滚');
+										})
+									} else {
+										connection.commit((error) => {
+											if(error) {
+												console.log('事务提交失败');
+											}
+										});
+										connection.release();  // 释放链接
+										return {rows, success: true}  // 返回数据库操作结果这里数据格式可根据个人或团队规范来定制
+									}
+								});
+								*/
+								
+								//1. 加钱
+								var sql = "UPDATE db_user SET gold=(gold+100) WHERE uid=?";
+								var params = [obj.uid];
+								connection.query(sql, params, (err, rows, fields)=> {
+									if(err) {
+										var response = {
+											"type": "sc_sign_failed",
+											"code": 2
+										}
+										conn.sendText(JSON.stringify(response));
+										console.log('[INSERT ERROR 1] - ', err.message);
+										throw err;
+									}
+								});
+								
+								//2. 写入签到记录到SQL
+								var sql = "INSERT INTO db_sign (uid,date) VALUES (?,?)";
+								var params = [obj.uid, curdate];
+								connection.query(sql, params, (err, rows, fields)=> {
+									if(err) {
+										//写入SQL失败
+										var response = {
+											"type": "sc_sign_failed",
+											"code": 2
+										}
+										conn.sendText(JSON.stringify(response));
+										console.log('[INSERT ERROR 2] - ', err.message);
+										throw err;
+									}
+									///*
+									console.log('--------------------------INSERT----------------------------');
+									console.log('INSERT ID:', rows);
+									var response = {
+										"type": "sc_sign_success",
+										"gold": 100,
+									}
+									conn.sendText(JSON.stringify(response));
+									console.log('------------------------------------------------------------\n\n');
+									//*/
+								});
 							}
-							console.log('--------------------------INSERT----------------------------');
-							console.log('INSERT ID:', rows);
-							var response = {
-								"type": "sc_sign_success",
-								"item": "gold",
-								"amount": "100",
-							}
-							conn.sendText(JSON.stringify(response));
-							console.log('------------------------------------------------------------\n\n');
 						});
 					}
 					console.log('------------------------------------------------------------\n\n');
@@ -396,10 +441,11 @@ var server = ws.createServer(function(conn) {
 				break;
 			}
 			case "cs_standup": { //站起
-				console.log(conn.uid + "[请求站起]");
+				//房间内某人强制站起，房间内推送游戏结束，剩下的人胜利，结算后退出。
+				console.log(obj.uid + "[请求站起]");
 				var response = {
 					"type": "sc_standup",
-					"uid": conn.uid,
+					"uid": obj.uid,
 					"status": (PlayerStatus.FREE),
 				}
 				conn.sendText(JSON.stringify(response));

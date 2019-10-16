@@ -15,7 +15,7 @@ export default class MatchView extends ui.MatchUI {
 	}
     
     /*2D界面*/
-    private joystick: JoystickView;
+    // private joystick: JoystickView;
 
     /*3D场景*/
     public scene3d: Laya.Scene3D;
@@ -25,9 +25,6 @@ export default class MatchView extends ui.MatchUI {
     public playerB: Laya.Sprite3D;
     public scriptB: PlayerController;
     
-    /*数据*/
-    // public uid: string = "";
-
     constructor() {
         super();
     }
@@ -38,12 +35,12 @@ export default class MatchView extends ui.MatchUI {
         this.endPanel.visible = false;
         this.endPanel.mouseEnabled = false; //zOrder相同时，越后加载的在越上面。激活下层穿透，无视zOrder。
 
-        Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
 
         // 添加摇杆
-        this.joystick = new JoystickView(); //加载模式/内嵌模式
-        Laya.stage.addChild(this.joystick);
+        // this.joystick = new JoystickView(); //加载模式/内嵌模式
+        // Laya.stage.addChild(this.joystick);
+        Laya.stage.addChild(JoystickView.getInstance());
 
         //添加3D场景
         this.scene3d = Laya.stage.addChild(new Laya.Scene3D()) as Laya.Scene3D;
@@ -52,29 +49,21 @@ export default class MatchView extends ui.MatchUI {
         var camera: Laya.Camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100))) as Laya.Camera;
         camera.transform.translate(new Laya.Vector3(6, 2, 0));
         camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
-        // //添加方向光
+        //添加方向光
         var directionLight: Laya.DirectionLight = this.scene3d.addChild(new Laya.DirectionLight()) as Laya.DirectionLight;
         directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
         directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
         //加载精灵
         Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
-        Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
 
         // UI监听
-        this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
-            this.removeSelf();
-            console.log("确保先执行Disable，再执行到这里。");
-            console.log("跳转.LobbyView");
-            Laya.stage.addChild(LobbyView.getInstance());
-        });
-        this.endBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
-            console.log("跳转.LobbyView");
-        });
+        this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
+        this.endBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
     }
 
     onDisable(): void {
         console.log("MatchView.Disable");
-        Laya.stage.removeChild(this.joystick);
+        Laya.stage.removeChild(JoystickView.getInstance());
         Laya.stage.removeChild(this.scene3d);
         Laya.stage.removeChild(this.playerA);
         Laya.stage.removeChild(this.playerB);
@@ -83,6 +72,7 @@ export default class MatchView extends ui.MatchUI {
 
     onBackgroundComplete(sp: Laya.Sprite3D): void {
         this.background = this.scene3d.addChild(sp) as Laya.Sprite3D;
+        Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
     }
 
     onPlayerComplete(sp: Laya.Sprite3D): void {
@@ -116,18 +106,18 @@ export default class MatchView extends ui.MatchUI {
         console.log("发送准备完成");
     }
     
-    // 离开游戏
+    // 离开房间
     private sendExitGame(): void {
         var obj: Object = {
-            "type": "cs_exitGame",
+            "type": "cs_standup",
             "uid": UserData.getInstance().uid,
         };
         WebSocketClient.getInstance().sendData(obj);
-        console.log("发送离开游戏");
+        console.log("发送站起");
     }
     
     // 死亡
-    sendDead(): void {
+    private sendDead(): void {
         var obj: Object = {
             "type": "cs_dead",
             "uid": UserData.getInstance().uid,
@@ -139,8 +129,11 @@ export default class MatchView extends ui.MatchUI {
     private handle(obj): void {
         var isLocalPlayer: boolean = (obj.uid == UserData.getInstance().uid);
         switch(obj.type) {
-            case "sc_exit": { //离开游戏
-                console.log("收到逃跑" + obj.nickname);
+            case "sc_standup": { //离开房间
+                this.removeSelf();
+                console.log("确保先执行Disable，再执行到这里。");
+                console.log("跳转.LobbyView");
+                Laya.stage.addChild(LobbyView.getInstance());
                 break;
             }
             case "sc_ready": { //准备完成

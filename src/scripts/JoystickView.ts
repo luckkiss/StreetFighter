@@ -1,7 +1,14 @@
 import {ui} from "../ui/layaMaxUI";
 
 export default class JoystickView extends ui.JoystickUI {
-    public static instance: JoystickView;
+    // public static instance: JoystickView;
+    private static instance: JoystickView;
+    public static getInstance(): JoystickView {
+        if(this.instance == null) {
+            this.instance = new JoystickView();
+        }
+        return this.instance;
+	}
     
     private speed: number = 0;
     private angle: number;
@@ -16,8 +23,7 @@ export default class JoystickView extends ui.JoystickUI {
 
     constructor() {
         super();
-		// this.createView(Laya.View.uiMap["Joystick"]);
-        JoystickView.instance = this;
+        // JoystickView.instance = this;
 
         this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);

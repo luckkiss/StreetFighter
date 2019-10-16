@@ -213,7 +213,6 @@
             var obj = JSON.parse(msg);
             switch (obj.type) {
                 case "boop": {
-                    console.log("收到心跳");
                     break;
                 }
                 default: {
@@ -232,18 +231,15 @@
             this.reconnect();
         }
         sendHeart() {
-            console.log("发送一次心跳");
             var obj = {
                 "type": "beep",
             };
             this.sendData(obj);
         }
         startHeart() {
-            console.log("开启心跳");
             Laya.timer.loop(this.timeout, this, this.sendHeart);
         }
         resetHeart() {
-            console.log("重置心跳");
             Laya.timer.clear(this, this.sendHeart);
             this.startHeart();
         }
@@ -260,11 +256,16 @@
             this.myIndex = -1;
             this.lastX = 0;
             this.lastY = 0;
-            JoystickView.instance = this;
             this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
             Laya.timer.frameLoop(1, this, this.outputData);
+        }
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new JoystickView();
+            }
+            return this.instance;
         }
         mouseDown(e) {
             this.myIndex = e.touchId;
@@ -370,6 +371,7 @@
         constructor() {
             this.uid = "";
             this.nickname = "";
+            this.gold = 0;
             this.playerStatus = PlayerStatus.FREE;
         }
         static getInstance() {
@@ -377,6 +379,9 @@
                 this.instance = new UserData();
             }
             return this.instance;
+        }
+        updateGold(add) {
+            this.gold += add;
         }
     }
     var PlayerStatus;
@@ -869,10 +874,8 @@
             console.log("MatchView.Enable");
             this.endPanel.visible = false;
             this.endPanel.mouseEnabled = false;
-            Laya.stage.offAll("nethandle");
             Laya.stage.on("nethandle", this, this.handle);
-            this.joystick = new JoystickView();
-            Laya.stage.addChild(this.joystick);
+            Laya.stage.addChild(JoystickView.getInstance());
             this.scene3d = Laya.stage.addChild(new Laya.Scene3D());
             this.scene3d.zOrder = -1;
             var camera = (this.scene3d.addChild(new Laya.Camera(0, 0.1, 100)));
@@ -882,20 +885,12 @@
             directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
             directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
             Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
-            Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
-            this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
-                this.removeSelf();
-                console.log("确保先执行Disable，再执行到这里。");
-                console.log("跳转.LobbyView");
-                Laya.stage.addChild(LobbyView.getInstance());
-            });
-            this.endBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
-                console.log("跳转.LobbyView");
-            });
+            this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
+            this.endBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
         }
         onDisable() {
             console.log("MatchView.Disable");
-            Laya.stage.removeChild(this.joystick);
+            Laya.stage.removeChild(JoystickView.getInstance());
             Laya.stage.removeChild(this.scene3d);
             Laya.stage.removeChild(this.playerA);
             Laya.stage.removeChild(this.playerB);
@@ -903,6 +898,7 @@
         }
         onBackgroundComplete(sp) {
             this.background = this.scene3d.addChild(sp);
+            Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
         }
         onPlayerComplete(sp) {
             var prefabA = Laya.Sprite3D.instantiate(sp);
@@ -929,11 +925,11 @@
         }
         sendExitGame() {
             var obj = {
-                "type": "cs_exitGame",
+                "type": "cs_standup",
                 "uid": UserData.getInstance().uid,
             };
             WebSocketClient.getInstance().sendData(obj);
-            console.log("发送离开游戏");
+            console.log("发送站起");
         }
         sendDead() {
             var obj = {
@@ -945,8 +941,11 @@
         handle(obj) {
             var isLocalPlayer = (obj.uid == UserData.getInstance().uid);
             switch (obj.type) {
-                case "sc_exit": {
-                    console.log("收到逃跑" + obj.nickname);
+                case "sc_standup": {
+                    this.removeSelf();
+                    console.log("确保先执行Disable，再执行到这里。");
+                    console.log("跳转.LobbyView");
+                    Laya.stage.addChild(LobbyView.getInstance());
                     break;
                 }
                 case "sc_ready": {
@@ -1095,6 +1094,18 @@
             });
             this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
             this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
+            this.rankBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+            });
+            this.shopBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+            });
+            this.settingsBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+            });
+            this.learnBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                TipsView.getInstance().showText(1000, "暂未开放，敬请支持");
+            });
             if (UserData.getInstance().uid) {
                 this.registerPanel.visible = false;
                 this.userPanel.visible = true;
@@ -1129,10 +1140,13 @@
                     Laya.LocalStorage.setItem("uid", obj.uid);
                     Laya.LocalStorage.setItem("pwd", obj.pwd);
                     UserData.getInstance().uid = obj.uid;
+                    UserData.getInstance().nickname = obj.nickname;
+                    this.nickNameText.text = obj.nickname;
+                    UserData.getInstance().gold = obj.gold;
+                    this.goldText.text = obj.gold;
                     this.registerPanel.visible = false;
                     this.loginPanel.visible = false;
                     this.userPanel.visible = true;
-                    this.nickNameText.text = obj.nickname;
                     UserData.getInstance().playerStatus = PlayerStatus.FREE;
                     break;
                 }
@@ -1146,6 +1160,8 @@
                 case "sc_sign_success": {
                     console.log("签到成功，看广告x2");
                     this.awardPanel.visible = true;
+                    UserData.getInstance().updateGold(obj.gold);
+                    this.goldText.text = UserData.getInstance().gold.toString();
                     break;
                 }
                 case "sc_sign_failed": {
