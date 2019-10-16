@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":26,
-    "selecteID":35,
+    "selectedBox":2,
+    "selecteID":44,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1136,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":640},
     "nodeParent":-1,
@@ -34,7 +34,7 @@
             "x":15,
             "type":"Clip",
             "searchKey":"Clip,Background",
-            "props":{"y":0,"x":0,"skin":"ui/bg2.jpg","scaleY":1.12,"scaleX":1.12,"name":"Background","clipWidth":1015},
+            "props":{"skin":"ui/bg1.jpg","scaleY":1.82,"scaleX":1.82,"name":"Background","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"Background",
             "isOpen":false,
@@ -420,27 +420,25 @@
             "props":{"zOrder":1,"y":320,"x":568,"width":1136,"var":"awardPanel","skin":"comp/img_blank.png","name":"AwardPanel","height":640,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"AwardPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":25,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
                     "props":{"y":320,"x":568,"width":320,"skin":"comp/img_blank.png","name":"Page","height":360,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":25,
                     "label":"Page",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":26,
                     "child":[
                         {
-                            "x":45,
                             "type":"Text",
                             "searchKey":"Text",
                             "props":{"y":40,"x":116,"text":"恭喜获得","pivotX":0.5,"fontSize":22,"color":"#ffffff","align":"center"},
@@ -455,7 +453,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,AwardImg",
                             "props":{"y":100,"x":110,"width":100,"skin":"comp/img_bg4.png","sizeGrid":"10,10,10,10","name":"AwardImg","height":100},
@@ -469,7 +466,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,DoubleAwardBtn,doubleAwardBtn",
                             "props":{"y":260,"width":160,"var":"doubleAwardBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"DoubleAwardBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"领取双倍","height":40,"centerX":1,"anchorY":0.5,"anchorX":0.5},
@@ -483,7 +479,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,CloseAward,closeAwardBtn",
                             "props":{"y":313,"x":160,"var":"closeAwardBtn","text":"直接关闭","name":"CloseAward","fontSize":14,"color":"#ffffff","centerX":1,"bottom":40,"anchorY":0.5,"anchorX":0.5,"align":"center"},
