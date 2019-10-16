@@ -17,16 +17,20 @@ export default class LobbyView extends ui.LobbyUI {
         LobbyView.instance = this;
         // this.createView(Laya.View.uiMap["Lobby"]);
 
-        Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
-        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
-        console.log("播放音乐.");
-        
+        // Laya.LocalStorage.clear();
+        this.uid = Laya.LocalStorage.getItem("uid");
+        console.log("是否有用户信息：" + (this.uid != null) + "：" + this.uid);
+
         // 添加WebSocket
         this.client = WebSocketClient.getInstance();
         this.client.initSocket();
         // 添加网络监听
         Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
+        
+        Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
+        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
+        console.log("播放音乐.");
         
         // UI初始化
         this.registerPanel.visible = false;
@@ -69,18 +73,20 @@ export default class LobbyView extends ui.LobbyUI {
         this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
         
         // 获取用户信息
-        // Laya.LocalStorage.clear();
-        this.uid = Laya.LocalStorage.getItem("uid");
-        console.log("用户信息：" + this.uid);
-        this.registerPanel.visible = (this.uid == null); //弹出注册页面
-        this.userPanel.visible = (this.uid != null);
+        if(this.uid) {
+            this.registerPanel.visible = false;
+            this.userPanel.visible = true;
+        } else {
+            this.registerPanel.visible = true; //弹出注册页面
+            this.userPanel.visible = false;
+        }
     }
 
     private handle(obj): void {
         switch(obj.type) {
             case "connected": { //建立连接
 		        Laya.stage.removeChild(LoadingView.getInstance());
-                if(this.uid != null) {
+                if(this.uid) {
                     this.sendAutoLogin();
                 }
                 break;

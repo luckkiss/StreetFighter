@@ -64,7 +64,7 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     // 实时检测间距
-    private distance: number = 0;
+    private distance: number = 6;
     private checkDistance(): void {
         this.distance = MatchView.instance.checkDistance();
     }
@@ -89,7 +89,7 @@ export default class PlayerController extends Laya.Script3D {
         this.client = WebSocketClient.getInstance();
         // Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
-        this.distance = 0;
+        this.distance = 6;
     }
 
     // 碰撞校验都由客户端完成，服务器只做分发
