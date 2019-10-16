@@ -56,7 +56,7 @@ export default class PlayerController extends Laya.Script3D {
 
         var obj: Object = {
             "type": "cs_move",
-            "uid": this.clientUid,
+            "uid": this.clientID,
             "posz": z,
         };
         this.client.sendData(obj);
@@ -79,10 +79,12 @@ export default class PlayerController extends Laya.Script3D {
 
     private touchEvent: Laya.Event;
     private client: WebSocketClient = null;
-    private clientUid: string = ""; //MatchView传进来
-    private modelUid: string = ""; //MatchView传进来
+    public clientID: string = ""; //MatchView传进来
+    private avatarID: string = ""; //MatchView传进来
     private isLocalPlayer: boolean = false; //是我的Avatar
     private direction: number = 1;
+    public currentHP: number = 300;
+    public isDead: boolean = false; //角色死亡
 
     constructor() {
         super();
@@ -90,11 +92,13 @@ export default class PlayerController extends Laya.Script3D {
         // Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
         this.distance = 6;
+        this.currentHP = 300;
+        this.isDead = false;
     }
 
     // 碰撞校验都由客户端完成，服务器只做分发
     private handle(obj): void {
-        var isDriven: boolean = (obj.uid == this.modelUid); //模型受网络消息驱动
+        var isDriven: boolean = (obj.uid == this.avatarID); //模型受网络消息驱动
         switch(obj.type) {
             case "sc_fist": { //出拳
                 // console.log("出拳：" + obj.uid + " | " + isSelf);
@@ -149,8 +153,38 @@ export default class PlayerController extends Laya.Script3D {
                         console.log(obj.uid, "防御了，在他边上创建防御特效");
                         //TODO:
                     } else if (obj.damage > 0) {
-                        console.log(obj.uid + "受伤了(-" + obj.damage + ")，让他播放挨打硬直");
-                        MatchView.instance.updateHP(this, obj.damage);
+                        if(this.isDead) {
+                            console.log(obj.uid + "已死亡，无效攻击");
+                            return;
+                        }
+                        console.log(obj.uid + "挨打(-" + obj.damage + ")");
+                        this.currentHP -= obj.damage;
+
+                        if(this.currentHP <= 0) { //死亡
+                            this.currentHP = 0;
+                            this.isDead = true;
+                            console.log("========> 最后一拳打死");
+
+                            Laya.timer.clearAll(this); //不再播待机了
+                            Laya.timer.once(400, this, function() { // 等拳打到了再播
+                                this.currentMotion = 11;
+                                this.animator.play(this.motions[this.currentMotion]);
+                                MatchView.instance.updateHP(this, obj.damage);
+                            });
+                        } else { // 受击
+                            Laya.timer.once(400, this, function() { // 等拳打到了再播
+                                this.currentMotion = 10;
+                                this.animator.play(this.motions[this.currentMotion]);
+                                MatchView.instance.updateHP(this, obj.damage);
+
+                                // 挨打完恢复待机
+                                // Laya.timer.once(600, this, this.playIdle);
+                                Laya.timer.once(600, this, function() {
+                                    this.currentMotion = 0;
+                                    this.animator.crossFade(this.motions[this.currentMotion], 0.2);
+                                });
+                            });
+                        }
                     }
                 }
             }
@@ -159,19 +193,19 @@ export default class PlayerController extends Laya.Script3D {
 
     public setUid(modelid: string, side: number): void {
         console.log("设置uid：" + modelid);
-        this.modelUid = modelid;
-        this.clientUid = MatchView.instance.uid;
-        this.isLocalPlayer = (this.modelUid == this.clientUid); //只有自己的角色，可以输出操作
+        this.avatarID = modelid;
+        this.clientID = MatchView.instance.uid;
+        this.isLocalPlayer = (this.avatarID == this.clientID); //只有自己的角色，可以输出操作
         this.direction = (side == 0)? 1 : -1;
-
-        this.gameObject = this.owner as Laya.Sprite3D;
-        this.animator = this.gameObject.getComponent(Laya.Animator);
-        this.animator.play(this.motions[0]);
 
         this.currentMotion = 0;
         this.animLastTime = 0;
         this.posy = 0;
         this.posz = 0;
+
+        this.gameObject = this.owner as Laya.Sprite3D;
+        this.animator = this.gameObject.getComponent(Laya.Animator);
+        this.animator.play(this.motions[this.currentMotion]);
 
         this._clickTime = 0;
         if(this.isLocalPlayer) {
@@ -220,7 +254,7 @@ export default class PlayerController extends Laya.Script3D {
                 } else {
                     motion = 0;
                 }
-                if(this.currentMotion != motion && this.currentMotion != 9) { //没有在防御
+                if(this.currentMotion != motion && this.currentMotion != 9 && this.currentMotion != 10 && this.currentMotion != 10) { //没有在防御，没有在挨打
                     this.currentMotion = motion;
                     this.animator.play(this.motions[this.currentMotion]); //前进/后退
                 }
@@ -298,7 +332,7 @@ export default class PlayerController extends Laya.Script3D {
         Laya.timer.clear(this, this.playOther); //停掉其他延迟执行的动作
         this.currentMotion = 0;
         this.animator.play(this.motions[this.currentMotion]);
-        console.log("播放待机动画");
+        console.log(this.avatarID + "播放待机动画");
     };
 
     public playOther () {
@@ -310,9 +344,10 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_fist",
-            "uid": this.clientUid,
+            "uid": this.clientID,
         };
         this.client.sendData(obj);
+        console.log("发送出拳");
     }
 
     onFistCallback(e: Laya.Event): void {
@@ -383,7 +418,7 @@ export default class PlayerController extends Laya.Script3D {
 
         // 播完自动放待机
         Laya.timer.once(waitTime, this, this.playIdle);
-        console.log("播完自动放待机：", waitTime);
+        // console.log("播完自动放待机：", waitTime);
     }
 
     // 伤害
@@ -398,7 +433,7 @@ export default class PlayerController extends Laya.Script3D {
 
         var obj: Object = {
             "type": "cs_hit",
-            "uid": this.clientUid,
+            "uid": this.clientID,
             "amount": amount,
             "broken": broken, //破防
         };
@@ -410,7 +445,7 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_kick",
-            "uid": this.clientUid,
+            "uid": this.clientID,
         };
         this.client.sendData(obj);
     }
@@ -444,7 +479,7 @@ export default class PlayerController extends Laya.Script3D {
 
         // 播完自动放待机
         Laya.timer.once(waitTime, this, this.playIdle);
-        console.log("播完自动放待机：", waitTime);
+        // console.log("播完自动放待机：", waitTime);
     }
 
     // 跳跃3，着陆4 | 800
@@ -452,7 +487,7 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_jump",
-            "uid": this.clientUid,
+            "uid": this.clientID,
         };
         this.client.sendData(obj);
     }
@@ -487,7 +522,7 @@ export default class PlayerController extends Laya.Script3D {
 
         // 播完自动放待机
         Laya.timer.once(waitTime, this, this.playIdle);
-        console.log("播完自动放待机：", waitTime);
+        // console.log("播完自动放待机：", waitTime);
     }
 
     // 防御9 | 500
@@ -495,7 +530,7 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_defend",
-            "uid": this.clientUid,
+            "uid": this.clientID,
             "defend": 1,
         };
         this.client.sendData(obj);
@@ -527,7 +562,7 @@ export default class PlayerController extends Laya.Script3D {
             this.touchEvent = e;
             var obj: Object = {
                 "type": "cs_defend",
-                "uid": this.clientUid,
+                "uid": this.clientID,
                 "defend": 0,
             };
             this.client.sendData(obj);

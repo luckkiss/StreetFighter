@@ -16,10 +16,8 @@ export default class MatchView extends ui.MatchUI {
     public background: Laya.Sprite3D;
     public playerA: Laya.Sprite3D;
     public scriptA: PlayerController;
-    private hpA: number = 300;
     public playerB: Laya.Sprite3D;
     public scriptB: PlayerController;
-    private hpB: number = 300;
     
     /*数据*/
     public uid: string = "";
@@ -30,6 +28,9 @@ export default class MatchView extends ui.MatchUI {
         MatchView.instance = this;
 
         this.uid = Laya.LocalStorage.getItem("uid");
+        this.endPanel.visible = false;
+        this.endPanel.mouseEnabled = false; //zOrder相同时，越后加载的在越上面。激活下层穿透，无视zOrder。
+
         Laya.stage.offAll("nethandle");
         Laya.stage.on("nethandle", this, this.handle);
 
@@ -54,7 +55,7 @@ export default class MatchView extends ui.MatchUI {
             // //添加方向光
             var directionLight: Laya.DirectionLight = this.scene3d.addChild(new Laya.DirectionLight()) as Laya.DirectionLight;
             directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+            directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
 			//加载精灵
             Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
             Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
@@ -71,6 +72,20 @@ export default class MatchView extends ui.MatchUI {
             Laya.stage.addChild(lobbyView);
             console.log("离开游戏");
         });
+        this.endBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            // Laya.stage.removeChild(this.joystick);
+            // Laya.stage.removeChild(this.scene3d);
+            // Laya.stage.removeChild(this.playerA);
+            // Laya.stage.removeChild(this.playerB);
+            // Laya.stage.removeChild(this);
+            // var lobbyView = new LobbyView(); //加载模式/内嵌模式
+            // Laya.stage.addChild(lobbyView);
+            console.log("离开游戏");
+        });
+    }
+
+    onDestroy(): void {
+        console.log("退出比赛");
     }
 
     onBackgroundComplete(sp: Laya.Sprite3D): void {
@@ -118,6 +133,15 @@ export default class MatchView extends ui.MatchUI {
         console.log("发送离开游戏");
     }
     
+    // 死亡
+    sendDead(): void {
+        var obj: Object = {
+            "type": "cs_dead",
+            "uid": this.uid,
+        };
+        WebSocketClient.getInstance().sendData(obj);
+    }
+
     // 碰撞校验都由客户端完成，服务器只做分发
     private handle(obj): void {
         var isLocalPlayer: boolean = (obj.uid == this.uid);
@@ -140,14 +164,18 @@ export default class MatchView extends ui.MatchUI {
                 this.scriptA.setUid(obj.user0.uid, 0);
                 this.scriptB.setUid(obj.user1.uid, 1);
                 // 血条初始化
-                this.hpA = 300;
-                this.hp0Text.text = this.hpA.toString();
-                this.fillImage0.width = this.hpA;
+                this.hp0Text.text = this.scriptA.currentHP.toString();
+                this.fillImage0.width = this.scriptA.currentHP;
                 this.name0Text.text = obj.user0.nickname;
-                this.hpB = 300;
-                this.hp1Text.text = this.hpB.toString();
-                this.fillImage1.width = this.hpB;
+                this.hp1Text.text = this.scriptB.currentHP.toString();
+                this.fillImage1.width = this.scriptB.currentHP;
                 this.name1Text.text = obj.user1.nickname;
+                break;
+            }
+            case "sc_dead": { //死亡结算
+                console.log(obj.win + "获胜，" + obj.lose + "失败");
+                this.endPanel.visible = true;
+                this.endPanel.mouseEnabled = true; //激活上（子）层
                 break;
             }
         }
@@ -161,21 +189,20 @@ export default class MatchView extends ui.MatchUI {
 
     public updateHP(player: PlayerController, damage: number): void {
         if(player == this.scriptA) {
-            if(this.hpA <= damage) {
-                console.log("玩家A已死亡");
-                return;
-            }
-            this.hpA -= damage;
-            this.hp0Text.text = this.hpA.toString();
-            this.fillImage0.width = this.hpA;
+            this.hp0Text.text = this.scriptA.currentHP.toString();
+            this.fillImage0.width = this.scriptA.currentHP;
         } else if (player == this.scriptB) {
-            if(this.hpB <= damage) {
-                console.log("玩家B已死亡");
-                return;
-            }
-            this.hpB -= damage;
-            this.hp1Text.text = this.hpB.toString();
-            this.fillImage1.width = this.hpB;
+            this.hp1Text.text = this.scriptB.currentHP.toString();
+            this.fillImage1.width = this.scriptB.currentHP;
+        }
+
+        // 谁死谁发，然后广播
+        if(this.scriptA.clientID == this.uid && this.scriptA.isDead) {
+            this.sendDead();
+            console.log("这边死了");
+        } else if(this.scriptB.clientID == this.uid && this.scriptB.isDead) { 
+            this.sendDead();
+            console.log("这边死了");
         }
     }
 }

@@ -96,7 +96,7 @@
                 this.createView(LobbyUI.uiView);
             }
         }
-        LobbyUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Lobby", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 5 }, { "type": "Clip", "props": { "zOrder": -1, "skin": "ui/bg1.jpg", "scaleY": 2, "scaleX": 2, "name": "Background", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 44 }, { "type": "Image", "props": { "width": 1136, "var": "userPanel", "name": "UserPanel", "height": 640, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22, "child": [{ "type": "Image", "props": { "y": 60, "x": 60, "width": 80, "var": "headImg", "skin": "comp/img_bg5.png", "sizeGrid": "10,10,10,10", "name": "HeadImg", "height": 80, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23, "child": [{ "type": "Label", "props": { "x": 100, "var": "nickNameText", "top": 10, "text": "用户昵称", "name": "NickNameText", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5 }, "compId": 24 }, { "type": "Image", "props": { "width": 24, "skin": "ui/status_coin.png", "name": "CoinImage", "left": 100, "height": 24, "bottom": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 65, "child": [{ "type": "Label", "props": { "var": "goldText", "text": "100", "name": "GoldText", "left": 30, "fontSize": 22, "color": "#ffffff", "centerY": 0.5, "anchorY": 0.5 }, "compId": 64 }] }] }, { "type": "Button", "props": { "y": 200, "width": 100, "var": "signBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "SignBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "签到", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "y": 300, "width": 100, "var": "rankBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "RankBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "排行", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 73 }, { "type": "Button", "props": { "y": 400, "width": 100, "var": "shopBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "ShopBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "商城", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 70 }, { "type": "Button", "props": { "y": 500, "width": 100, "var": "settingsBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "SettingsBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "设置", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 72 }, { "type": "Button", "props": { "y": 350, "width": 300, "var": "learnBtn", "stateNum": 1, "skin": "ui/UI_Panel_Window.png", "sizeGrid": "15,15,15,15", "name": "LearnBtn", "left": 300, "labelStrokeColor": "#ffffff", "labelSize": 30, "labelPadding": "130", "labelColors": "#ffffff", "label": "教学模式", "height": 400, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 71, "child": [{ "type": "Image", "props": { "y": 150, "width": 240, "skin": "ui/f02.jpg", "height": 240, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 75 }] }, { "type": "Button", "props": { "y": 350, "width": 300, "var": "matchBtn", "stateNum": 1, "skin": "ui/UI_Panel_Window.png", "sizeGrid": "15,15,15,15", "name": "MatchBtn", "left": 650, "labelStrokeColor": "#ffffff", "labelSize": 30, "labelPadding": "130", "labelColors": "#ffffff", "label": "匹配模式", "height": 400, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4, "child": [{ "type": "Image", "props": { "y": 150, "x": -199, "width": 240, "skin": "ui/f01.jpg", "height": 240, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 74 }] }] }, { "type": "Image", "props": { "var": "registerPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "RegisterPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 9, "child": [{ "type": "Image", "props": { "width": 600, "skin": "ui/mask_4x4_40%.png", "name": "Page", "height": 320, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 10, "child": [{ "type": "Text", "props": { "y": 64, "x": 150, "text": "用户名", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 17 }, { "type": "TextInput", "props": { "y": 60, "x": 240, "width": 160, "var": "nicknameInput", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "NicknameInput", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 11, "child": [{ "type": "Text", "props": { "y": 35, "text": "2-12个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 20 }] }, { "type": "Text", "props": { "y": 124, "x": 172, "text": "密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 18 }, { "type": "TextInput", "props": { "y": 120, "x": 240, "width": 160, "var": "passwordInput", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Password", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 12, "child": [{ "type": "Text", "props": { "y": 35, "x": 0, "text": "6-16个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 21 }] }, { "type": "Text", "props": { "y": 184, "x": 128, "text": "确认密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 19 }, { "type": "TextInput", "props": { "y": 180, "x": 240, "width": 160, "var": "password2Input", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Password2", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 16 }, { "type": "Button", "props": { "x": 320, "width": 160, "var": "registerBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "RegisterBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "立即注册", "height": 40, "bottom": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 13 }, { "type": "Label", "props": { "width": 160, "var": "goLoginBtn", "valign": "middle", "text": "去登陆", "styleSkin": "comp/button.png", "sizeGrid": "10,10,10,10", "right": 0, "name": "GoLoginBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "去登陆", "height": 40, "fontSize": 22, "color": "#ffffff", "bottom": 0, "anchorY": 1, "anchorX": 1, "align": "center" }, "compId": 62 }] }] }, { "type": "Image", "props": { "var": "loginPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "LoginPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 51, "child": [{ "type": "Image", "props": { "width": 600, "skin": "ui/mask_4x4_40%.png", "name": "Page", "height": 320, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 52, "child": [{ "type": "Text", "props": { "y": 84, "x": 150, "text": "用户名", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 53 }, { "type": "TextInput", "props": { "y": 80, "x": 240, "width": 160, "var": "loginNickname", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "LoginNickname", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 54, "child": [{ "type": "Text", "props": { "y": 35, "text": "2-12个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 55 }] }, { "type": "Text", "props": { "y": 144, "x": 172, "text": "密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 56 }, { "type": "TextInput", "props": { "y": 140, "x": 240, "width": 160, "var": "loginPassword", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "LoginPassword", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 57, "child": [{ "type": "Text", "props": { "y": 35, "x": 0, "text": "6-16个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 58 }] }, { "type": "Button", "props": { "x": 320, "width": 160, "var": "loginBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "LoginBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "立即登录", "height": 40, "bottom": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 61 }, { "type": "Label", "props": { "width": 160, "var": "goRegisterBtn", "valign": "middle", "text": "去注册", "styleSkin": "comp/button.png", "sizeGrid": "10,10,10,10", "right": 0, "name": "GoRegisterBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "去登陆", "height": 40, "fontSize": 22, "color": "#ffffff", "bottom": 0, "anchorY": 1, "anchorX": 1, "align": "center" }, "compId": 63 }] }] }, { "type": "Image", "props": { "zOrder": 1, "var": "awardPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "AwardPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 25, "child": [{ "type": "Image", "props": { "width": 320, "skin": "ui/mask_4x4_40%.png", "name": "Page", "height": 360, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 26, "child": [{ "type": "Text", "props": { "y": 40, "x": 116, "text": "恭喜获得", "pivotX": 0.5, "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 27 }, { "type": "Image", "props": { "y": 100, "x": 110, "width": 100, "skin": "comp/img_bg4.png", "sizeGrid": "10,10,10,10", "name": "AwardImg", "height": 100 }, "compId": 37 }, { "type": "Button", "props": { "y": 260, "width": 160, "var": "doubleAwardBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "DoubleAwardBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "领取双倍", "height": 40, "centerX": 1, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 35 }, { "type": "Label", "props": { "y": 313, "x": 160, "var": "closeAwardBtn", "text": "直接关闭", "name": "CloseAward", "fontSize": 14, "color": "#ffffff", "centerX": 1, "bottom": 40, "anchorY": 0.5, "anchorX": 0.5, "align": "center" }, "compId": 36 }] }] }, { "type": "Image", "props": { "zOrder": 1, "var": "matchPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "MatchPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 45, "child": [{ "type": "Image", "props": { "width": 320, "skin": "ui/mask_4x4_40%.png", "name": "Page", "height": 240, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 46, "child": [{ "type": "Label", "props": { "y": 80, "x": 127, "var": "matchText", "text": "匹配中", "pivotY": 0.5, "name": "MatchText", "fontSize": 22, "color": "#ffffff" }, "compId": 47 }, { "type": "Button", "props": { "y": 160, "width": 160, "var": "cancelMatchBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "CancelMatchBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "取消匹配", "height": 40, "centerX": 1, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 49 }] }] }], "loadList": ["ui/bg1.jpg", "comp/img_bg5.png", "ui/status_coin.png", "ui/UI_Button_Standard_Red.png", "ui/UI_Panel_Window.png", "ui/f02.jpg", "ui/f01.jpg", "ui/mask_4x4_40%.png", "comp/textinput.png", "comp/button.png", "comp/img_bg4.png"], "loadList3D": [] };
+        LobbyUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Lobby", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 5 }, { "type": "Clip", "props": { "zOrder": -1, "skin": "ui/bg1.jpg", "scaleY": 2, "scaleX": 2, "name": "Background", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 44 }, { "type": "Image", "props": { "width": 1136, "var": "userPanel", "name": "UserPanel", "height": 640, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22, "child": [{ "type": "Image", "props": { "y": 60, "x": 60, "width": 80, "var": "headImg", "skin": "comp/img_bg5.png", "sizeGrid": "10,10,10,10", "name": "HeadImg", "height": 80, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23, "child": [{ "type": "Label", "props": { "x": 100, "var": "nickNameText", "top": 10, "text": "用户昵称", "name": "NickNameText", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5 }, "compId": 24 }, { "type": "Image", "props": { "width": 24, "skin": "ui/status_coin.png", "name": "CoinImage", "left": 100, "height": 24, "bottom": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 65, "child": [{ "type": "Label", "props": { "var": "goldText", "text": "100", "name": "GoldText", "left": 30, "fontSize": 22, "color": "#ffffff", "centerY": 0.5, "anchorY": 0.5 }, "compId": 64 }] }] }, { "type": "Button", "props": { "y": 200, "width": 100, "var": "signBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "SignBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "签到", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "y": 300, "width": 100, "var": "rankBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "RankBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "排行", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 73 }, { "type": "Button", "props": { "y": 400, "width": 100, "var": "shopBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "ShopBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "商城", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 70 }, { "type": "Button", "props": { "y": 500, "width": 100, "var": "settingsBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,10,10", "name": "SettingsBtn", "left": 50, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "设置", "height": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 72 }, { "type": "Button", "props": { "y": 350, "width": 300, "var": "learnBtn", "stateNum": 1, "skin": "ui/UI_Panel_Window.png", "sizeGrid": "15,15,15,15", "name": "LearnBtn", "left": 300, "labelStrokeColor": "#ffffff", "labelSize": 30, "labelPadding": "130", "labelColors": "#ffffff", "label": "教学模式", "height": 400, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 71, "child": [{ "type": "Image", "props": { "y": 150, "width": 240, "skin": "ui/f02.jpg", "height": 240, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 75 }] }, { "type": "Button", "props": { "y": 350, "width": 300, "var": "matchBtn", "stateNum": 1, "skin": "ui/UI_Panel_Window.png", "sizeGrid": "15,15,15,15", "name": "MatchBtn", "left": 650, "labelStrokeColor": "#ffffff", "labelSize": 30, "labelPadding": "130", "labelColors": "#ffffff", "label": "匹配模式", "height": 400, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4, "child": [{ "type": "Image", "props": { "y": 150, "x": -199, "width": 240, "skin": "ui/f01.jpg", "height": 240, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 74 }] }] }, { "type": "Image", "props": { "var": "registerPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "RegisterPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 9, "child": [{ "type": "Image", "props": { "width": 600, "skin": "ui/mask_4x4_40%.png", "name": "Page", "height": 320, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 10, "child": [{ "type": "Text", "props": { "y": 64, "x": 150, "text": "用户名", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 17 }, { "type": "TextInput", "props": { "y": 60, "x": 240, "width": 160, "var": "nicknameInput", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "NicknameInput", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 11, "child": [{ "type": "Text", "props": { "y": 35, "text": "2-12个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 20 }] }, { "type": "Text", "props": { "y": 124, "x": 172, "text": "密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 18 }, { "type": "TextInput", "props": { "y": 120, "x": 240, "width": 160, "var": "passwordInput", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Password", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 12, "child": [{ "type": "Text", "props": { "y": 35, "x": 0, "text": "6-16个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 21 }] }, { "type": "Text", "props": { "y": 184, "x": 128, "text": "确认密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 19 }, { "type": "TextInput", "props": { "y": 180, "x": 240, "width": 160, "var": "password2Input", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "Password2", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 16 }, { "type": "Button", "props": { "x": 320, "width": 160, "var": "registerBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "RegisterBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "立即注册", "height": 40, "bottom": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 13 }, { "type": "Label", "props": { "width": 160, "var": "goLoginBtn", "valign": "middle", "text": "去登陆", "styleSkin": "comp/button.png", "sizeGrid": "10,10,10,10", "right": 0, "name": "GoLoginBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "去登陆", "height": 40, "fontSize": 22, "color": "#ffffff", "bottom": 0, "anchorY": 1, "anchorX": 1, "align": "center" }, "compId": 62 }] }] }, { "type": "Image", "props": { "var": "loginPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "LoginPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 51, "child": [{ "type": "Image", "props": { "width": 600, "skin": "ui/mask_4x4_40%.png", "name": "Page", "height": 320, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 52, "child": [{ "type": "Text", "props": { "y": 84, "x": 150, "text": "用户名", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 53 }, { "type": "TextInput", "props": { "y": 80, "x": 240, "width": 160, "var": "loginNickname", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "LoginNickname", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 54, "child": [{ "type": "Text", "props": { "y": 35, "text": "2-12个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 55 }] }, { "type": "Text", "props": { "y": 144, "x": 172, "text": "密码", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 56 }, { "type": "TextInput", "props": { "y": 140, "x": 240, "width": 160, "var": "loginPassword", "valign": "middle", "skin": "comp/textinput.png", "sizeGrid": "10,10,10,10", "name": "LoginPassword", "height": 30, "fontSize": 22, "font": "Arial" }, "compId": 57, "child": [{ "type": "Text", "props": { "y": 35, "x": 0, "text": "6-16个字符", "fontSize": 12, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 58 }] }, { "type": "Button", "props": { "x": 320, "width": 160, "var": "loginBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "LoginBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "立即登录", "height": 40, "bottom": 50, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 61 }, { "type": "Label", "props": { "width": 160, "var": "goRegisterBtn", "valign": "middle", "text": "去注册", "styleSkin": "comp/button.png", "sizeGrid": "10,10,10,10", "right": 0, "name": "GoRegisterBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "去登陆", "height": 40, "fontSize": 22, "color": "#ffffff", "bottom": 0, "anchorY": 1, "anchorX": 1, "align": "center" }, "compId": 63 }] }] }, { "type": "Image", "props": { "zOrder": 1, "var": "awardPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "AwardPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 25, "child": [{ "type": "Image", "props": { "width": 320, "skin": "ui/UI_Button_Standard_Orange.png", "sizeGrid": "10,10,20,10", "name": "Page", "height": 360, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 26, "child": [{ "type": "Text", "props": { "y": 40, "x": 116, "text": "恭喜获得", "pivotX": 0.5, "name": "AwardTitle", "fontSize": 22, "color": "#ffffff", "align": "center", "runtime": "laya.display.Text" }, "compId": 27 }, { "type": "Image", "props": { "y": 100, "x": 110, "width": 100, "skin": "comp/img_bg4.png", "sizeGrid": "10,10,10,10", "name": "AwardRound", "height": 100 }, "compId": 37, "child": [{ "type": "Image", "props": { "var": "awardImage", "top": 10, "skin": "ui/status_coin.png", "sizeGrid": "0,0,0,0", "right": 10, "name": "AwardImage", "left": 10, "bottom": 10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 76 }] }, { "type": "Button", "props": { "y": 260, "width": 160, "var": "doubleAwardBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "DoubleAwardBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "领取双倍", "height": 40, "centerX": 1, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 35 }, { "type": "Label", "props": { "y": 320, "x": 160, "var": "closeAwardBtn", "text": "直接关闭", "name": "CloseAward", "fontSize": 14, "color": "#ffffff", "centerX": 1, "anchorY": 0.5, "anchorX": 0.5, "align": "center" }, "compId": 36 }] }] }, { "type": "Image", "props": { "zOrder": 1, "var": "matchPanel", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "MatchPanel", "left": 0, "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 45, "child": [{ "type": "Image", "props": { "width": 320, "skin": "ui/UI_Button_Standard_Orange.png", "sizeGrid": "10,10,20,10", "name": "Page", "height": 240, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 46, "child": [{ "type": "Label", "props": { "y": 80, "x": 127, "var": "matchText", "text": "匹配中", "pivotY": 0.5, "name": "MatchText", "fontSize": 22, "color": "#ffffff" }, "compId": 47 }, { "type": "Button", "props": { "y": 160, "width": 160, "var": "cancelMatchBtn", "skin": "comp/button.png", "sizeGrid": "10,10,10,10", "name": "CancelMatchBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "取消匹配", "height": 40, "centerX": 1, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 49 }] }] }], "loadList": ["ui/bg1.jpg", "comp/img_bg5.png", "ui/status_coin.png", "ui/UI_Button_Standard_Red.png", "ui/UI_Panel_Window.png", "ui/f02.jpg", "ui/f01.jpg", "ui/mask_4x4_40%.png", "comp/textinput.png", "comp/button.png", "ui/UI_Button_Standard_Orange.png", "comp/img_bg4.png"], "loadList3D": [] };
         ui.LobbyUI = LobbyUI;
         REG("ui.LobbyUI", LobbyUI);
         class MatchUI extends Laya.Scene {
@@ -106,7 +106,7 @@
                 this.createView(MatchUI.uiView);
             }
         }
-        MatchUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Main", "labelSize": 30, "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Label", "props": { "y": 320, "x": 568, "width": 936, "text": "log", "name": "Console", "height": 640, "fontSize": 16, "color": "#ff0400", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 71 }] }, { "type": "Image", "props": { "width": 240, "var": "gamePad", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 57 }, "compId": 41, "child": [{ "type": "Button", "props": { "width": 100, "var": "jumpBtn", "top": -10, "stateNum": 1, "skin": "ui/btn_retry.png", "name": "JumpBtn", "labelSize": 30, "labelColors": "#ffffff", "label": "跳", "height": 100, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Button", "props": { "width": 100, "var": "defendBtn", "stateNum": 1, "skin": "ui/btn_retry.png", "name": "DefendBtn", "left": -10, "labelSize": 30, "labelColors": "#ffffff", "label": "防", "height": 100, "centerY": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Button", "props": { "width": 100, "var": "kickBtn", "stateNum": 1, "skin": "ui/btn_retry.png", "right": -10, "name": "KickBtn", "labelSize": 30, "labelColors": "#ffffff", "label": "踢", "height": 100, "centerY": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Button", "props": { "width": 100, "var": "fistBtn", "stateNum": 1, "skin": "ui/btn_retry.png", "name": "FistBtn", "labelSize": 30, "labelColors": "#ffffff", "label": "拳", "height": 100, "centerX": 0.5, "bottom": -10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Button", "props": { "width": 70, "var": "exitBtn", "top": 10, "stateNum": 1, "skin": "ui/arrow_prev_page_f.png", "name": "Exit", "left": 10, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff" }, "compId": 73 }, { "type": "Label", "props": { "top": 45, "text": "VS", "styleSkin": "comp/button.png", "name": "VS", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开", "fontSize": 44, "color": "#ffcc00", "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 84 }, { "type": "Image", "props": { "width": 1136, "var": "leftHPPanel", "top": 0, "name": "LeftHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 79, "child": [{ "type": "Label", "props": { "y": 40, "x": 200, "var": "name0Text", "text": "Player0", "styleSkin": "comp/label.png", "name": "Name0Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 0 }, "compId": 82 }, { "type": "Image", "props": { "y": 16, "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "name": "Background", "left": 200, "height": 32, "clipWidth": 10, "anchorY": 0.5 }, "compId": 77, "child": [{ "type": "Clip", "props": { "y": 16, "x": 5, "width": 300, "var": "fillImage0", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage0", "height": 24, "anchorY": 0.5, "anchorX": 0 }, "compId": 78 }, { "type": "Label", "props": { "var": "hp0Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP0Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "align": "right" }, "compId": 83 }] }] }, { "type": "Image", "props": { "width": 1136, "var": "rightHPPanel", "top": 0, "name": "RightHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 85, "child": [{ "type": "Label", "props": { "var": "name1Text", "top": 30, "text": "Player1", "styleSkin": "comp/label.png", "right": 200, "name": "Name1Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 1 }, "compId": 86 }, { "type": "Image", "props": { "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "right": 200, "name": "Background", "height": 32, "clipWidth": 10, "anchorY": 0.5, "anchorX": 1 }, "compId": 88, "child": [{ "type": "Clip", "props": { "y": 16, "x": 305, "width": 300, "var": "fillImage1", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage1", "height": 24, "anchorY": 0.5, "anchorX": 1 }, "compId": 89 }, { "type": "Label", "props": { "var": "hp1Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP1Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 87 }] }] }], "loadList": ["ui/btn_retry.png", "ui/arrow_prev_page_f.png", "comp/button.png", "comp/label.png", "comp/progress$bar.png", "comp/progress.png"], "loadList3D": [] };
+        MatchUI.uiView = { "type": "Scene", "props": { "width": 1136, "name": "Main", "labelSize": 30, "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "y": 0, "x": 0, "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 51 }, { "type": "Script", "props": { "y": 0, "x": 0, "logNode": "@node:71", "gamePad": "@node:41", "runtime": "scripts/LogManager.ts" }, "compId": 72 }, { "type": "Sprite", "props": { "name": "Viewport" }, "compId": 19, "child": [{ "type": "Label", "props": { "y": 320, "x": 568, "width": 936, "text": "log", "name": "Console", "height": 640, "fontSize": 16, "color": "#ff0400", "anchorY": 0.5, "anchorX": 0.5 }, "compId": 71 }] }, { "type": "Image", "props": { "width": 1136, "name": "MainPanel", "height": 640, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 90, "child": [{ "type": "Button", "props": { "width": 70, "var": "exitBtn", "top": 10, "stateNum": 1, "skin": "ui/arrow_prev_page_f.png", "name": "ExitBtn", "left": 10, "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff" }, "compId": 73 }, { "type": "Label", "props": { "y": 66, "x": 568, "top": 45, "text": "VS", "styleSkin": "comp/button.png", "name": "VS", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "离开", "fontSize": 44, "color": "#ffcc00", "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 84 }, { "type": "Image", "props": { "y": 319, "x": 568, "width": 1136, "var": "leftHPPanel", "top": 0, "name": "LeftHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 79, "child": [{ "type": "Label", "props": { "y": 40, "x": 200, "var": "name0Text", "text": "Player0", "styleSkin": "comp/label.png", "name": "Name0Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 0 }, "compId": 82 }, { "type": "Image", "props": { "y": 16, "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "name": "Background", "left": 200, "height": 32, "clipWidth": 10, "anchorY": 0.5 }, "compId": 77, "child": [{ "type": "Clip", "props": { "y": 16, "x": 5, "width": 300, "var": "fillImage0", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage0", "height": 24, "anchorY": 0.5, "anchorX": 0 }, "compId": 78 }, { "type": "Label", "props": { "var": "hp0Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP0Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "align": "right" }, "compId": 83 }] }] }, { "type": "Image", "props": { "y": 319, "x": 568, "width": 1136, "var": "rightHPPanel", "top": 0, "name": "RightHPPanel", "height": 640, "clipWidth": 10, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 85, "child": [{ "type": "Label", "props": { "var": "name1Text", "top": 30, "text": "Player1", "styleSkin": "comp/label.png", "right": 200, "name": "Name1Text", "fontSize": 22, "color": "#ffffff", "anchorY": 0.5, "anchorX": 1 }, "compId": 86 }, { "type": "Image", "props": { "width": 310, "top": 50, "skin": "comp/progress$bar.png", "sizeGrid": "10,10,10,10", "right": 200, "name": "Background", "height": 32, "clipWidth": 10, "anchorY": 0.5, "anchorX": 1 }, "compId": 88, "child": [{ "type": "Clip", "props": { "y": 16, "x": 305, "width": 300, "var": "fillImage1", "skin": "comp/progress.png", "sizeGrid": "10,10,10,10", "name": "FillImage1", "height": 24, "anchorY": 0.5, "anchorX": 1 }, "compId": 89 }, { "type": "Label", "props": { "var": "hp1Text", "text": "300", "styleSkin": "comp/label.png", "name": "HP1Text", "fontSize": 24, "color": "#ff0400", "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 87 }] }] }] }, { "type": "Image", "props": { "width": 240, "var": "gamePad", "right": 50, "pivotY": 120, "pivotX": 120, "name": "GamePad", "height": 240, "bottom": 50 }, "compId": 41, "child": [{ "type": "Button", "props": { "width": 100, "var": "jumpBtn", "top": -10, "stateNum": 1, "skin": "ui/btn_retry.png", "name": "JumpBtn", "labelSize": 30, "labelColors": "#ffffff", "label": "跳", "height": 100, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 21 }, { "type": "Button", "props": { "width": 100, "var": "defendBtn", "stateNum": 1, "skin": "ui/btn_retry.png", "name": "DefendBtn", "left": -10, "labelSize": 30, "labelColors": "#ffffff", "label": "防", "height": 100, "centerY": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 22 }, { "type": "Button", "props": { "width": 100, "var": "kickBtn", "stateNum": 1, "skin": "ui/btn_retry.png", "right": -10, "name": "KickBtn", "labelSize": 30, "labelColors": "#ffffff", "label": "踢", "height": 100, "centerY": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 23 }, { "type": "Button", "props": { "width": 100, "var": "fistBtn", "stateNum": 1, "skin": "ui/btn_retry.png", "name": "FistBtn", "labelSize": 30, "labelColors": "#ffffff", "label": "拳", "height": 100, "centerX": 0.5, "bottom": -10, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 24 }] }, { "type": "Image", "props": { "zOrder": 1, "y": 321, "x": 569, "width": 1136, "var": "endPanel", "name": "EndPanel", "height": 640, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 92, "child": [{ "type": "Image", "props": { "y": 322, "x": 570, "width": 400, "var": "winPage", "skin": "ui/UI_Button_Standard_Orange.png", "sizeGrid": "15,15,20,15", "name": "WinPage", "height": 300, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 93 }, { "type": "Image", "props": { "y": 322, "x": 570, "width": 400, "var": "losePage", "skin": "ui/UI_Button_Standard_Sky.png", "sizeGrid": "15,15,20,15", "name": "LosePage", "height": 300, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 95 }, { "type": "Button", "props": { "y": 393, "x": 570, "width": 120, "var": "endBtn", "stateNum": 1, "skin": "ui/UI_Button_Standard_Red.png", "sizeGrid": "10,10,20,10", "name": "EndBtn", "labelSize": 22, "labelPadding": "-2", "labelColors": "#ffffff", "label": "离开", "height": 60, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 94 }] }], "loadList": ["ui/arrow_prev_page_f.png", "comp/button.png", "comp/label.png", "comp/progress$bar.png", "comp/progress.png", "ui/btn_retry.png", "ui/UI_Button_Standard_Orange.png", "ui/UI_Button_Standard_Sky.png", "ui/UI_Button_Standard_Red.png"], "loadList3D": [] };
         ui.MatchUI = MatchUI;
         REG("ui.MatchUI", MatchUI);
         class TipsUI extends Laya.Scene {
@@ -336,13 +336,17 @@
             this._posz = 0;
             this.distance = 6;
             this.client = null;
-            this.clientUid = "";
-            this.modelUid = "";
+            this.clientID = "";
+            this.avatarID = "";
             this.isLocalPlayer = false;
             this.direction = 1;
+            this.currentHP = 300;
+            this.isDead = false;
             this.client = WebSocketClient.getInstance();
             Laya.stage.on("nethandle", this, this.handle);
             this.distance = 6;
+            this.currentHP = 300;
+            this.isDead = false;
         }
         get posz() {
             return this._posz;
@@ -361,7 +365,7 @@
             }
             var obj = {
                 "type": "cs_move",
-                "uid": this.clientUid,
+                "uid": this.clientID,
                 "posz": z,
             };
             this.client.sendData(obj);
@@ -379,7 +383,7 @@
             return null;
         }
         handle(obj) {
-            var isDriven = (obj.uid == this.modelUid);
+            var isDriven = (obj.uid == this.avatarID);
             switch (obj.type) {
                 case "sc_fist": {
                     if (isDriven) {
@@ -431,8 +435,34 @@
                             console.log(obj.uid, "防御了，在他边上创建防御特效");
                         }
                         else if (obj.damage > 0) {
-                            console.log(obj.uid + "受伤了(-" + obj.damage + ")，让他播放挨打硬直");
-                            MatchView.instance.updateHP(this, obj.damage);
+                            if (this.isDead) {
+                                console.log(obj.uid + "已死亡，无效攻击");
+                                return;
+                            }
+                            console.log(obj.uid + "挨打(-" + obj.damage + ")");
+                            this.currentHP -= obj.damage;
+                            if (this.currentHP <= 0) {
+                                this.currentHP = 0;
+                                this.isDead = true;
+                                console.log("========> 最后一拳打死");
+                                Laya.timer.clearAll(this);
+                                Laya.timer.once(400, this, function () {
+                                    this.currentMotion = 11;
+                                    this.animator.play(this.motions[this.currentMotion]);
+                                    MatchView.instance.updateHP(this, obj.damage);
+                                });
+                            }
+                            else {
+                                Laya.timer.once(400, this, function () {
+                                    this.currentMotion = 10;
+                                    this.animator.play(this.motions[this.currentMotion]);
+                                    MatchView.instance.updateHP(this, obj.damage);
+                                    Laya.timer.once(600, this, function () {
+                                        this.currentMotion = 0;
+                                        this.animator.crossFade(this.motions[this.currentMotion], 0.2);
+                                    });
+                                });
+                            }
                         }
                     }
                 }
@@ -440,17 +470,17 @@
         }
         setUid(modelid, side) {
             console.log("设置uid：" + modelid);
-            this.modelUid = modelid;
-            this.clientUid = MatchView.instance.uid;
-            this.isLocalPlayer = (this.modelUid == this.clientUid);
+            this.avatarID = modelid;
+            this.clientID = MatchView.instance.uid;
+            this.isLocalPlayer = (this.avatarID == this.clientID);
             this.direction = (side == 0) ? 1 : -1;
-            this.gameObject = this.owner;
-            this.animator = this.gameObject.getComponent(Laya.Animator);
-            this.animator.play(this.motions[0]);
             this.currentMotion = 0;
             this.animLastTime = 0;
             this.posy = 0;
             this.posz = 0;
+            this.gameObject = this.owner;
+            this.animator = this.gameObject.getComponent(Laya.Animator);
+            this.animator.play(this.motions[this.currentMotion]);
             this._clickTime = 0;
             if (this.isLocalPlayer) {
                 MatchView.instance.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
@@ -491,7 +521,7 @@
                     else {
                         motion = 0;
                     }
-                    if (this.currentMotion != motion && this.currentMotion != 9) {
+                    if (this.currentMotion != motion && this.currentMotion != 9 && this.currentMotion != 10 && this.currentMotion != 10) {
                         this.currentMotion = motion;
                         this.animator.play(this.motions[this.currentMotion]);
                     }
@@ -555,7 +585,7 @@
             Laya.timer.clear(this, this.playOther);
             this.currentMotion = 0;
             this.animator.play(this.motions[this.currentMotion]);
-            console.log("播放待机动画");
+            console.log(this.avatarID + "播放待机动画");
         }
         ;
         playOther() {
@@ -566,9 +596,10 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_fist",
-                "uid": this.clientUid,
+                "uid": this.clientID,
             };
             this.client.sendData(obj);
+            console.log("发送出拳");
         }
         onFistCallback(e) {
             this.animLastTime = 600;
@@ -624,7 +655,6 @@
                 }
             }
             Laya.timer.once(waitTime, this, this.playIdle);
-            console.log("播完自动放待机：", waitTime);
         }
         sendHit(amount, broken = 0) {
             if (this.isLocalPlayer == false)
@@ -635,7 +665,7 @@
             }
             var obj = {
                 "type": "cs_hit",
-                "uid": this.clientUid,
+                "uid": this.clientID,
                 "amount": amount,
                 "broken": broken,
             };
@@ -645,7 +675,7 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_kick",
-                "uid": this.clientUid,
+                "uid": this.clientID,
             };
             this.client.sendData(obj);
         }
@@ -673,13 +703,12 @@
                 }
             }
             Laya.timer.once(waitTime, this, this.playIdle);
-            console.log("播完自动放待机：", waitTime);
         }
         sendJump(e) {
             this.touchEvent = e;
             var obj = {
                 "type": "cs_jump",
-                "uid": this.clientUid,
+                "uid": this.clientID,
             };
             this.client.sendData(obj);
         }
@@ -707,13 +736,12 @@
                 console.log("========> onJumpHandler.跳跃");
             }
             Laya.timer.once(waitTime, this, this.playIdle);
-            console.log("播完自动放待机：", waitTime);
         }
         sendDefend(e) {
             this.touchEvent = e;
             var obj = {
                 "type": "cs_defend",
-                "uid": this.clientUid,
+                "uid": this.clientID,
                 "defend": 1,
             };
             this.client.sendData(obj);
@@ -739,7 +767,7 @@
                 this.touchEvent = e;
                 var obj = {
                     "type": "cs_defend",
-                    "uid": this.clientUid,
+                    "uid": this.clientID,
                     "defend": 0,
                 };
                 this.client.sendData(obj);
@@ -756,11 +784,11 @@
     class MatchView extends ui.MatchUI {
         constructor() {
             super();
-            this.hpA = 300;
-            this.hpB = 300;
             this.uid = "";
             MatchView.instance = this;
             this.uid = Laya.LocalStorage.getItem("uid");
+            this.endPanel.visible = false;
+            this.endPanel.mouseEnabled = false;
             Laya.stage.offAll("nethandle");
             Laya.stage.on("nethandle", this, this.handle);
             this.joystick = new JoystickView();
@@ -773,7 +801,7 @@
                 camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
                 var directionLight = this.scene3d.addChild(new Laya.DirectionLight());
                 directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-                directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
+                directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
                 Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
                 Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, this.onPlayerComplete));
             }
@@ -787,6 +815,12 @@
                 Laya.stage.addChild(lobbyView);
                 console.log("离开游戏");
             });
+            this.endBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                console.log("离开游戏");
+            });
+        }
+        onDestroy() {
+            console.log("退出比赛");
         }
         onBackgroundComplete(sp) {
             this.background = this.scene3d.addChild(sp);
@@ -822,6 +856,13 @@
             WebSocketClient.getInstance().sendData(obj);
             console.log("发送离开游戏");
         }
+        sendDead() {
+            var obj = {
+                "type": "cs_dead",
+                "uid": this.uid,
+            };
+            WebSocketClient.getInstance().sendData(obj);
+        }
         handle(obj) {
             var isLocalPlayer = (obj.uid == this.uid);
             switch (obj.type) {
@@ -843,14 +884,18 @@
                     }
                     this.scriptA.setUid(obj.user0.uid, 0);
                     this.scriptB.setUid(obj.user1.uid, 1);
-                    this.hpA = 300;
-                    this.hp0Text.text = this.hpA.toString();
-                    this.fillImage0.width = this.hpA;
+                    this.hp0Text.text = this.scriptA.currentHP.toString();
+                    this.fillImage0.width = this.scriptA.currentHP;
                     this.name0Text.text = obj.user0.nickname;
-                    this.hpB = 300;
-                    this.hp1Text.text = this.hpB.toString();
-                    this.fillImage1.width = this.hpB;
+                    this.hp1Text.text = this.scriptB.currentHP.toString();
+                    this.fillImage1.width = this.scriptB.currentHP;
                     this.name1Text.text = obj.user1.nickname;
+                    break;
+                }
+                case "sc_dead": {
+                    console.log(obj.win + "获胜，" + obj.lose + "失败");
+                    this.endPanel.visible = true;
+                    this.endPanel.mouseEnabled = true;
                     break;
                 }
             }
@@ -861,22 +906,20 @@
         }
         updateHP(player, damage) {
             if (player == this.scriptA) {
-                if (this.hpA <= damage) {
-                    console.log("玩家A已死亡");
-                    return;
-                }
-                this.hpA -= damage;
-                this.hp0Text.text = this.hpA.toString();
-                this.fillImage0.width = this.hpA;
+                this.hp0Text.text = this.scriptA.currentHP.toString();
+                this.fillImage0.width = this.scriptA.currentHP;
             }
             else if (player == this.scriptB) {
-                if (this.hpB <= damage) {
-                    console.log("玩家B已死亡");
-                    return;
-                }
-                this.hpB -= damage;
-                this.hp1Text.text = this.hpB.toString();
-                this.fillImage1.width = this.hpB;
+                this.hp1Text.text = this.scriptB.currentHP.toString();
+                this.fillImage1.width = this.scriptB.currentHP;
+            }
+            if (this.scriptA.clientID == this.uid && this.scriptA.isDead) {
+                this.sendDead();
+                console.log("这边死了");
+            }
+            else if (this.scriptB.clientID == this.uid && this.scriptB.isDead) {
+                this.sendDead();
+                console.log("这边死了");
             }
         }
     }

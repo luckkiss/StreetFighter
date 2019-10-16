@@ -380,6 +380,18 @@ var server = ws.createServer(function(conn) {
 				conn.enemy.sendText(jsonStr);
 				break;
 			}
+			case "cs_dead": { //死亡
+				console.log(conn.uid + "[报告死亡]");
+				var response = {
+					"type": "sc_dead",
+					"win": conn.enemy.uid,
+					"lose": conn.uid,
+					"gold": 100,
+				}
+				conn.sendText(JSON.stringify(response));
+				conn.enemy.sendText(JSON.stringify(response));
+				break;
+			}
 			case "cs_standup": { //站起
 				console.log(conn.uid + "[请求站起]");
 				var response = {
