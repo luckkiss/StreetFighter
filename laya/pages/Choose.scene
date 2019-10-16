@@ -2,7 +2,7 @@
     "x":0,
     "type":"Scene",
     "selectedBox":2,
-    "selecteID":10,
+    "selecteID":5,
     "searchKey":"Scene,Choose,Choose",
     "props":{"zOrder":99,"width":1136,"var":"Choose","sceneColor":"#000000","name":"Choose","height":640},
     "nodeParent":-1,
@@ -34,7 +34,7 @@
             "x":15,
             "type":"Image",
             "searchKey":"Image,Mask,mask",
-            "props":{"width":1136,"var":"mask","skin":"comp/img_blank.png","name":"Mask","label":"确定","height":640,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+            "props":{"var":"mask","top":0,"skin":"ui/mask_4x4_40%.png","right":0,"name":"Mask","left":0,"label":"确定","bottom":0,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"Mask",
             "isOpen":true,
@@ -47,17 +47,16 @@
                     "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
-                    "props":{"width":360,"skin":"comp/img_blank.png","name":"Page","label":"确定","height":200,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                    "props":{"width":360,"skin":"ui/mask_4x4_80%.png","name":"Page","label":"确定","height":200,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":5,
                     "label":"Page",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":6,
                     "child":[
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label",
                             "props":{"top":60,"text":"确定要选择吗？","styleSkin":"comp/image.png","fontSize":20,"color":"#ffffff","centerX":0.5,"anchorY":0.5,"anchorX":0.5},
@@ -71,7 +70,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,YesBtn,yesBtn",
                             "props":{"var":"yesBtn","skin":"comp/button.png","name":"YesBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"确定","centerX":80,"bottom":40,"anchorY":0.5,"anchorX":0.5},
@@ -86,7 +84,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,NoBtn,noBtn",
                             "props":{"var":"noBtn","skin":"comp/button.png","name":"NoBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"取消","centerX":-80,"bottom":40,"anchorY":0.5,"anchorX":0.5},
@@ -100,7 +97,8 @@
                             "child":[
                                 ]
                         }]
-                }]
+                }],
+            "$HIDDEN":false
         }],
     "animations":[
         {
