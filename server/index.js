@@ -45,6 +45,7 @@ PlayerStatus.DISCONNECT = -1; 	//离线
 PlayerStatus.FREE = 0;			//空闲状态
 PlayerStatus.WAIT = 1;			//等待匹配
 PlayerStatus.GAME = 2;			//游戏中
+PlayerStatus.END  = 3;			//游戏结束
 
 // 创建一个连接
 var server = ws.createServer(function(conn) {

@@ -1,4 +1,5 @@
-// import GameConfig from "./GameConfig";
+
+import LoadingView from "./scripts/LoadingView";
 
 export default class WebSocketClient extends Laya.Script {
     public static getInstance(): WebSocketClient {
@@ -10,7 +11,6 @@ export default class WebSocketClient extends Laya.Script {
 	/*界面实例*/
     private static instance: WebSocketClient;
     
-    // "ws://127.0.0.1:3000/socket.io/?EIO=4&transport=websocket";
     private url: string = "ws://192.168.1.101:3001";
     private socket: Laya.Socket;
     private byte: Laya.Byte;
@@ -33,6 +33,10 @@ export default class WebSocketClient extends Laya.Script {
     }
 
     public initSocket(): void {
+        if(WebSocketClient.getInstance().isConnected) {
+            console.log("网络状态良好");
+            return;
+        }
         this.byte = new Laya.Byte();
         //大小端，这里我们采用小端
         this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
@@ -40,6 +44,7 @@ export default class WebSocketClient extends Laya.Script {
         //这里我们采用小端
         this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
         //建立连接
+        Laya.stage.addChild(LoadingView.getInstance());
         this.socket.connectByUrl(this.url);
         this.socket.on(Laya.Event.OPEN, this, this.openHandler);
         this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);

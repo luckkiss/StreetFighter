@@ -71,35 +71,9 @@ class Main {
 
 	onLoaded(): void {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
-		var loadView = new LoadView(); //加载模式/内嵌模式
-		Laya.stage.addChild(loadView);
-
-		/* 测试代码
-		{
-			var scene3d: Laya.Scene3D;
-			var playerA: Laya.Sprite3D;
-			
-            //添加3D场景
-            scene3d = Laya.stage.addChild(new Laya.Scene3D()) as Laya.Scene3D;
-            //添加照相机
-            var camera: Laya.Camera = (scene3d.addChild(new Laya.Camera(0, 0.3, 1000))) as Laya.Camera;
-            camera.transform.translate(new Laya.Vector3(6, 2, 0));
-			camera.transform.rotate(new Laya.Vector3(3, 90, 0), true, false);
-			// camera.transform.position = new Laya.Vector3(6, 2, 0);
-			// camera.transform.rotationEuler = new Laya.Vector3(3, 90, 0);
-            //添加方向光
-            var pointLight: Laya.PointLight = scene3d.addChild(new Laya.PointLight()) as Laya.PointLight;
-            // pointLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
-            // pointLight.transform.worldMatrix.setForward(new Laya.Vector3(1, -1, 0));
-			pointLight.transform.position = new Laya.Vector3(1, 2, 0);
-            pointLight.color = new Laya.Vector3(1, 0.9, 0.8);
-            pointLight.intensity = 2;
-			//加载精灵
-			Laya.Sprite3D.load("remote/unity3d/RPG-Character.lh", Laya.Handler.create(this, (sp: Laya.Sprite3D)=> {
-				playerA = scene3d.addChild(sp) as Laya.Sprite3D;
-			}));
-		}
-		*/
+		// var loadView = new LoadView(); //加载模式/内嵌模式
+		// Laya.stage.addChild(loadView);
+		Laya.stage.addChild(LoadView.getInstance());
 	}
 }
 //激活启动类

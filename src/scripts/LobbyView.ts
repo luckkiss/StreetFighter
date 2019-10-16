@@ -8,30 +8,22 @@ import UserData, { PlayerStatus } from "../backup/UserData";
 
 export default class LobbyView extends ui.LobbyUI {
     private static instance: LobbyView;
+    public static getInstance(): LobbyView {
+        if(this.instance == null) {
+            this.instance = new LobbyView();
+        }
+        return this.instance;
+	}
     
-    private client: WebSocketClient = null;
-    private uid: string = null;
-
     constructor() {
         super();
-        LobbyView.instance = this;
-        // this.createView(Laya.View.uiMap["Lobby"]);
-
         // Laya.LocalStorage.clear();
-        this.uid = Laya.LocalStorage.getItem("uid");
-        console.log("是否有用户信息：" + (this.uid != null) + "：" + this.uid);
+        UserData.getInstance().uid = Laya.LocalStorage.getItem("uid");
+        console.log("是否有用户信息：" + UserData.getInstance().uid);
+    }
 
-        // 添加WebSocket
-        this.client = WebSocketClient.getInstance();
-        this.client.initSocket();
-        // 添加网络监听
-        Laya.stage.offAll("nethandle");
-        Laya.stage.on("nethandle", this, this.handle);
-        
-        Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
-        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
-        console.log("播放音乐.");
-        
+    onEnable(): void {
+        console.log("LobbyView.Enable");
         // UI初始化
         this.registerPanel.visible = false;
         this.loginPanel.visible = false;
@@ -39,7 +31,28 @@ export default class LobbyView extends ui.LobbyUI {
         this.awardPanel.visible = false;
         this.matchPanel.visible = false;
         this.addUIListener();
-        Laya.stage.addChild(LoadingView.getInstance());
+        // 添加WebSocket
+        WebSocketClient.getInstance().initSocket();
+        // 添加网络监听
+        Laya.stage.on("nethandle", this, this.handle);
+
+        Laya.SoundManager.playMusic("remote/audios/bgm.mp3");
+        Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
+        console.log("播放音乐.");
+    }
+
+    onDisable(): void {
+        console.log("LobbyView.Disable");
+        Laya.stage.offAll(); //关闭本地网络监听
+		Laya.timer.clearAll(this);
+    }
+
+    private enterGame(): void {
+        UserData.getInstance().playerStatus = PlayerStatus.GAME;
+		this.removeSelf();
+        console.log("确保先执行Disable，再执行到这里。");
+        console.log("跳转.MatchView");
+        Laya.stage.addChild(MatchView.getInstance());
     }
 
     private addUIListener(): void {
@@ -73,7 +86,7 @@ export default class LobbyView extends ui.LobbyUI {
         this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
         
         // 获取用户信息
-        if(this.uid) {
+        if(UserData.getInstance().uid) {
             this.registerPanel.visible = false;
             this.userPanel.visible = true;
         } else {
@@ -86,7 +99,7 @@ export default class LobbyView extends ui.LobbyUI {
         switch(obj.type) {
             case "connected": { //建立连接
 		        Laya.stage.removeChild(LoadingView.getInstance());
-                if(this.uid) {
+                if(UserData.getInstance().uid) {
                     this.sendAutoLogin();
                 }
                 break;
@@ -106,6 +119,7 @@ export default class LobbyView extends ui.LobbyUI {
                 console.log("登陆成功，写入cookie：" + obj.uid + ": " + obj.pwd);
                 Laya.LocalStorage.setItem("uid", obj.uid);
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
+                UserData.getInstance().uid = obj.uid;
                 this.registerPanel.visible = false;
                 this.loginPanel.visible = false;
                 this.userPanel.visible = true;
@@ -134,13 +148,10 @@ export default class LobbyView extends ui.LobbyUI {
                 break;
             }
             case "sc_match_success": { //匹配成功
-                console.log("匹配成功");
-                Laya.timer.once(1000, this, this.onEnterGame);
-                UserData.getInstance().playerStatus = PlayerStatus.GAME;
+                Laya.timer.once(1000, this, this.enterGame);
                 break;
             }
             case "sc_match_cancel": { //取消匹配
-                // TipsView.getInstance().showText(1000, "取消匹配");
                 UserData.getInstance().playerStatus = PlayerStatus.FREE;
                 this.matchPanel.visible = false;
                 break;
@@ -156,7 +167,7 @@ export default class LobbyView extends ui.LobbyUI {
             "type": "cs_check_register",
             "nick": this.nicknameInput.text,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     // 注册用户
@@ -179,7 +190,7 @@ export default class LobbyView extends ui.LobbyUI {
             "nick": this.nicknameInput.text,
             "pwd": this.md5(this.passwordInput.text),
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     // 手动登录
@@ -189,17 +200,17 @@ export default class LobbyView extends ui.LobbyUI {
             "nickname": this.loginNickname.text,
             "pwd": this.md5(this.loginPassword.text),
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     // 自动登录
     private sendAutoLogin(): void {
         var obj: Object = {
             "type": "cs_autoLogin",
-            "uid": Laya.LocalStorage.getItem("uid"),
+            "uid": UserData.getInstance().uid,
             "pwd": Laya.LocalStorage.getItem("pwd")
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     // 改名、改颜色
@@ -209,9 +220,9 @@ export default class LobbyView extends ui.LobbyUI {
     private sendSign(): void {
         var obj: Object = {
             "type": "cs_sign",
-            "uid": Laya.LocalStorage.getItem("uid"),
+            "uid": UserData.getInstance().uid,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     // 开始匹配
@@ -221,9 +232,9 @@ export default class LobbyView extends ui.LobbyUI {
         Laya.timer.loop(1000, this, this.textAnimation); //定时重复执行
         var obj: Object = {
             "type": "cs_match",
-            "uid": Laya.LocalStorage.getItem("uid"),
+            "uid": UserData.getInstance().uid,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     // 取消匹配
@@ -232,9 +243,9 @@ export default class LobbyView extends ui.LobbyUI {
         Laya.timer.clear(this, this.textAnimation); //删除
         var obj: Object = {
             "type": "cs_cancel_match",
-            "uid": Laya.LocalStorage.getItem("uid"),
+            "uid": UserData.getInstance().uid,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     private array = ["", "。", "。。", "。。。"];
@@ -262,14 +273,6 @@ export default class LobbyView extends ui.LobbyUI {
 
     private onMatch(): void {}
     
-    private onEnterGame(): void {
-		var matchView: MatchView = new MatchView(); //加载模式/内嵌模式
-        Laya.stage.addChild(matchView);
-        Laya.stage.removeChild(this);
-        Laya.timer.clearAll(this); //删除所有大厅时钟
-        // Laya.stage.offAll();
-    }
-
     //#endregion
 
     // MD5加密
@@ -281,7 +284,7 @@ export default class LobbyView extends ui.LobbyUI {
     }
 
     // 头像遮罩 https://blog.csdn.net/wangmx1993328/article/details/84971519
-    addMask(): void {
+    private addMask(): void {
         //创建遮罩对象(精灵)
         let maskSprite = new Laya.Sprite();
         //由遮罩精灵获取绘图对象绘制一个圆形的遮罩区域，遮罩对象坐标系是相对遮罩对象本身的，(95,41)表示圆形的原点坐标，50 表示半径

@@ -121,6 +121,26 @@
         REG("ui.TipsUI", TipsUI);
     })(ui || (ui = {}));
 
+    class LoadingView extends ui.LoadingUI {
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new LoadingView();
+            }
+            return this.instance;
+        }
+        constructor() {
+            super();
+        }
+        onEnable() {
+            Laya.timer.frameLoop(1, this, () => {
+                this.loadingImage.rotation += 5;
+            });
+        }
+        onDisable() {
+            Laya.timer.clearAll(this);
+        }
+    }
+
     class WebSocketClient extends Laya.Script {
         constructor() {
             super();
@@ -144,10 +164,15 @@
             this.socket.connectByUrl(this.url);
         }
         initSocket() {
+            if (WebSocketClient.getInstance().isConnected) {
+                console.log("网络状态良好");
+                return;
+            }
             this.byte = new Laya.Byte();
             this.byte.endian = Laya.Byte.LITTLE_ENDIAN;
             this.socket = new Laya.Socket();
             this.socket.endian = Laya.Byte.LITTLE_ENDIAN;
+            Laya.stage.addChild(LoadingView.getInstance());
             this.socket.connectByUrl(this.url);
             this.socket.on(Laya.Event.OPEN, this, this.openHandler);
             this.socket.on(Laya.Event.MESSAGE, this, this.receiveHandler);
@@ -177,21 +202,6 @@
         }
         errorHandler(e = null) {
             console.log("连接出错");
-        }
-    }
-
-    class LoadingView extends ui.LoadingUI {
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new LoadingView();
-            }
-            return this.instance;
-        }
-        constructor() {
-            super();
-            Laya.timer.frameLoop(1, this, () => {
-                this.loadingImage.rotation += 5;
-            });
         }
     }
 
@@ -312,6 +322,27 @@
         }
     }
 
+    class UserData {
+        constructor() {
+            this.uid = "";
+            this.nickname = "";
+            this.playerStatus = PlayerStatus.FREE;
+        }
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new UserData();
+            }
+            return this.instance;
+        }
+    }
+    var PlayerStatus;
+    (function (PlayerStatus) {
+        PlayerStatus[PlayerStatus["DISCONNECT"] = -1] = "DISCONNECT";
+        PlayerStatus[PlayerStatus["FREE"] = 0] = "FREE";
+        PlayerStatus[PlayerStatus["WAIT"] = 1] = "WAIT";
+        PlayerStatus[PlayerStatus["GAME"] = 2] = "GAME";
+    })(PlayerStatus || (PlayerStatus = {}));
+
     class PlayerController extends Laya.Script3D {
         constructor() {
             super();
@@ -371,14 +402,14 @@
             this.client.sendData(obj);
         }
         checkDistance() {
-            this.distance = MatchView.instance.checkDistance();
+            this.distance = MatchView.getInstance().checkDistance();
         }
         getOtherPlayer() {
-            if (this == MatchView.instance.scriptA) {
-                return MatchView.instance.scriptB;
+            if (this == MatchView.getInstance().scriptA) {
+                return MatchView.getInstance().scriptB;
             }
-            else if (this == MatchView.instance.scriptB) {
-                return MatchView.instance.scriptA;
+            else if (this == MatchView.getInstance().scriptB) {
+                return MatchView.getInstance().scriptA;
             }
             return null;
         }
@@ -449,14 +480,14 @@
                                 Laya.timer.once(400, this, function () {
                                     this.currentMotion = 11;
                                     this.animator.play(this.motions[this.currentMotion]);
-                                    MatchView.instance.updateHP(this, obj.damage);
+                                    MatchView.getInstance().updateHP(this, obj.damage);
                                 });
                             }
                             else {
                                 Laya.timer.once(400, this, function () {
                                     this.currentMotion = 10;
                                     this.animator.play(this.motions[this.currentMotion]);
-                                    MatchView.instance.updateHP(this, obj.damage);
+                                    MatchView.getInstance().updateHP(this, obj.damage);
                                     Laya.timer.once(600, this, function () {
                                         this.currentMotion = 0;
                                         this.animator.crossFade(this.motions[this.currentMotion], 0.2);
@@ -469,9 +500,8 @@
             }
         }
         setUid(modelid, side) {
-            console.log("设置uid：" + modelid);
             this.avatarID = modelid;
-            this.clientID = MatchView.instance.uid;
+            this.clientID = UserData.getInstance().uid;
             this.isLocalPlayer = (this.avatarID == this.clientID);
             this.direction = (side == 0) ? 1 : -1;
             this.currentMotion = 0;
@@ -483,10 +513,10 @@
             this.animator.play(this.motions[this.currentMotion]);
             this._clickTime = 0;
             if (this.isLocalPlayer) {
-                MatchView.instance.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
-                MatchView.instance.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
-                MatchView.instance.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
-                MatchView.instance.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
+                MatchView.getInstance().fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
+                MatchView.getInstance().kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
+                MatchView.getInstance().jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
+                MatchView.getInstance().defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
                 Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
                 if (this.isLocalPlayer) {
                     JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
@@ -782,11 +812,17 @@
     }
 
     class MatchView extends ui.MatchUI {
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new MatchView();
+            }
+            return this.instance;
+        }
         constructor() {
             super();
-            this.uid = "";
-            MatchView.instance = this;
-            this.uid = Laya.LocalStorage.getItem("uid");
+        }
+        onEnable() {
+            console.log("MatchView.Enable");
             this.endPanel.visible = false;
             this.endPanel.mouseEnabled = false;
             Laya.stage.offAll("nethandle");
@@ -810,17 +846,16 @@
                 Laya.stage.removeChild(this.scene3d);
                 Laya.stage.removeChild(this.playerA);
                 Laya.stage.removeChild(this.playerB);
-                Laya.stage.removeChild(this);
-                var lobbyView = new LobbyView();
-                Laya.stage.addChild(lobbyView);
-                console.log("离开游戏");
+                this.removeSelf();
+                console.log("跳转.LobbyView");
+                Laya.stage.addChild(LobbyView.getInstance());
             });
             this.endBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
-                console.log("离开游戏");
             });
         }
-        onDestroy() {
-            console.log("退出比赛");
+        onDisable() {
+            console.log("MatchView.Disable");
+            Laya.stage.offAll();
         }
         onBackgroundComplete(sp) {
             this.background = this.scene3d.addChild(sp);
@@ -843,7 +878,7 @@
         sendGameReady() {
             var obj = {
                 "type": "cs_gameReady",
-                "uid": this.uid,
+                "uid": UserData.getInstance().uid,
             };
             WebSocketClient.getInstance().sendData(obj);
             console.log("发送准备完成");
@@ -851,7 +886,7 @@
         sendExitGame() {
             var obj = {
                 "type": "cs_exitGame",
-                "uid": this.uid,
+                "uid": UserData.getInstance().uid,
             };
             WebSocketClient.getInstance().sendData(obj);
             console.log("发送离开游戏");
@@ -859,12 +894,12 @@
         sendDead() {
             var obj = {
                 "type": "cs_dead",
-                "uid": this.uid,
+                "uid": UserData.getInstance().uid,
             };
             WebSocketClient.getInstance().sendData(obj);
         }
         handle(obj) {
-            var isLocalPlayer = (obj.uid == this.uid);
+            var isLocalPlayer = (obj.uid == UserData.getInstance().uid);
             switch (obj.type) {
                 case "sc_exit": {
                     console.log("收到逃跑" + obj.nickname);
@@ -876,10 +911,10 @@
                     this.playerB.addComponent(PlayerController);
                     this.scriptA = this.playerA.getComponent(PlayerController);
                     this.scriptB = this.playerB.getComponent(PlayerController);
-                    if (this.uid == obj.user0.uid) {
+                    if (UserData.getInstance().uid == obj.user0.uid) {
                         console.log("我在左边");
                     }
-                    else if (this.uid == obj.user1.uid) {
+                    else if (UserData.getInstance().uid == obj.user1.uid) {
                         console.log("我在右边");
                     }
                     this.scriptA.setUid(obj.user0.uid, 0);
@@ -913,11 +948,11 @@
                 this.hp1Text.text = this.scriptB.currentHP.toString();
                 this.fillImage1.width = this.scriptB.currentHP;
             }
-            if (this.scriptA.clientID == this.uid && this.scriptA.isDead) {
+            if (this.scriptA.clientID == UserData.getInstance().uid && this.scriptA.isDead) {
                 this.sendDead();
                 console.log("这边死了");
             }
-            else if (this.scriptB.clientID == this.uid && this.scriptB.isDead) {
+            else if (this.scriptB.clientID == UserData.getInstance().uid && this.scriptB.isDead) {
                 this.sendDead();
                 console.log("这边死了");
             }
@@ -949,51 +984,38 @@
         }
     }
 
-    class UserData {
-        constructor() {
-            this.uid = "";
-            this.nickname = "";
-            this.playerStatus = PlayerStatus.FREE;
-        }
-        static getInstance() {
-            if (this.instance == null) {
-                this.instance = new UserData();
-            }
-            return this.instance;
-        }
-    }
-    var PlayerStatus;
-    (function (PlayerStatus) {
-        PlayerStatus[PlayerStatus["DISCONNECT"] = -1] = "DISCONNECT";
-        PlayerStatus[PlayerStatus["FREE"] = 0] = "FREE";
-        PlayerStatus[PlayerStatus["WAIT"] = 1] = "WAIT";
-        PlayerStatus[PlayerStatus["GAME"] = 2] = "GAME";
-    })(PlayerStatus || (PlayerStatus = {}));
-
     class LobbyView extends ui.LobbyUI {
         constructor() {
             super();
-            this.client = null;
-            this.uid = null;
             this.array = ["", "。", "。。", "。。。"];
             this.tick = 0;
-            LobbyView.instance = this;
-            this.uid = Laya.LocalStorage.getItem("uid");
-            console.log("是否有用户信息：" + (this.uid != null) + "：" + this.uid);
-            this.client = WebSocketClient.getInstance();
-            this.client.initSocket();
-            Laya.stage.offAll("nethandle");
-            Laya.stage.on("nethandle", this, this.handle);
-            Laya.SoundManager.playMusic("remote/audios/bgm.mp3", 0);
-            Laya.SoundManager.autoStopMusic = true;
-            console.log("播放音乐.");
+            UserData.getInstance().uid = Laya.LocalStorage.getItem("uid");
+            console.log("是否有用户信息：" + UserData.getInstance().uid);
+        }
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new LobbyView();
+            }
+            return this.instance;
+        }
+        onEnable() {
+            console.log("LobbyView.Enable");
             this.registerPanel.visible = false;
             this.loginPanel.visible = false;
             this.userPanel.visible = false;
             this.awardPanel.visible = false;
             this.matchPanel.visible = false;
             this.addUIListener();
-            Laya.stage.addChild(LoadingView.getInstance());
+            WebSocketClient.getInstance().initSocket();
+            Laya.stage.on("nethandle", this, this.handle);
+            Laya.SoundManager.playMusic("remote/audios/bgm.mp3");
+            Laya.SoundManager.autoStopMusic = true;
+            console.log("播放音乐.");
+        }
+        onDisable() {
+            console.log("LobbyView.Disable");
+            Laya.stage.offAll();
+            Laya.timer.clearAll(this);
         }
         addUIListener() {
             this.nicknameInput.on(Laya.Event.BLUR, this, () => {
@@ -1023,7 +1045,7 @@
             });
             this.matchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendMatch);
             this.cancelMatchBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendCancelMatch);
-            if (this.uid) {
+            if (UserData.getInstance().uid) {
                 this.registerPanel.visible = false;
                 this.userPanel.visible = true;
             }
@@ -1036,7 +1058,7 @@
             switch (obj.type) {
                 case "connected": {
                     Laya.stage.removeChild(LoadingView.getInstance());
-                    if (this.uid) {
+                    if (UserData.getInstance().uid) {
                         this.sendAutoLogin();
                     }
                     break;
@@ -1056,6 +1078,7 @@
                     console.log("登陆成功，写入cookie：" + obj.uid + ": " + obj.pwd);
                     Laya.LocalStorage.setItem("uid", obj.uid);
                     Laya.LocalStorage.setItem("pwd", obj.pwd);
+                    UserData.getInstance().uid = obj.uid;
                     this.registerPanel.visible = false;
                     this.loginPanel.visible = false;
                     this.userPanel.visible = true;
@@ -1085,9 +1108,7 @@
                     break;
                 }
                 case "sc_match_success": {
-                    console.log("匹配成功");
-                    Laya.timer.once(1000, this, this.onEnterGame);
-                    UserData.getInstance().playerStatus = PlayerStatus.GAME;
+                    Laya.timer.once(1000, this, this.enterGame);
                     break;
                 }
                 case "sc_match_cancel": {
@@ -1097,12 +1118,18 @@
                 }
             }
         }
+        enterGame() {
+            UserData.getInstance().playerStatus = PlayerStatus.GAME;
+            this.removeSelf();
+            console.log("跳转.MatchView");
+            Laya.stage.addChild(MatchView.getInstance());
+        }
         sendCheckNickName() {
             var obj = {
                 "type": "cs_check_register",
                 "nick": this.nicknameInput.text,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         sendRegister() {
             if (this.nicknameInput.text.length < 2 || this.nicknameInput.text.length > 12) {
@@ -1122,7 +1149,7 @@
                 "nick": this.nicknameInput.text,
                 "pwd": this.md5(this.passwordInput.text),
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         sendLogin() {
             var obj = {
@@ -1130,23 +1157,23 @@
                 "nickname": this.loginNickname.text,
                 "pwd": this.md5(this.loginPassword.text),
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         sendAutoLogin() {
             var obj = {
                 "type": "cs_autoLogin",
-                "uid": Laya.LocalStorage.getItem("uid"),
+                "uid": UserData.getInstance().uid,
                 "pwd": Laya.LocalStorage.getItem("pwd")
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         setUserData() { }
         sendSign() {
             var obj = {
                 "type": "cs_sign",
-                "uid": Laya.LocalStorage.getItem("uid"),
+                "uid": UserData.getInstance().uid,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         sendMatch() {
             this.matchPanel.visible = true;
@@ -1154,18 +1181,18 @@
             Laya.timer.loop(1000, this, this.textAnimation);
             var obj = {
                 "type": "cs_match",
-                "uid": Laya.LocalStorage.getItem("uid"),
+                "uid": UserData.getInstance().uid,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         sendCancelMatch() {
             this.matchPanel.visible = true;
             Laya.timer.clear(this, this.textAnimation);
             var obj = {
                 "type": "cs_cancel_match",
-                "uid": Laya.LocalStorage.getItem("uid"),
+                "uid": UserData.getInstance().uid,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         textAnimation() {
             this.tick++;
@@ -1180,12 +1207,6 @@
         onCheckSign() { }
         onSign() { }
         onMatch() { }
-        onEnterGame() {
-            var matchView = new MatchView();
-            Laya.stage.addChild(matchView);
-            Laya.stage.removeChild(this);
-            Laya.timer.clearAll(this);
-        }
         md5(data) {
             return data;
         }
@@ -1208,6 +1229,10 @@
             this.progressLabel.text = "0%";
             Laya.timer.once(1000, this, this.onProLoaded);
         }
+        hide() {
+            Laya.timer.clearAll(this);
+            this.removeSelf();
+        }
         onProLoaded() {
             var res = [
                 { url: "res/atlas/ui.atlas", type: Laya.Loader.ATLAS },
@@ -1225,10 +1250,8 @@
             }
         }
         onComplete() {
-            console.log("加载完成，进入大厅");
-            var lobbyView = new LobbyView();
-            Laya.stage.addChild(lobbyView);
-            Laya.stage.removeChild(this);
+            this.hide();
+            Laya.stage.addChild(LobbyView.getInstance());
         }
     }
 
@@ -1272,8 +1295,7 @@
         }
         onLoaded() {
             Laya.View.uiMap = Laya.Loader.getRes("ui.json");
-            var loadView = new LoadView();
-            Laya.stage.addChild(loadView);
+            Laya.stage.addChild(LoadView.getInstance());
         }
     }
     new Main();

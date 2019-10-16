@@ -66,13 +66,13 @@ export default class PlayerController extends Laya.Script3D {
     // 实时检测间距
     private distance: number = 6;
     private checkDistance(): void {
-        this.distance = MatchView.instance.checkDistance();
+        this.distance = MatchView.getInstance().checkDistance();
     }
     private getOtherPlayer(): PlayerController {
-        if(this == MatchView.instance.scriptA) {
-            return MatchView.instance.scriptB;
-        } else if(this == MatchView.instance.scriptB) {
-            return MatchView.instance.scriptA;
+        if(this == MatchView.getInstance().scriptA) {
+            return MatchView.getInstance().scriptB;
+        } else if(this == MatchView.getInstance().scriptB) {
+            return MatchView.getInstance().scriptA;
         }
         return null;
     }
@@ -169,13 +169,13 @@ export default class PlayerController extends Laya.Script3D {
                             Laya.timer.once(400, this, function() { // 等拳打到了再播
                                 this.currentMotion = 11;
                                 this.animator.play(this.motions[this.currentMotion]);
-                                MatchView.instance.updateHP(this, obj.damage);
+                                MatchView.getInstance().updateHP(this, obj.damage);
                             });
                         } else { // 受击
                             Laya.timer.once(400, this, function() { // 等拳打到了再播
                                 this.currentMotion = 10;
                                 this.animator.play(this.motions[this.currentMotion]);
-                                MatchView.instance.updateHP(this, obj.damage);
+                                MatchView.getInstance().updateHP(this, obj.damage);
 
                                 // 挨打完恢复待机
                                 // Laya.timer.once(600, this, this.playIdle);
@@ -192,9 +192,9 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     public setUid(modelid: string, side: number): void {
-        console.log("设置uid：" + modelid);
+        // console.log("设置uid：" + modelid);
         this.avatarID = modelid;
-        this.clientID = MatchView.instance.uid;
+        this.clientID = UserData.getInstance().uid;
         this.isLocalPlayer = (this.avatarID == this.clientID); //只有自己的角色，可以输出操作
         this.direction = (side == 0)? 1 : -1;
 
@@ -209,10 +209,10 @@ export default class PlayerController extends Laya.Script3D {
 
         this._clickTime = 0;
         if(this.isLocalPlayer) {
-            MatchView.instance.fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
-            MatchView.instance.kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
-            MatchView.instance.jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
-            MatchView.instance.defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
+            MatchView.getInstance().fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
+            MatchView.getInstance().kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
+            MatchView.getInstance().jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
+            MatchView.getInstance().defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
             // 全局
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
             if(this.isLocalPlayer) {
