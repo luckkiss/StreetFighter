@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":25,
-    "selecteID":26,
+    "selectedBox":78,
+    "selecteID":87,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1136,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":640},
     "nodeParent":-1,
-    "maxID":77,
+    "maxID":89,
     "label":"Lobby",
     "isOpen":true,
     "isDirectory":true,
@@ -530,14 +530,13 @@
             "props":{"zOrder":1,"var":"awardPanel","top":0,"skin":"ui/mask_4x4_40%.png","right":0,"name":"AwardPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"AwardPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":25,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
                     "props":{"width":320,"skin":"ui/UI_Button_Standard_Orange.png","sizeGrid":"10,10,20,10","name":"Page","height":360,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
@@ -626,14 +625,13 @@
             "props":{"zOrder":1,"var":"matchPanel","top":0,"skin":"ui/mask_4x4_40%.png","right":0,"name":"MatchPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"MatchPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":45,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
                     "props":{"width":320,"skin":"ui/UI_Button_Standard_Orange.png","sizeGrid":"10,10,20,10","name":"Page","height":240,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
@@ -669,6 +667,65 @@
                             "isAniNode":true,
                             "hasChild":false,
                             "compId":49,
+                            "child":[
+                                ]
+                        }]
+                }],
+            "$HIDDEN":true
+        },
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,WXPanel,wxPanel",
+            "props":{"y":320,"x":568,"var":"wxPanel","top":0,"skin":"ui/mask_4x4_40%.png","right":0,"name":"WXPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},
+            "nodeParent":2,
+            "label":"WXPanel",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":77,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,Page",
+                    "props":{"width":480,"skin":"ui/mask_4x4_40%.png","name":"Page","height":320,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                    "nodeParent":77,
+                    "label":"Page",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":78,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,WXTitle,wxTitle",
+                            "props":{"y":80,"var":"wxTitle","text":"微信授权登录","name":"WXTitle","fontSize":22,"color":"#ffffff","centerX":0.5,"align":"center"},
+                            "nodeParent":78,
+                            "label":"WXTitle",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":82,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "searchKey":"Button,WXLoginBtn,wxLoginBtn",
+                            "props":{"y":200,"width":160,"var":"wxLoginBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"WXLoginBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即注册","height":40,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                            "nodeParent":78,
+                            "label":"WXLoginBtn",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":87,
                             "child":[
                                 ]
                         }]

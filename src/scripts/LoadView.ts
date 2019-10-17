@@ -20,7 +20,6 @@ export default class LoadView extends ui.LoadUI {
     public hide(): void {
         // Laya.stage.offAll();
 		Laya.timer.clearAll(this);
-		// Laya.stage.removeChild(this);
 		this.removeSelf();
 	}
 	

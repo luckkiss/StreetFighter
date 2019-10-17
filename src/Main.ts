@@ -1,7 +1,5 @@
 import GameConfig from "./GameConfig";
 import LoadView from "./scripts/LoadView";
-import JoystickView from "./scripts/JoystickView";
-import LoadingView from "./scripts/LoadingView";
 
 class Main {
 	constructor() {
@@ -71,8 +69,6 @@ class Main {
 
 	onLoaded(): void {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
-		// var loadView = new LoadView(); //加载模式/内嵌模式
-		// Laya.stage.addChild(loadView);
 		Laya.stage.addChild(LoadView.getInstance());
 	}
 }
