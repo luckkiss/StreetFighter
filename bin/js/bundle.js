@@ -396,6 +396,10 @@
     class PlayerController extends Laya.Script3D {
         constructor() {
             super();
+            this.avatarID = "";
+            this.currentHP = 300;
+            this.isDead = false;
+            this.direction = 1;
             this.myIndex = -1;
             this.motions = [
                 "Unarmed-Idle",
@@ -416,18 +420,9 @@
             this.posy = 0;
             this._posz = 0;
             this.distance = 6;
-            this.client = null;
-            this.clientID = "";
-            this.avatarID = "";
-            this.isLocalPlayer = false;
-            this.direction = 1;
-            this.currentHP = 300;
-            this.isDead = false;
-            this.client = WebSocketClient.getInstance();
-            Laya.stage.on("nethandle", this, this.handle);
-            this.distance = 6;
-            this.currentHP = 300;
-            this.isDead = false;
+        }
+        get isLocalPlayer() {
+            return (this.avatarID == UserData.getInstance().uid);
         }
         get posz() {
             return this._posz;
@@ -435,24 +430,6 @@
         set posz(z) {
             if (this.isLocalPlayer == false)
                 return;
-            console.log("发送z：", z.toFixed(3) + " / " + this.distance.toFixed(1));
-            if (this.distance < 1.5 && this.direction == 1 && z > 0) {
-                console.log("我在左边，无法再接近");
-                z = 0;
-            }
-            else if (this.distance < 1.5 && this.direction == -1 && z > 0) {
-                console.log("我在右边，无法再接近");
-                z = 0;
-            }
-            var obj = {
-                "type": "cs_move",
-                "uid": this.clientID,
-                "posz": z,
-            };
-            this.client.sendData(obj);
-        }
-        checkDistance() {
-            this.distance = MatchView.getInstance().checkDistance();
         }
         getOtherPlayer() {
             if (this == MatchView.getInstance().scriptA) {
@@ -463,12 +440,67 @@
             }
             return null;
         }
+        onEnable() {
+            this.distance = 6;
+            this.currentHP = 300;
+            this.isDead = false;
+            Laya.stage.on("nethandle", this, this.handle);
+        }
+        onUpdate() {
+            if (this.avatarID == UserData.getInstance().uid
+                && (this.currentMotion == 1 || this.currentMotion == 2)) {
+                var obj = {
+                    "type": "cs_move",
+                    "uid": UserData.getInstance().uid,
+                    "movez": JoystickView.getInstance().Horizontal * -0.02
+                };
+                WebSocketClient.getInstance().sendData(obj);
+            }
+        }
         handle(obj) {
             var isDriven = (obj.uid == this.avatarID);
             switch (obj.type) {
                 case "sc_fist": {
                     if (isDriven) {
                         this.onFistCallback(this.touchEvent);
+                    }
+                    else {
+                        if (obj.broken == 1) {
+                            console.log(obj.uid, "被破防了");
+                        }
+                        if (obj.damage == 0) {
+                            console.log(obj.uid, "防御了，在他边上创建防御特效");
+                        }
+                        else if (obj.damage > 0) {
+                            if (this.isDead) {
+                                console.log(obj.beaten + "已死亡，无效攻击");
+                                return;
+                            }
+                            console.log(obj.beaten + "挨打(-" + obj.damage + ")");
+                            this.currentHP -= obj.damage;
+                            if (this.currentHP <= 0) {
+                                this.currentHP = 0;
+                                this.isDead = true;
+                                console.log("========> 最后一拳打死");
+                                Laya.timer.clearAll(this);
+                                Laya.timer.once(400, this, function () {
+                                    this.currentMotion = 11;
+                                    this.animator.play(this.motions[this.currentMotion]);
+                                    MatchView.getInstance().updateHP(this, obj.damage);
+                                });
+                            }
+                            else {
+                                Laya.timer.once(400, this, function () {
+                                    this.currentMotion = 10;
+                                    this.animator.play(this.motions[this.currentMotion]);
+                                    MatchView.getInstance().updateHP(this, obj.damage);
+                                    Laya.timer.once(600, this, function () {
+                                        this.currentMotion = 0;
+                                        this.animator.crossFade(this.motions[this.currentMotion], 0.2);
+                                    });
+                                });
+                            }
+                        }
                     }
                     break;
                 }
@@ -503,61 +535,37 @@
                 }
                 case "sc_move": {
                     if (isDriven) {
-                        this._posz = obj.posz;
+                        var lastPosZ = this.gameObject.transform.position.z;
+                        var currPosZ = obj.posz;
+                        this.gameObject.transform.position = new Laya.Vector3(0, 0, obj.posz);
+                        if (lastPosZ == currPosZ)
+                            return;
+                        if (this.isLocalPlayer)
+                            return;
+                        Laya.timer.clear(this, this.playIdle);
+                        var motionStr = "";
+                        if (this.direction == 1) {
+                            motionStr = (currPosZ < lastPosZ) ? "[在前进]" : "[在后退]";
+                            this.currentMotion = (currPosZ < lastPosZ) ? 1 : 2;
+                        }
+                        else if (this.direction == -1) {
+                            motionStr = (currPosZ > lastPosZ) ? "[在前进]" : "[在后退]";
+                            this.currentMotion = (currPosZ > lastPosZ) ? 1 : 2;
+                        }
+                        this.animator.play(this.motions[this.currentMotion]);
+                        Laya.timer.once(100, this, this.playIdle);
+                        console.log(this.avatarID + "[" + this.currentMotion + "]" + motionStr + lastPosZ.toFixed(3) + " ---> " + currPosZ.toFixed(3));
                     }
                     break;
                 }
-                case "sc_hit": {
-                    if (isDriven) {
-                        if (obj.broken == 1) {
-                            console.log(obj.uid, "被破防了");
-                        }
-                        if (obj.damage == 0) {
-                            console.log(obj.uid, "防御了，在他边上创建防御特效");
-                        }
-                        else if (obj.damage > 0) {
-                            if (this.isDead) {
-                                console.log(obj.uid + "已死亡，无效攻击");
-                                return;
-                            }
-                            console.log(obj.uid + "挨打(-" + obj.damage + ")");
-                            this.currentHP -= obj.damage;
-                            if (this.currentHP <= 0) {
-                                this.currentHP = 0;
-                                this.isDead = true;
-                                console.log("========> 最后一拳打死");
-                                Laya.timer.clearAll(this);
-                                Laya.timer.once(400, this, function () {
-                                    this.currentMotion = 11;
-                                    this.animator.play(this.motions[this.currentMotion]);
-                                    MatchView.getInstance().updateHP(this, obj.damage);
-                                });
-                            }
-                            else {
-                                Laya.timer.once(400, this, function () {
-                                    this.currentMotion = 10;
-                                    this.animator.play(this.motions[this.currentMotion]);
-                                    MatchView.getInstance().updateHP(this, obj.damage);
-                                    Laya.timer.once(600, this, function () {
-                                        this.currentMotion = 0;
-                                        this.animator.crossFade(this.motions[this.currentMotion], 0.2);
-                                    });
-                                });
-                            }
-                        }
-                    }
-                }
             }
         }
-        setUid(modelid, side) {
-            this.avatarID = modelid;
-            this.clientID = UserData.getInstance().uid;
-            this.isLocalPlayer = (this.avatarID == this.clientID);
+        setUid(id, side) {
+            this.avatarID = id;
             this.direction = (side == 0) ? 1 : -1;
             this.currentMotion = 0;
             this.animLastTime = 0;
             this.posy = 0;
-            this.posz = 0;
             this.gameObject = this.owner;
             this.animator = this.gameObject.getComponent(Laya.Animator);
             this.animator.play(this.motions[this.currentMotion]);
@@ -573,39 +581,6 @@
                 }
             }
             Laya.stage.frameLoop(1, this, () => {
-                if (this.distance < 1.5 && this.direction == 1 && this.posz > 0) {
-                    console.log("我在左边，无法再接近");
-                    this.posz = 0;
-                }
-                else if (this.distance < 1.5 && this.direction == -1 && this.posz > 0) {
-                    console.log("我在右边，无法再接近");
-                    this.posz = 0;
-                }
-                if (this.gameObject.transform.position.y > 0 && this.posy == 0) {
-                    this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
-                    if (this.gameObject.transform.position.y < 0) {
-                        this.gameObject.transform.position.y = 0;
-                    }
-                }
-                else {
-                    this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
-                }
-                if (this.isLocalPlayer == false && (this.animLastTime <= Laya.Browser.now() - this._clickTime)) {
-                    var motion = 0;
-                    if ((this.posz > 0)) {
-                        motion = 1;
-                    }
-                    else if (this.posz < 0) {
-                        motion = 2;
-                    }
-                    else {
-                        motion = 0;
-                    }
-                    if (this.currentMotion != motion && this.currentMotion != 9 && this.currentMotion != 10 && this.currentMotion != 10) {
-                        this.currentMotion = motion;
-                        this.animator.play(this.motions[this.currentMotion]);
-                    }
-                }
             });
         }
         mouseDown(e) {
@@ -614,17 +589,12 @@
                 return;
             }
             this.myIndex = e.touchId;
-            this.posz = 0;
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
-            if (this.isLocalPlayer) {
-                Laya.timer.frameLoop(1, this, this.checkDistance);
-            }
         }
         mouseMove(e) {
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
-                this.posz = 0;
                 return;
             }
             if (Laya.Browser.onPC) ;
@@ -634,8 +604,7 @@
                 }
             }
             if (this.isLocalPlayer) {
-                this.posz = JoystickView.getInstance().Horizontal * 0.02 * this.direction;
-                this.currentMotion = (this.posz > 0) ? 1 : 2;
+                this.currentMotion = (JoystickView.getInstance().Horizontal * 0.02 * this.direction > 0) ? 1 : 2;
                 this.animator.play(this.motions[this.currentMotion]);
             }
         }
@@ -651,15 +620,11 @@
                 }
             }
             this.myIndex = -1;
-            this.posz = 0;
             this.currentMotion = 0;
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseUp);
-            if (this.isLocalPlayer) {
-                Laya.timer.clear(this, this.checkDistance);
-            }
         }
         playIdle() {
             Laya.timer.clear(this, this.playOther);
@@ -676,15 +641,14 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_fist",
-                "uid": this.clientID,
+                "uid": UserData.getInstance().uid,
+                "damage": 10,
             };
-            this.client.sendData(obj);
-            console.log("发送出拳");
+            WebSocketClient.getInstance().sendData(obj);
         }
         onFistCallback(e) {
             this.animLastTime = 600;
             var waitTime = 0;
-            var hitAmount = 10;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 waitTime = this.animLastTime - (Laya.Browser.now() - this._clickTime);
                 if (this.currentMotion == 5 && waitTime < 200) {
@@ -693,13 +657,7 @@
                     Laya.timer.once(waitTime, this, this.playOther);
                     console.log("========> onFistBtn.重拳2，等待：", waitTime);
                     waitTime += this.animLastTime;
-                    if (this.distance > 2.5) {
-                        hitAmount = 0;
-                    }
-                    else {
-                        hitAmount = 15;
-                        this.sendHit(hitAmount);
-                    }
+                    if (this.distance > 2.5) ;
                 }
                 else if (this.currentMotion == 6 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
@@ -707,13 +665,7 @@
                     Laya.timer.once(waitTime, this, this.playOther);
                     console.log("========> onFistBtn.重拳3");
                     waitTime += this.animLastTime;
-                    if (this.distance > 2.5) {
-                        hitAmount = 0;
-                    }
-                    else {
-                        hitAmount = 20;
-                        this.sendHit(hitAmount);
-                    }
+                    if (this.distance > 2.5) ;
                 }
                 else {
                     console.error("点击过快");
@@ -726,43 +678,21 @@
                 this.currentMotion = 5;
                 Laya.timer.once(0, this, this.playOther);
                 console.log("========> onFistHandler.重拳1");
-                if (this.distance > 2.5) {
-                    hitAmount = 0;
-                }
-                else {
-                    hitAmount = 10;
-                    this.sendHit(hitAmount);
-                }
+                if (this.distance > 2.5) ;
             }
             Laya.timer.once(waitTime, this, this.playIdle);
-        }
-        sendHit(amount, broken = 0) {
-            if (this.isLocalPlayer == false)
-                return;
-            if (this.getOtherPlayer().currentMotion == 9 && broken == 0) {
-                amount = 0;
-                console.log("对方防御住了");
-            }
-            var obj = {
-                "type": "cs_hit",
-                "uid": this.clientID,
-                "amount": amount,
-                "broken": broken,
-            };
-            this.client.sendData(obj);
         }
         sendKick(e) {
             this.touchEvent = e;
             var obj = {
                 "type": "cs_kick",
-                "uid": this.clientID,
+                "uid": UserData.getInstance().uid,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         onKickCallback(e) {
             this.animLastTime = 600;
             var waitTime = 0;
-            var hitAmount = 20;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 waitTime = this.animLastTime - (Laya.Browser.now() - this._clickTime);
                 console.error("点击过快，等待：", waitTime / 1000, "秒");
@@ -774,13 +704,7 @@
                 this.currentMotion = 8;
                 Laya.timer.once(0, this, this.playOther);
                 console.log("========> onKickHandler.踢腿");
-                if (this.distance > 2) {
-                    hitAmount = 0;
-                }
-                else {
-                    hitAmount = 20;
-                    this.sendHit(hitAmount, 1);
-                }
+                if (this.distance > 2) ;
             }
             Laya.timer.once(waitTime, this, this.playIdle);
         }
@@ -788,9 +712,9 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_jump",
-                "uid": this.clientID,
+                "uid": UserData.getInstance().uid,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         onJumpCallback(e) {
             this.animLastTime = 800;
@@ -821,10 +745,10 @@
             this.touchEvent = e;
             var obj = {
                 "type": "cs_defend",
-                "uid": this.clientID,
+                "uid": UserData.getInstance().uid,
                 "defend": 1,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
         onDefendCallback(e) {
             this.animLastTime = 800;
@@ -847,10 +771,10 @@
                 this.touchEvent = e;
                 var obj = {
                     "type": "cs_defend",
-                    "uid": this.clientID,
+                    "uid": UserData.getInstance().uid,
                     "defend": 0,
                 };
-                this.client.sendData(obj);
+                WebSocketClient.getInstance().sendData(obj);
             }
         }
         handleMouseUp() {
@@ -921,7 +845,7 @@
                 "uid": UserData.getInstance().uid,
             };
             WebSocketClient.getInstance().sendData(obj);
-            console.log("发送准备完成");
+            console.log(">>发送准备完成");
         }
         sendExitGame() {
             var obj = {
@@ -949,7 +873,7 @@
                     break;
                 }
                 case "sc_ready": {
-                    console.log("收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
+                    console.log("<<收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
                     this.playerA.addComponent(PlayerController);
                     this.playerB.addComponent(PlayerController);
                     this.scriptA = this.playerA.getComponent(PlayerController);
@@ -968,6 +892,8 @@
                     this.hp1Text.text = this.scriptB.currentHP.toString();
                     this.hpBar1.value = this.scriptB.currentHP / 300;
                     this.name1Text.text = obj.user1.nickname;
+                    this.playerA.transform.position = new Laya.Vector3(0, 0, obj.user0.posz);
+                    this.playerB.transform.position = new Laya.Vector3(0, 0, obj.user1.posz);
                     break;
                 }
                 case "sc_dead": {
@@ -991,11 +917,11 @@
                 this.hp1Text.text = this.scriptB.currentHP.toString();
                 this.hpBar1.value = this.scriptB.currentHP / 300;
             }
-            if (this.scriptA.clientID == UserData.getInstance().uid && this.scriptA.isDead) {
+            if (this.scriptA.isLocalPlayer && this.scriptA.isDead) {
                 this.sendDead();
                 console.log("这边死了");
             }
-            else if (this.scriptB.clientID == UserData.getInstance().uid && this.scriptB.isDead) {
+            else if (this.scriptB.isLocalPlayer && this.scriptB.isDead) {
                 this.sendDead();
                 console.log("这边死了");
             }
@@ -1177,9 +1103,6 @@
             }
         }
         initWeb() {
-            this.nicknameInput.on(Laya.Event.BLUR, this, () => {
-                console.log("网络校验昵称 3");
-            });
             this.goLoginBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
                 this.registerPanel.visible = false;
                 this.loginPanel.visible = true;
@@ -1407,8 +1330,6 @@
         enterGame() {
             UserData.getInstance().playerStatus = PlayerStatus.GAME;
             this.removeSelf();
-            console.log("确保先执行Disable，再执行到这里。");
-            console.log("跳转.MatchView");
             Laya.stage.addChild(MatchView.getInstance());
         }
         onCheckRegister() {

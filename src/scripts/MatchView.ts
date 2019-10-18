@@ -96,7 +96,7 @@ export default class MatchView extends ui.MatchUI {
             "uid": UserData.getInstance().uid,
         };
         WebSocketClient.getInstance().sendData(obj);
-        console.log("发送准备完成");
+        console.log(">>发送准备完成");
     }
     
     // 离开房间
@@ -130,7 +130,7 @@ export default class MatchView extends ui.MatchUI {
                 break;
             }
             case "sc_ready": { //准备完成
-                console.log("收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
+                console.log("<<收到准备完成：" + obj.user0.nickname + " vs " + obj.user1.nickname);
                 this.playerA.addComponent(PlayerController);
                 this.playerB.addComponent(PlayerController);
                 this.scriptA = this.playerA.getComponent(PlayerController);
@@ -149,6 +149,10 @@ export default class MatchView extends ui.MatchUI {
                 this.hp1Text.text = this.scriptB.currentHP.toString();
                 this.hpBar1.value = this.scriptB.currentHP/300;
                 this.name1Text.text = obj.user1.nickname;
+
+                // 初始位置同步
+                this.playerA.transform.position = new Laya.Vector3(0, 0, obj.user0.posz);
+                this.playerB.transform.position = new Laya.Vector3(0, 0, obj.user1.posz);
                 break;
             }
             case "sc_dead": { //死亡结算
@@ -176,10 +180,10 @@ export default class MatchView extends ui.MatchUI {
         }
 
         // 谁死谁发，然后广播
-        if(this.scriptA.clientID == UserData.getInstance().uid && this.scriptA.isDead) {
+        if(this.scriptA.isLocalPlayer && this.scriptA.isDead) {
             this.sendDead();
             console.log("这边死了");
-        } else if(this.scriptB.clientID == UserData.getInstance().uid && this.scriptB.isDead) { 
+        } else if(this.scriptB.isLocalPlayer && this.scriptB.isDead) { 
             this.sendDead();
             console.log("这边死了");
         }

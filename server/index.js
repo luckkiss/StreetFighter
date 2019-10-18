@@ -502,25 +502,27 @@ var server = ws.createServer(function(conn) {
 				console.log("用户准备好了：" + conn.nickname + "(" + conn.side + ")"
 							+ " vs " + conn.enemy.nickname + "(" + conn.enemy.side + ")");
 				if(conn.side == 0) { //我在左边
+					conn.posz = 3;
+					conn.enemy.posz = -3;
 					var response = {
 						"type": "sc_ready",
 						"uid": conn.uid,
-						"user0": {"uid": conn.uid, "nickname": conn.nickname},
-						"user1": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname},
-						//"user0": {"uid": conn.uid, "nickname": conn.nickname, "posz": 3},
-						//"user1": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname, "posz": -3},
+						//"user0": {"uid": conn.uid, "nickname": conn.nickname},
+						//"user1": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname},
+						"user0": {"uid": conn.uid, "nickname": conn.nickname, "posz": conn.posz},
+						"user1": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname, "posz": conn.enemy.posz},
 					}
-					//conn.posz = 3;
 				} else { //我在右边
+					conn.posz = -3;
+					conn.enemy.posz = 3;
 					var response = {
 						"type": "sc_ready",
 						"uid": conn.uid,
-						"user0": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname},
-						"user1": {"uid": conn.uid, "nickname": conn.nickname},
-						//"user0": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname, "posz": 3},
-						//"user1": {"uid": conn.uid, "nickname": conn.nickname, "posz": -3},
+						//"user0": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname},
+						//"user1": {"uid": conn.uid, "nickname": conn.nickname},
+						"user0": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname, "posz": conn.enemy.posz},
+						"user1": {"uid": conn.uid, "nickname": conn.nickname, "posz": conn.posz},
 					}
-					//conn.posz = -3;
 				}
 				var jsonStr = JSON.stringify(response);
 				console.log(jsonStr);
@@ -528,18 +530,46 @@ var server = ws.createServer(function(conn) {
 				console.log('----------------------------------------');
 				break;
 			}
-			case "cs_fist": { //出拳
+			case "cs_fist": { //出拳2.5m
 				console.log(conn.uid + "[请求出拳]");
+				
+				var hit = 0; //是否命中
+				var damage = obj.damage;
+				var broken = obj.broken;
+				
+				var distance = Math.abs(conn.posz - conn.enemy.posz);
+				if(distance > 2.5) {
+					console.log('距离不足，无法造成伤害');
+					hit = 0;
+					damage = 0;
+					broken = 0;
+				}
+				
+				//命中距离、防御都在客户端判定了，这里只做转发
 				var response = {
 					"type": "sc_fist",
-					"uid": conn.uid,
+					"uid": conn.uid, 			//攻击方
+					"beaten": conn.enemy.uid, 	//挨打方
+					"hit": hit, 				//命中
+					"damage": damage,			//伤害
+					"broken": broken,			//破防
 				}
-				conn.sendText(JSON.stringify(response));
-				conn.enemy.sendText(JSON.stringify(response));
+				var jsonStr = JSON.stringify(response);
+				console.log(conn.enemy.nickname + "挨打了" + obj.damage);
+				conn.sendText(jsonStr);
+				conn.enemy.sendText(jsonStr);
+				
 				break;
 			}
-			case "cs_kick": { //踢脚
+			case "cs_kick": { //踢脚2.0m
 				console.log(conn.uid + "[请求踢脚]");
+				
+				var distance = Math.abs(conn.posz - conn.enemy.posz);
+				if(distance > 2.0) {
+					console.log('距离不足，无法造成伤害');
+					return;
+				}
+				
 				var response = {
 					"type": "sc_kick",
 					"uid": conn.uid,
@@ -570,13 +600,25 @@ var server = ws.createServer(function(conn) {
 				break;
 			}
 			case "cs_move": { //移动
+				
+				console.log(conn.nickname + '(' + conn.posz + ')' + '---->' + obj.movez);
+				var distance = Math.abs(conn.posz + obj.movez - conn.enemy.posz);
+				console.log('距离对手：' + distance); //判断是否碰撞
+				if(distance >= 1) {
+					conn.posz += obj.movez;
+				} else {
+					console.log('无法再接近');
+				}
+				console.log('---->' + conn.posz);
+				console.log('----------------------------------------\n');
 				var response = {
 					"type": "sc_move",
 					"uid": conn.uid,
-					"posz": obj.posz,
+					"posz": conn.posz,
 				}
 				var jsonStr = JSON.stringify(response);
-				console.log("[请求移动]", jsonStr);
+				console.log(conn.nickname + '移动后------>' + conn.posz);
+				//广播给房间内两人
 				conn.sendText(jsonStr);
 				conn.enemy.sendText(jsonStr);
 				break;
@@ -586,11 +628,11 @@ var server = ws.createServer(function(conn) {
 				var response = {
 					"type": "sc_hit",
 					"uid": conn.enemy.uid, //受伤方
-					"damage": obj.amount,
+					"damage": obj.damage,
 					"broken": obj.broken,
 				}
 				var jsonStr = JSON.stringify(response);
-				console.log(conn.enemy.nickname + "挨打了" + obj.amount);
+				console.log(conn.enemy.nickname + "挨打了" + obj.damage);
 				conn.sendText(jsonStr);
 				conn.enemy.sendText(jsonStr);
 				break;

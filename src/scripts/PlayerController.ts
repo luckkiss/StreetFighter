@@ -7,11 +7,19 @@ import UserData, { PlayerStatus } from "../backup/UserData";
 /**控制角色运动 */
 // https://ldc.layabox.com/doc/?nav=zh-ts-4-1-1 //官方移动角色
 export default class PlayerController extends Laya.Script3D {
-    public gameObject: Laya.Sprite3D;
-    public animator: Laya.Animator;
+    private gameObject: Laya.Sprite3D;
+    private animator: Laya.Animator;
+    private avatarID: string = ""; //MatchView传进来
+    public get isLocalPlayer() { //只有自己的角色，可以输出操作
+        return (this.avatarID == UserData.getInstance().uid);
+    }
+    public currentHP: number = 300;
+    public isDead: boolean = false; //角色死亡
+    private direction: number = 1;
 
     private myIndex: number = -1; //控制摇杆的手指
     private _clickTime: number; //限制点击次数
+    private touchEvent: Laya.Event;
     
     private motions: Array<string> = [
         "Unarmed-Idle",             //待机0
@@ -39,35 +47,28 @@ export default class PlayerController extends Laya.Script3D {
 
         // 摇杆拖到底，保持不动时，不再收发消息。
         // 但是本地FrameLoop()中的posz并非为0。
-        console.log("发送z：", z.toFixed(3) + " / " + this.distance.toFixed(1));
+        // console.log("发送z：", z.toFixed(3) + " / " + this.distance.toFixed(1));
 
         // 间距小于阈值，如果我在左边，posz>0，不允许发送了
-        if(this.distance < 1.5 && this.direction == 1 && z > 0) {
-            console.log("我在左边，无法再接近");
-            // return;
-            z = 0;
-        }
-        // 间距小于阈值，如果我在右边，posz<0，不允许发送了
-        else if(this.distance < 1.5 && this.direction == -1 && z > 0) {
-            console.log("我在右边，无法再接近");
-            // return;
-            z = 0;
-        }
-
-        var obj: Object = {
-            "type": "cs_move",
-            "uid": this.clientID,
-            "posz": z,
-        };
-        this.client.sendData(obj);
-        // this._posz = z;
+        // if(this.distance < 1.5 && this.direction == 1 && z > 0) {
+        //     console.log("我在左边，无法再接近");
+        //     z = 0;
+        // }
+        // // 间距小于阈值，如果我在右边，posz<0，不允许发送了
+        // else if(this.distance < 1.5 && this.direction == -1 && z > 0) {
+        //     console.log("我在右边，无法再接近");
+        //     z = 0;
+        // }
+        // var obj: Object = {
+        //     "type": "cs_move",
+        //     "uid": UserData.getInstance().uid,
+        //     "movez": z,
+        // };
+        // WebSocketClient.getInstance().sendData(obj);
     }
 
     // 实时检测间距
     private distance: number = 6;
-    private checkDistance(): void {
-        this.distance = MatchView.getInstance().checkDistance();
-    }
     private getOtherPlayer(): PlayerController {
         if(this == MatchView.getInstance().scriptA) {
             return MatchView.getInstance().scriptB;
@@ -77,23 +78,28 @@ export default class PlayerController extends Laya.Script3D {
         return null;
     }
 
-    private touchEvent: Laya.Event;
-    private client: WebSocketClient = null;
-    public clientID: string = ""; //MatchView传进来
-    private avatarID: string = ""; //MatchView传进来
-    private isLocalPlayer: boolean = false; //是我的Avatar
-    private direction: number = 1;
-    public currentHP: number = 300;
-    public isDead: boolean = false; //角色死亡
-
     constructor() {
         super();
-        this.client = WebSocketClient.getInstance();
-        // Laya.stage.offAll("nethandle");
-        Laya.stage.on("nethandle", this, this.handle);
+    }
+
+    onEnable(): void {
         this.distance = 6;
         this.currentHP = 300;
         this.isDead = false;
+        Laya.stage.on("nethandle", this, this.handle);
+    }
+
+    onUpdate(): void {
+        if(this.avatarID == UserData.getInstance().uid //该角色是自己控制的
+            && (this.currentMotion == 1 || this.currentMotion == 2)) //由摇杆控制的动画
+        {
+            var obj: Object = {
+                "type": "cs_move",
+                "uid": UserData.getInstance().uid,
+                "movez": JoystickView.getInstance().Horizontal * -0.02
+            };
+            WebSocketClient.getInstance().sendData(obj);
+        }
     }
 
     // 碰撞校验都由客户端完成，服务器只做分发
@@ -101,9 +107,50 @@ export default class PlayerController extends Laya.Script3D {
         var isDriven: boolean = (obj.uid == this.avatarID); //模型受网络消息驱动
         switch(obj.type) {
             case "sc_fist": { //出拳
-                // console.log("出拳：" + obj.uid + " | " + isSelf);
-                if(isDriven) {
+                if(isDriven) { //出拳方，播放动画
                     this.onFistCallback(this.touchEvent);
+                } else { //挨打方
+                    
+                    if(obj.broken == 1) {
+                        console.log(obj.uid, "被破防了");
+                    }
+
+                    if(obj.damage == 0) {
+                        console.log(obj.uid, "防御了，在他边上创建防御特效");
+                        //TODO:
+                    } else if (obj.damage > 0) {
+                        if(this.isDead) {
+                            console.log(obj.beaten + "已死亡，无效攻击");
+                            return;
+                        }
+                        console.log(obj.beaten + "挨打(-" + obj.damage + ")");
+                        this.currentHP -= obj.damage;
+
+                        if(this.currentHP <= 0) { //死亡
+                            this.currentHP = 0;
+                            this.isDead = true;
+                            console.log("========> 最后一拳打死");
+
+                            Laya.timer.clearAll(this); //不再播待机了
+                            Laya.timer.once(400, this, function() { // 等拳打到了再播
+                                this.currentMotion = 11;
+                                this.animator.play(this.motions[this.currentMotion]);
+                                MatchView.getInstance().updateHP(this, obj.damage);
+                            });
+                        } else { // 受击
+                            Laya.timer.once(400, this, function() { // 等拳打到了再播
+                                this.currentMotion = 10;
+                                this.animator.play(this.motions[this.currentMotion]);
+                                MatchView.getInstance().updateHP(this, obj.damage);
+
+                                // 挨打完恢复待机
+                                Laya.timer.once(600, this, function() {
+                                    this.currentMotion = 0;
+                                    this.animator.crossFade(this.motions[this.currentMotion], 0.2);
+                                });
+                            });
+                        }
+                    }
                 }
                 break;
             }
@@ -137,71 +184,40 @@ export default class PlayerController extends Laya.Script3D {
             }
             case "sc_move": { //移动
                 if(isDriven) {
-                    this._posz = obj.posz;
-                    // console.log("移动：" + obj.posz);
+                    var lastPosZ: number = this.gameObject.transform.position.z;
+                    var currPosZ: number = obj.posz; //世界坐标系
+
+                    this.gameObject.transform.position = new Laya.Vector3(0, 0, obj.posz);
+                    if(lastPosZ == currPosZ) return;
+                    if(this.isLocalPlayer) return;
+
+                    Laya.timer.clear(this, this.playIdle); //取消待机
+                    //3 ------> -3
+                    var motionStr = "";
+                    if(this.direction == 1) { //左边的人变小前进，变大后退
+                        motionStr = (currPosZ < lastPosZ)? "[在前进]":"[在后退]";
+                        this.currentMotion = (currPosZ < lastPosZ)? 1:2;
+                    } else if (this.direction == - 1) { //右边的人变小后退，变大前进
+                        motionStr = (currPosZ > lastPosZ)? "[在前进]":"[在后退]";
+                        this.currentMotion = (currPosZ > lastPosZ)? 1:2;
+                    }
+                    this.animator.play(this.motions[this.currentMotion]);
+                    Laya.timer.once(100, this, this.playIdle); //1秒后播放待机
+                    console.log(this.avatarID + "[" + this.currentMotion + "]" + motionStr + lastPosZ.toFixed(3) + " ---> " + currPosZ.toFixed(3));
                 }
                 break;
-            }
-            case "sc_hit": { //伤害
-                if(isDriven) {
-
-                    if(obj.broken == 1) {
-                        console.log(obj.uid, "被破防了");
-                    }
-
-                    if(obj.damage == 0) {
-                        console.log(obj.uid, "防御了，在他边上创建防御特效");
-                        //TODO:
-                    } else if (obj.damage > 0) {
-                        if(this.isDead) {
-                            console.log(obj.uid + "已死亡，无效攻击");
-                            return;
-                        }
-                        console.log(obj.uid + "挨打(-" + obj.damage + ")");
-                        this.currentHP -= obj.damage;
-
-                        if(this.currentHP <= 0) { //死亡
-                            this.currentHP = 0;
-                            this.isDead = true;
-                            console.log("========> 最后一拳打死");
-
-                            Laya.timer.clearAll(this); //不再播待机了
-                            Laya.timer.once(400, this, function() { // 等拳打到了再播
-                                this.currentMotion = 11;
-                                this.animator.play(this.motions[this.currentMotion]);
-                                MatchView.getInstance().updateHP(this, obj.damage);
-                            });
-                        } else { // 受击
-                            Laya.timer.once(400, this, function() { // 等拳打到了再播
-                                this.currentMotion = 10;
-                                this.animator.play(this.motions[this.currentMotion]);
-                                MatchView.getInstance().updateHP(this, obj.damage);
-
-                                // 挨打完恢复待机
-                                // Laya.timer.once(600, this, this.playIdle);
-                                Laya.timer.once(600, this, function() {
-                                    this.currentMotion = 0;
-                                    this.animator.crossFade(this.motions[this.currentMotion], 0.2);
-                                });
-                            });
-                        }
-                    }
-                }
             }
         }
     }
 
-    public setUid(modelid: string, side: number): void {
-        // console.log("设置uid：" + modelid);
-        this.avatarID = modelid;
-        this.clientID = UserData.getInstance().uid;
-        this.isLocalPlayer = (this.avatarID == this.clientID); //只有自己的角色，可以输出操作
+    public setUid(id: string, side: number): void {
+        this.avatarID = id;
         this.direction = (side == 0)? 1 : -1;
 
         this.currentMotion = 0;
         this.animLastTime = 0;
         this.posy = 0;
-        this.posz = 0;
+        // this.posz = 0;
 
         this.gameObject = this.owner as Laya.Sprite3D;
         this.animator = this.gameObject.getComponent(Laya.Animator);
@@ -222,43 +238,30 @@ export default class PlayerController extends Laya.Script3D {
 
         // 更新移动
         Laya.stage.frameLoop(1, this, ()=> {
-
-            // 间距小于阈值，如果我在左边，posz>0，不允许发送了
-            if(this.distance < 1.5 && this.direction == 1 && this.posz > 0) {
-                console.log("我在左边，无法再接近");
-                // return;
-                this.posz = 0;
-            }
-            // 间距小于阈值，如果我在右边，posz<0，不允许发送了
-            else if(this.distance < 1.5 && this.direction == -1 && this.posz > 0) {
-                console.log("我在右边，无法再接近");
-                // return;
-                this.posz = 0;
-            }
-
-            if(this.gameObject.transform.position.y > 0 && this.posy == 0) { // 跳跃
-                this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
-                if(this.gameObject.transform.position.y < 0) {
-                    this.gameObject.transform.position.y = 0;
-                }
-            } else { // 移动
-                this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
-            }
+            // if(this.gameObject.transform.position.y > 0 && this.posy == 0) { // 跳跃
+            //     this.gameObject.transform.translate(new Laya.Vector3(0, -0.1, this.posz), true);
+            //     if(this.gameObject.transform.position.y < 0) {
+            //         this.gameObject.transform.position.y = 0;
+            //     }
+            // } else { // 移动
+            //     this.gameObject.transform.translate(new Laya.Vector3(0, this.posy, this.posz), true);
+            // }
             
-            if(this.isLocalPlayer == false && (this.animLastTime <= Laya.Browser.now() - this._clickTime)) { //没有其他动画在播
-                var motion = 0;
-                if((this.posz > 0)) {
-                    motion = 1;
-                } else if (this.posz < 0) {
-                    motion = 2;
-                } else {
-                    motion = 0;
-                }
-                if(this.currentMotion != motion && this.currentMotion != 9 && this.currentMotion != 10 && this.currentMotion != 10) { //没有在防御，没有在挨打
-                    this.currentMotion = motion;
-                    this.animator.play(this.motions[this.currentMotion]); //前进/后退
-                }
-            }
+            // if(this.isLocalPlayer == false && (this.animLastTime <= Laya.Browser.now() - this._clickTime)) { //没有其他动画在播
+            //     var motion = 0;
+            //     if((this.posz > 0)) {
+            //         motion = 1;
+            //     } else if (this.posz < 0) {
+            //         motion = 2;
+            //     } else {
+            //         motion = 0;
+            //     }
+            //     if(this.currentMotion != motion && this.currentMotion != 9 && this.currentMotion != 10 && this.currentMotion != 10) { //没有在防御，没有在挨打
+            //         this.currentMotion = motion;
+            //         this.animator.play(this.motions[this.currentMotion]); //前进/后退
+            //         // console.log("别人在移动");
+            //     }
+            // }
         });
     }
 
@@ -271,20 +274,16 @@ export default class PlayerController extends Laya.Script3D {
             return;
         }
         this.myIndex = e.touchId;
-        this.posz = 0;
+        // this.posz = 0;
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
         Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
-        if(this.isLocalPlayer) {
-            Laya.timer.frameLoop(1, this, this.checkDistance);
-        }
     }
 
     // 基于场景
     mouseMove(e: Laya.Event): void {
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
-            // LogManager.instance.vConsole("在播放其他动作");
-            this.posz = 0;
+            // this.posz = 0;
             return;
         }
         if(Laya.Browser.onPC) { }
@@ -295,10 +294,12 @@ export default class PlayerController extends Laya.Script3D {
         }
         // 检测到攻击动画，就覆盖移动动画，停止移动
         if(this.isLocalPlayer) {
-            this.posz = JoystickView.getInstance().Horizontal * 0.02 * this.direction;
+            // this.posz = JoystickView.getInstance().Horizontal * 0.02 * this.direction;
             // 非本地的在FrameLoop()中处理
-            this.currentMotion = (this.posz > 0)? 1 : 2;
-            this.animator.play(this.motions[this.currentMotion]); //前进/后退
+            // this.currentMotion = (this.posz > 0)? 1 : 2; //由动画驱动移动的发包
+            // this.animator.play(this.motions[this.currentMotion]);
+            this.currentMotion = (JoystickView.getInstance().Horizontal * 0.02 * this.direction > 0)? 1 : 2;
+            this.animator.play(this.motions[this.currentMotion]);
         }
     }
 
@@ -314,16 +315,12 @@ export default class PlayerController extends Laya.Script3D {
             }
         }
         this.myIndex = -1;
-        this.posz = 0;
+        // this.posz = 0;
         this.currentMotion = 0;
         this.animator.crossFade(this.motions[this.currentMotion], 0.2);
         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
         Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
         Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseUp);
-        
-        if(this.isLocalPlayer) {
-            Laya.timer.clear(this, this.checkDistance);
-        }
     }
 
     //#endregion
@@ -344,10 +341,11 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_fist",
-            "uid": this.clientID,
+            "uid": UserData.getInstance().uid,
+            "damage": 10, //不知道是第几下
         };
-        this.client.sendData(obj);
-        console.log("发送出拳");
+        WebSocketClient.getInstance().sendData(obj);
+        // console.log("发送出拳");
     }
 
     onFistCallback(e: Laya.Event): void {
@@ -375,7 +373,7 @@ export default class PlayerController extends Laya.Script3D {
                     // console.log("距离太远，无法命中");
                 } else {
                     hitAmount = 15;
-                    this.sendHit(hitAmount);
+                    // this.sendHit(hitAmount);
                 }
 
             } else if(this.currentMotion == 6 && waitTime < 200) {
@@ -392,7 +390,7 @@ export default class PlayerController extends Laya.Script3D {
                     // console.log("距离太远，无法命中");
                 } else {
                     hitAmount = 20;
-                    this.sendHit(hitAmount);
+                    // this.sendHit(hitAmount);
                 }
 
             } else {
@@ -412,7 +410,7 @@ export default class PlayerController extends Laya.Script3D {
                 // console.log("距离太远，无法命中");
             } else {
                 hitAmount = 10;
-                this.sendHit(hitAmount);
+                // this.sendHit(hitAmount);
             }
         }
 
@@ -421,33 +419,14 @@ export default class PlayerController extends Laya.Script3D {
         // console.log("播完自动放待机：", waitTime);
     }
 
-    // 伤害
-    sendHit(amount: number, broken: number = 0): void {
-        if(this.isLocalPlayer == false) return;
-
-        // 对方在防御，并且可以被放下来
-        if(this.getOtherPlayer().currentMotion == 9 && broken == 0) {
-            amount = 0;
-            console.log("对方防御住了");
-        }
-
-        var obj: Object = {
-            "type": "cs_hit",
-            "uid": this.clientID,
-            "amount": amount,
-            "broken": broken, //破防
-        };
-        this.client.sendData(obj); //确实打中了，发送我的输出。由服务器判定造成的伤害
-    }
-
     // 踢技8 | 600
     sendKick(e: Laya.Event): void {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_kick",
-            "uid": this.clientID,
+            "uid": UserData.getInstance().uid,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     onKickCallback(e: Laya.Event): void {
@@ -473,7 +452,7 @@ export default class PlayerController extends Laya.Script3D {
                 // console.log("距离太远，无法命中");
             } else {
                 hitAmount = 20;
-                this.sendHit(hitAmount, 1);
+                // this.sendHit(hitAmount, 1);
             }
         }
 
@@ -487,9 +466,9 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_jump",
-            "uid": this.clientID,
+            "uid": UserData.getInstance().uid,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     onJumpCallback(e: Laya.Event): void {
@@ -530,10 +509,10 @@ export default class PlayerController extends Laya.Script3D {
         this.touchEvent = e;
         var obj: Object = {
             "type": "cs_defend",
-            "uid": this.clientID,
+            "uid": UserData.getInstance().uid,
             "defend": 1,
         };
-        this.client.sendData(obj);
+        WebSocketClient.getInstance().sendData(obj);
     }
 
     onDefendCallback(e: Laya.Event): void {
@@ -562,10 +541,10 @@ export default class PlayerController extends Laya.Script3D {
             this.touchEvent = e;
             var obj: Object = {
                 "type": "cs_defend",
-                "uid": this.clientID,
+                "uid": UserData.getInstance().uid,
                 "defend": 0,
             };
-            this.client.sendData(obj);
+            WebSocketClient.getInstance().sendData(obj);
         }
     }
 
