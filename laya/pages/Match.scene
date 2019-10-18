@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":79,
-    "selecteID":77,
+    "selectedBox":85,
+    "selecteID":100,
     "searchKey":"Scene,Main,Main",
     "props":{"width":1136,"var":"Main","sceneColor":"#000000","name":"Main","labelSize":30,"height":640},
     "nodeParent":-1,
-    "maxID":100,
+    "maxID":101,
     "label":"Main",
     "isOpen":true,
     "isDirectory":true,
@@ -148,59 +148,30 @@
                         },
                         {
                             "x":45,
-                            "type":"Image",
-                            "searchKey":"Image,Background",
-                            "props":{"width":310,"top":100,"skin":"comp/progress$bar.png","sizeGrid":"10,10,10,10","name":"Background","left":200,"height":32,"clipWidth":10,"anchorY":0.5},
-                            "nodeParent":79,
-                            "label":"Background",
-                            "isOpen":true,
-                            "isDirectory":true,
-                            "isAniNode":true,
-                            "hasChild":true,
-                            "compId":77,
-                            "child":[
-                                {
-                                    "x":60,
-                                    "type":"Clip",
-                                    "searchKey":"Clip,FillImage0,fillImage0",
-                                    "props":{"y":16,"x":5,"width":300,"var":"fillImage0","skin":"comp/progress.png","sizeGrid":"10,10,10,10","name":"FillImage0","height":24,"anchorY":0.5,"anchorX":0},
-                                    "nodeParent":77,
-                                    "label":"FillImage0",
-                                    "isOpen":true,
-                                    "isDirectory":false,
-                                    "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":78,
-                                    "child":[
-                                        ],
-                                    "$HIDDEN":false
-                                },
-                                {
-                                    "x":60,
-                                    "type":"Label",
-                                    "searchKey":"Label,HP0Text,hp0Text",
-                                    "props":{"var":"hp0Text","text":"300","styleSkin":"comp/label.png","name":"HP0Text","fontSize":24,"color":"#ff0400","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5,"align":"right"},
-                                    "nodeParent":77,
-                                    "label":"HP0Text",
-                                    "isDirectory":false,
-                                    "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":83,
-                                    "child":[
-                                        ]
-                                }]
-                        },
-                        {
-                            "x":45,
                             "type":"ProgressBar",
                             "searchKey":"ProgressBar,HPBar0,hpBar0",
-                            "props":{"width":300,"var":"hpBar0","value":0.4,"top":50,"skin":"ui/Bar0.png","sizeGrid":"10,10,10,10","name":"HPBar0","left":200,"height":32},
+                            "props":{"width":300,"var":"hpBar0","value":1,"top":50,"skin":"ui/Bar0.png","sizeGrid":"10,10,10,10","name":"HPBar0","left":200,"height":32,"anchorY":0.5},
                             "nodeParent":79,
                             "label":"HPBar0",
+                            "isOpen":true,
                             "isDirectory":false,
                             "isAniNode":true,
                             "hasChild":false,
                             "compId":99,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,HP0Text,hp0Text",
+                            "props":{"width":300,"var":"hp0Text","top":54,"text":"300","styleSkin":"comp/label.png","name":"HP0Text","left":200,"fontSize":24,"color":"#ff0400","anchorY":0.5,"anchorX":0.5,"align":"center"},
+                            "nodeParent":79,
+                            "label":"HP0Text",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":83,
                             "child":[
                                 ]
                         }]
@@ -212,13 +183,14 @@
                     "props":{"y":319,"x":568,"width":1136,"var":"rightHPPanel","top":0,"name":"RightHPPanel","height":640,"clipWidth":10,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":90,
                     "label":"RightHPPanel",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":85,
                     "child":[
                         {
+                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,Name1Text,name1Text",
                             "props":{"var":"name1Text","top":30,"text":"Player1","styleSkin":"comp/label.png","right":200,"name":"Name1Text","fontSize":22,"color":"#ffffff","anchorY":0.5,"anchorX":1},
@@ -233,45 +205,33 @@
                                 ]
                         },
                         {
-                            "type":"Image",
-                            "searchKey":"Image,Background",
-                            "props":{"width":310,"top":50,"skin":"comp/progress$bar.png","sizeGrid":"10,10,10,10","right":200,"name":"Background","height":32,"clipWidth":10,"anchorY":0.5,"anchorX":1},
+                            "x":45,
+                            "type":"ProgressBar",
+                            "searchKey":"ProgressBar,HPBar1,hpBar1",
+                            "props":{"width":300,"var":"hpBar1","value":1,"top":50,"skin":"ui/Bar0.png","sizeGrid":"10,10,10,10","scaleX":-1,"right":500,"name":"HPBar1","height":32,"anchorY":0.5,"anchorX":0},
                             "nodeParent":85,
-                            "label":"Background",
+                            "label":"HPBar1",
                             "isOpen":true,
-                            "isDirectory":true,
+                            "isDirectory":false,
                             "isAniNode":true,
-                            "hasChild":true,
-                            "compId":88,
+                            "hasChild":false,
+                            "compId":100,
                             "child":[
-                                {
-                                    "type":"Clip",
-                                    "searchKey":"Clip,FillImage1,fillImage1",
-                                    "props":{"y":16,"x":305,"width":300,"var":"fillImage1","skin":"comp/progress.png","sizeGrid":"12,10,12,10","name":"FillImage1","height":24,"anchorY":0.5,"anchorX":1},
-                                    "nodeParent":88,
-                                    "label":"FillImage1",
-                                    "isOpen":true,
-                                    "isDirectory":false,
-                                    "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":89,
-                                    "child":[
-                                        ],
-                                    "$HIDDEN":false
-                                },
-                                {
-                                    "type":"Label",
-                                    "searchKey":"Label,HP1Text,hp1Text",
-                                    "props":{"var":"hp1Text","text":"300","styleSkin":"comp/label.png","name":"HP1Text","fontSize":24,"color":"#ff0400","centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
-                                    "nodeParent":88,
-                                    "label":"HP1Text",
-                                    "isDirectory":false,
-                                    "isAniNode":true,
-                                    "hasChild":false,
-                                    "compId":87,
-                                    "child":[
-                                        ]
-                                }]
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,HP1Text,hp1Text",
+                            "props":{"width":300,"var":"hp1Text","top":54,"text":"300","styleSkin":"comp/label.png","right":200,"name":"HP1Text","fontSize":24,"color":"#ff0400","anchorY":0.5,"anchorX":0.5,"align":"center"},
+                            "nodeParent":85,
+                            "label":"HP1Text",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":87,
+                            "child":[
+                                ]
                         }]
                 }]
         },

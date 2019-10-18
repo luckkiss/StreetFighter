@@ -16,7 +16,7 @@ export default class LobbyView extends ui.LobbyUI {
     
     constructor() {
         super();
-        // UserData.getInstance().uid = Laya.LocalStorage.getItem("uid");
+        UserData.getInstance().uid = Laya.LocalStorage.getItem("uid");
         // console.log("是否有用户信息：" + UserData.getInstance().uid);
         UserData.getInstance().token = Laya.LocalStorage.getItem("token"); //构造函数中，只执行一次
         console.log("是否有登录码：" + !this.isEmpty(UserData.getInstance().token));
@@ -82,9 +82,7 @@ export default class LobbyView extends ui.LobbyUI {
                 UserData.getInstance().uid = obj.uid;
                 this.goldText.text = obj.gold.toString();
                 // 通过微信获取昵称头像
-                // this.headImg.loadImage(obj.avatarUrl);
-                // this.nickNameText.text = obj.nickname;
-                this.getUserInfo("");
+                this.getUserInfo();
                 this.userPanel.visible = true;
                 break;
             }
@@ -270,7 +268,7 @@ export default class LobbyView extends ui.LobbyUI {
     }
 
     // 获取用户详情
-    private getUserInfo(code): void {
+    private getUserInfo(code = null): void {
         Laya.Browser.window.wx.getUserInfo({
             withCredentials: true,
             success: res => {

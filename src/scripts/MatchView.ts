@@ -27,8 +27,6 @@ export default class MatchView extends ui.MatchUI {
     }
 
     onEnable(): void {
-        console.log("MatchView.Enable");
-
         this.endPanel.visible = false;
         this.endPanel.mouseEnabled = false; //zOrder相同时，越后加载的在越上面。激活下层穿透，无视zOrder。
 
@@ -146,11 +144,10 @@ export default class MatchView extends ui.MatchUI {
                 this.scriptB.setUid(obj.user1.uid, 1);
                 // 血条初始化
                 this.hp0Text.text = this.scriptA.currentHP.toString();
-                this.fillImage0.width = this.scriptA.currentHP;
                 this.hpBar0.value = this.scriptA.currentHP/300;
                 this.name0Text.text = obj.user0.nickname;
                 this.hp1Text.text = this.scriptB.currentHP.toString();
-                this.fillImage1.width = this.scriptB.currentHP;
+                this.hpBar1.value = this.scriptB.currentHP/300;
                 this.name1Text.text = obj.user1.nickname;
                 break;
             }
@@ -172,11 +169,10 @@ export default class MatchView extends ui.MatchUI {
     public updateHP(player: PlayerController, damage: number): void {
         if(player == this.scriptA) {
             this.hp0Text.text = this.scriptA.currentHP.toString();
-            this.fillImage0.width = this.scriptA.currentHP;
             this.hpBar0.value = this.scriptA.currentHP/300;
         } else if (player == this.scriptB) {
             this.hp1Text.text = this.scriptB.currentHP.toString();
-            this.fillImage1.width = this.scriptB.currentHP;
+            this.hpBar1.value = this.scriptB.currentHP/300;
         }
 
         // 谁死谁发，然后广播

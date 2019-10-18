@@ -266,13 +266,18 @@ var server = ws.createServer(function(conn) {
 						"type": "sc_wxlogin_success",
 						"uid": rows[0].uid,
 						"gold": rows[0].gold,
-						//"nickname": rows[0].nickName,
+						//"nickname": rows[0].nickname,
 						//"avatar": data.avatarUrl,
 						"token": token
 					}
 					var jsonStr = JSON.stringify(response);
 					console.log(jsonStr);
 					conn.sendText(jsonStr);
+					console.log('------------------------------------------------------------\n\n');
+					conn.uid = rows[0].uid;
+					conn.nickname = rows[0].nickname;
+					conn.state = (PlayerStatus.FREE);
+					console.log("[用户状态变更]" + conn.nickname + "=>" + conn.state);
 				});
 				break;
 			}
@@ -346,9 +351,14 @@ var server = ws.createServer(function(conn) {
 									var jsonStr = JSON.stringify(response);
 									console.log(jsonStr);
 									conn.sendText(jsonStr);
+									console.log('------------------------------------------------------------\n\n');
+									conn.uid = rows[0].uid;
+									conn.nickname = rows[0].nickname;
+									conn.state = (PlayerStatus.FREE);
+									console.log("[用户状态变更]" + conn.nickname + "=>" + conn.state);
 								});
 								
-							} else { // 未注册
+							} else { //未注册
 								let curtime = (new Date()).toLocaleString();
 								var sql = 'INSERT INTO db_user (openId,nickname,pwd,gold,createtime) VALUES(?,?,?,?,?)';
 								var params = [data.openId,data.nickName,"",0,curtime];
@@ -392,8 +402,12 @@ var server = ws.createServer(function(conn) {
 										var jsonStr = JSON.stringify(response);
 										console.log(jsonStr);
 										conn.sendText(jsonStr);
+										console.log('------------------------------------------------------------\n\n');
+										conn.uid = rows[0].uid;
+										conn.nickname = rows[0].nickname;
+										conn.state = (PlayerStatus.FREE);
+										console.log("[用户状态变更]" + conn.nickname + "=>" + conn.state);
 									});
-									console.log('------------------------------------------------------------\n\n');
 								});
 							}
 						});
@@ -458,7 +472,7 @@ var server = ws.createServer(function(conn) {
 										throw err;
 									}
 									console.log('--------------------------INSERT----------------------------');
-									console.log('INSERT ID:', rows);
+									//console.log('INSERT ID:', rows);
 									var response = {
 										"type": "sc_sign_success",
 										"gold": 100,
