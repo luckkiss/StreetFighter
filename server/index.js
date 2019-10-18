@@ -238,7 +238,16 @@ var server = ws.createServer(function(conn) {
 			case "cs_checkToken": { //检查token有效期
 				// 校验token
 				let jwt = new JwtUtil(obj.token);
-				let uid = jwt.verifyToken();
+				let uid = jwt.verifyToken(); //服务器重启等原因，导致校验失败？
+				if(isNaN(uid)){ //不是数字
+					//throw err;
+					var response = {
+						"type": "sc_wxlogin_failed",
+						"code": 2
+					}
+					conn.sendText(JSON.stringify(response));
+					return;
+				}
 				console.log("[校验结果]userid=", uid);
 				
 				//查询用户信息
@@ -645,7 +654,7 @@ var server = ws.createServer(function(conn) {
 				console.log(obj.uid + "[请求站起]");
 				var response = {
 					"type": "sc_standup",
-					"uid": obj.uid,
+					"uid": obj.uid,	//主动站起者
 					"status": (PlayerStatus.FREE),
 				}
 				conn.sendText(JSON.stringify(response));

@@ -34,7 +34,7 @@ export default class TipsView extends ui.TipsUI {
         this.messageText.text = msg;
         this.delay = tm;
         this.bgImage.width = 26 * msg.length;
-        Laya.stage.addChild(TipsView.getInstance());
+        Laya.stage.addChild(this);
         if(this.delay > 0)
             Laya.timer.once(this.delay, this, this.autoDestroy);
     }

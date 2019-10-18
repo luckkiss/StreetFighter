@@ -34,7 +34,8 @@ class Jwt {
                 res = result.data || {};
             }
         } catch (e) {
-            res = 'err';
+            //res = 'err';
+			res = e.message;
         }
         return res;
     }

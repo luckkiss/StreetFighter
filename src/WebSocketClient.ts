@@ -106,13 +106,15 @@ export default class WebSocketClient extends Laya.Script {
     // 关闭事件
     private closeHandler(e: any = null): void {
         console.log("连接关闭");
-        this.reconnect();
+        // this.reconnect();
+        Laya.timer.once(this.timeout, this, this.reconnect); //等待超时再重连
     }
 
     // 连接出错
     private errorHandler(e: any = null): void {
         console.log("连接出错");
-        this.reconnect();
+        // this.reconnect();
+        Laya.timer.once(this.timeout, this, this.reconnect);
     }
 
     private sendHeart(): void {

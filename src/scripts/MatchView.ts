@@ -3,6 +3,7 @@ import WebSocketClient from "../WebSocketClient";
 import PlayerController from "./PlayerController";
 import JoystickView from "./JoystickView";
 import LobbyView from "./LobbyView";
+import ChooseView from "./ChooseView";
 import UserData, { PlayerStatus } from "../backup/UserData";
 
 export default class MatchView extends ui.MatchUI {
@@ -50,8 +51,12 @@ export default class MatchView extends ui.MatchUI {
         Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
 
         // UI监听
-        this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
-        this.endBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
+        this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            ChooseView.getInstance().showDialog("现在退出将判定失败，确定继续？", this.sendExitGame, null);
+        });
+        this.endBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
+            ChooseView.getInstance().showDialog("现在退出将判定失败，确定继续？", this.sendExitGame, null);
+        });
     }
 
     onDisable(): void {
@@ -123,10 +128,15 @@ export default class MatchView extends ui.MatchUI {
         var isLocalPlayer: boolean = (obj.uid == UserData.getInstance().uid);
         switch(obj.type) {
             case "sc_standup": { //离开房间
-                this.removeSelf();
-                console.log("确保先执行Disable，再执行到这里。");
-                console.log("跳转.LobbyView");
-                Laya.stage.addChild(LobbyView.getInstance());
+                if(obj.uid == UserData.getInstance().uid) { //我自己离开
+                    this.removeSelf();
+                    Laya.stage.addChild(LobbyView.getInstance());
+                } else { //对手离开
+                    ChooseView.getInstance().showConfirm("您的对手离开了比赛", ()=> {
+                        this.removeSelf();
+                        Laya.stage.addChild(LobbyView.getInstance());
+                    });
+                }
                 break;
             }
             case "sc_ready": { //准备完成

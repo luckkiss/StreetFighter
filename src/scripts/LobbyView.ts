@@ -20,6 +20,8 @@ export default class LobbyView extends ui.LobbyUI {
         // console.log("是否有用户信息：" + UserData.getInstance().uid);
         UserData.getInstance().token = Laya.LocalStorage.getItem("token"); //构造函数中，只执行一次
         console.log("是否有登录码：" + !this.isEmpty(UserData.getInstance().token));
+        if(!this.isEmpty(UserData.getInstance().token))
+            console.log("登录码是：" + UserData.getInstance().token);
     }
 
     onEnable(): void {
@@ -88,6 +90,8 @@ export default class LobbyView extends ui.LobbyUI {
             }
             case "sc_wxlogin_failed": { //微信登录失败
                 console.log("微信登录失败");
+                Laya.LocalStorage.setItem("token", null);
+                this.userLogin();
                 break;
             }
             case "sc_enter": { //用户进出

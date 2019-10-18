@@ -56,7 +56,7 @@
                 this.createView(ChooseUI.uiView);
             }
         }
-        ChooseUI.uiView = { "type": "Scene", "props": { "zOrder": 99, "width": 1136, "name": "Choose", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 10 }, { "type": "Image", "props": { "var": "mask", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "Mask", "left": 0, "label": "确定", "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 5, "child": [{ "type": "Image", "props": { "width": 360, "skin": "ui/mask_4x4_40%.png", "name": "Page", "label": "确定", "height": 200, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 6, "child": [{ "type": "Label", "props": { "top": 60, "text": "确定要选择吗？", "styleSkin": "comp/image.png", "fontSize": 20, "color": "#ffffff", "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 9 }, { "type": "Button", "props": { "var": "yesBtn", "skin": "comp/button.png", "name": "YesBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "确定", "centerX": 80, "bottom": 40, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "var": "noBtn", "skin": "comp/button.png", "name": "NoBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "取消", "centerX": -80, "bottom": 40, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }] }] }], "loadList": ["ui/mask_4x4_40%.png", "comp/image.png", "comp/button.png"], "loadList3D": [] };
+        ChooseUI.uiView = { "type": "Scene", "props": { "zOrder": 99, "width": 1136, "name": "Choose", "height": 640 }, "compId": 2, "child": [{ "type": "Script", "props": { "top": 0, "right": 0, "left": 0, "bottom": 0, "runtime": "laya.ui.Widget" }, "compId": 10 }, { "type": "Image", "props": { "var": "mask", "top": 0, "skin": "ui/mask_4x4_40%.png", "right": 0, "name": "Mask", "left": 0, "label": "确定", "bottom": 0, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 5, "child": [{ "type": "Image", "props": { "width": 360, "skin": "ui/mask_4x4_40%.png", "name": "Page", "label": "确定", "height": 200, "centerY": 0.5, "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5, "sizeGrid": "5,5,5,5" }, "compId": 6, "child": [{ "type": "Label", "props": { "var": "msgText", "top": 60, "text": "确定要选择吗？", "styleSkin": "comp/image.png", "name": "MsgText", "fontSize": 20, "color": "#ffffff", "centerX": 0.5, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 9 }, { "type": "Button", "props": { "var": "yesBtn", "skin": "comp/button.png", "name": "YesBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "确定", "centerX": 80, "bottom": 40, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 3 }, { "type": "Button", "props": { "var": "noBtn", "skin": "comp/button.png", "name": "NoBtn", "labelStrokeColor": "#ffffff", "labelSize": 22, "labelColors": "#ffffff", "label": "取消", "centerX": -80, "bottom": 40, "anchorY": 0.5, "anchorX": 0.5 }, "compId": 4 }] }] }], "loadList": ["ui/mask_4x4_40%.png", "comp/image.png", "comp/button.png"], "loadList3D": [] };
         ui.ChooseUI = ChooseUI;
         REG("ui.ChooseUI", ChooseUI);
         class JoystickUI extends Laya.Scene {
@@ -224,11 +224,11 @@
         }
         closeHandler(e = null) {
             console.log("连接关闭");
-            this.reconnect();
+            Laya.timer.once(this.timeout, this, this.reconnect);
         }
         errorHandler(e = null) {
             console.log("连接出错");
-            this.reconnect();
+            Laya.timer.once(this.timeout, this, this.reconnect);
         }
         sendHeart() {
             var obj = {
@@ -559,7 +559,7 @@
             this.animator.play(this.motions[this.currentMotion]);
             this._clickTime = 0;
             if (this.isLocalPlayer) {
-                MatchView.getInstance().fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.fistCombo);
+                MatchView.getInstance().fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
                 MatchView.getInstance().kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
                 MatchView.getInstance().jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
                 MatchView.getInstance().defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
@@ -622,17 +622,18 @@
             this.animator.play(this.motions[this.currentMotion]);
         }
         ;
-        sendFist(waitTime) {
+        sendFistData(waitTime, damage, broken) {
             var obj = {
                 "type": "cs_fist",
                 "uid": UserData.getInstance().uid,
-                "damage": 10,
+                "damage": damage,
+                "broken": broken,
                 "motion": this.currentMotion,
                 "waitTime": waitTime,
             };
             WebSocketClient.getInstance().sendData(obj);
         }
-        fistCombo() {
+        sendFist() {
             this.animLastTime = 600;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -641,13 +642,13 @@
                     this._clickTime = Laya.Browser.now();
                     this.currentMotion = 6;
                     waitTime += this.animLastTime;
-                    this.sendFist(waitTime);
+                    this.sendFistData(waitTime, 20, 0);
                 }
                 else if (this.currentMotion == 6 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
                     this.currentMotion = 7;
                     waitTime += this.animLastTime;
-                    this.sendFist(waitTime);
+                    this.sendFistData(waitTime, 30, 0);
                 }
                 else {
                     console.error("点击过快");
@@ -658,10 +659,8 @@
                 waitTime = this.animLastTime;
                 this._clickTime = Laya.Browser.now();
                 this.currentMotion = 5;
-                this.sendFist(waitTime);
+                this.sendFistData(waitTime, 10, 0);
             }
-        }
-        onFistCallback(waitTime) {
         }
         sendKick(e) {
             this.touchEvent = e;
@@ -765,6 +764,46 @@
         }
     }
 
+    class ChooseView extends ui.ChooseUI {
+        static getInstance() {
+            if (this.instance == null) {
+                this.instance = new ChooseView();
+            }
+            return this.instance;
+        }
+        constructor() { super(); }
+        onDisable() {
+            Laya.timer.clearAll(this);
+        }
+        showDialog(msg, yes, no) {
+            this.yesBtn.centerX = -80;
+            this.noBtn.visible = true;
+            Laya.stage.addChild(this);
+            this.msgText.text = msg;
+            this.yesBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                if (yes != null)
+                    yes();
+                this.removeSelf();
+            });
+            this.noBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                if (no != null)
+                    no();
+                this.removeSelf();
+            });
+        }
+        showConfirm(msg, yes) {
+            this.yesBtn.centerX = 0;
+            this.noBtn.visible = false;
+            Laya.stage.addChild(this);
+            this.msgText.text = msg;
+            this.yesBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                if (yes != null)
+                    yes();
+                this.removeSelf();
+            });
+        }
+    }
+
     class MatchView extends ui.MatchUI {
         static getInstance() {
             if (this.instance == null) {
@@ -789,8 +828,12 @@
             directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
             directionLight.transform.worldMatrix.setForward(new Laya.Vector3(1, 1, 0));
             Laya.Sprite3D.load("remote/unity3d/Background.lh", Laya.Handler.create(this, this.onBackgroundComplete));
-            this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
-            this.endBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendExitGame);
+            this.exitBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                ChooseView.getInstance().showDialog("现在退出将判定失败，确定继续？", this.sendExitGame, null);
+            });
+            this.endBtn.on(Laya.Event.MOUSE_DOWN, this, () => {
+                ChooseView.getInstance().showDialog("现在退出将判定失败，确定继续？", this.sendExitGame, null);
+            });
         }
         onDisable() {
             console.log("MatchView.Disable");
@@ -846,10 +889,16 @@
             var isLocalPlayer = (obj.uid == UserData.getInstance().uid);
             switch (obj.type) {
                 case "sc_standup": {
-                    this.removeSelf();
-                    console.log("确保先执行Disable，再执行到这里。");
-                    console.log("跳转.LobbyView");
-                    Laya.stage.addChild(LobbyView.getInstance());
+                    if (obj.uid == UserData.getInstance().uid) {
+                        this.removeSelf();
+                        Laya.stage.addChild(LobbyView.getInstance());
+                    }
+                    else {
+                        ChooseView.getInstance().showConfirm("您的对手离开了比赛", () => {
+                            this.removeSelf();
+                            Laya.stage.addChild(LobbyView.getInstance());
+                        });
+                    }
                     break;
                 }
                 case "sc_ready": {
@@ -931,7 +980,7 @@
             this.messageText.text = msg;
             this.delay = tm;
             this.bgImage.width = 26 * msg.length;
-            Laya.stage.addChild(TipsView.getInstance());
+            Laya.stage.addChild(this);
             if (this.delay > 0)
                 Laya.timer.once(this.delay, this, this.autoDestroy);
         }
@@ -949,6 +998,8 @@
             UserData.getInstance().uid = Laya.LocalStorage.getItem("uid");
             UserData.getInstance().token = Laya.LocalStorage.getItem("token");
             console.log("是否有登录码：" + !this.isEmpty(UserData.getInstance().token));
+            if (!this.isEmpty(UserData.getInstance().token))
+                console.log("登录码是：" + UserData.getInstance().token);
         }
         static getInstance() {
             if (this.instance == null) {
@@ -1012,6 +1063,8 @@
                 }
                 case "sc_wxlogin_failed": {
                     console.log("微信登录失败");
+                    Laya.LocalStorage.setItem("token", null);
+                    this.userLogin();
                     break;
                 }
                 case "sc_enter": {

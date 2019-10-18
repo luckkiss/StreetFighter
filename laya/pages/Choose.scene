@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":5,
-    "selecteID":6,
+    "selectedBox":6,
+    "selecteID":9,
     "searchKey":"Scene,Choose,Choose",
     "props":{"zOrder":99,"width":1136,"var":"Choose","sceneColor":"#000000","name":"Choose","height":640},
     "nodeParent":-1,
@@ -50,18 +50,19 @@
                     "props":{"width":360,"skin":"ui/mask_4x4_40%.png","name":"Page","label":"确定","height":200,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":5,
                     "label":"Page",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":6,
                     "child":[
                         {
+                            "x":45,
                             "type":"Label",
-                            "searchKey":"Label",
-                            "props":{"top":60,"text":"确定要选择吗？","styleSkin":"comp/image.png","fontSize":20,"color":"#ffffff","centerX":0.5,"anchorY":0.5,"anchorX":0.5},
+                            "searchKey":"Label,MsgText,msgText",
+                            "props":{"var":"msgText","top":60,"text":"确定要选择吗？","styleSkin":"comp/image.png","name":"MsgText","fontSize":20,"color":"#ffffff","centerX":0.5,"anchorY":0.5,"anchorX":0.5},
                             "nodeParent":6,
-                            "label":"Label",
+                            "label":"MsgText",
                             "isDirectory":false,
                             "isAniNode":true,
                             "hasChild":false,
@@ -70,6 +71,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,YesBtn,yesBtn",
                             "props":{"var":"yesBtn","skin":"comp/button.png","name":"YesBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"确定","centerX":80,"bottom":40,"anchorY":0.5,"anchorX":0.5},
@@ -84,6 +86,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,NoBtn,noBtn",
                             "props":{"var":"noBtn","skin":"comp/button.png","name":"NoBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"取消","centerX":-80,"bottom":40,"anchorY":0.5,"anchorX":0.5},
