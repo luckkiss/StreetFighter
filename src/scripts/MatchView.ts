@@ -14,9 +14,6 @@ export default class MatchView extends ui.MatchUI {
         return this.instance;
 	}
     
-    /*2D界面*/
-    // private joystick: JoystickView;
-
     /*3D场景*/
     public scene3d: Laya.Scene3D;
     public background: Laya.Sprite3D;
@@ -38,8 +35,6 @@ export default class MatchView extends ui.MatchUI {
         Laya.stage.on("nethandle", this, this.handle);
 
         // 添加摇杆
-        // this.joystick = new JoystickView(); //加载模式/内嵌模式
-        // Laya.stage.addChild(this.joystick);
         Laya.stage.addChild(JoystickView.getInstance());
 
         //添加3D场景
@@ -152,6 +147,7 @@ export default class MatchView extends ui.MatchUI {
                 // 血条初始化
                 this.hp0Text.text = this.scriptA.currentHP.toString();
                 this.fillImage0.width = this.scriptA.currentHP;
+                this.hpBar0.value = this.scriptA.currentHP/300;
                 this.name0Text.text = obj.user0.nickname;
                 this.hp1Text.text = this.scriptB.currentHP.toString();
                 this.fillImage1.width = this.scriptB.currentHP;
@@ -177,6 +173,7 @@ export default class MatchView extends ui.MatchUI {
         if(player == this.scriptA) {
             this.hp0Text.text = this.scriptA.currentHP.toString();
             this.fillImage0.width = this.scriptA.currentHP;
+            this.hpBar0.value = this.scriptA.currentHP/300;
         } else if (player == this.scriptB) {
             this.hp1Text.text = this.scriptB.currentHP.toString();
             this.fillImage1.width = this.scriptB.currentHP;

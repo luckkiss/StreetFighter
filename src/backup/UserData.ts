@@ -7,6 +7,7 @@ export default class UserData {
         return this.instance;
 	}
 
+    public token: string = ""; //登陆码
     public uid: string = "";
     public nickname: string = "";
     public gold: number = 0;

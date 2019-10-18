@@ -1,10 +1,15 @@
 var ws = require("nodejs-websocket");
 var schedule = require('node-schedule');
 var mysql = require('mysql');
+var request = require('request');
+var WXBizDataCrypt = require('./WXBizDataCrypt'); //微信解码库
+const JwtUtil = require('./jwt'); //引入jwt token工具
+
 var port = 3001;
-//var onlineUsers = []; //server.connections代替
 var waits = []; //等待匹配的玩家
-//var gamers = []; //竞技中的玩家
+//var rooms = []; //游戏房间
+var appId = 'wx838c74f50f826e02';
+var appSecret = '6a0b916817b702ccd4215fd3a8462a8d';
 
 //https://www.runoob.com/nodejs/nodejs-mysql.html
 var connection;
@@ -49,22 +54,15 @@ PlayerStatus.END  = 3;			//游戏结束
 
 // 创建一个连接
 var server = ws.createServer(function(conn) {
-	console.log('---------------------创建一个新的连接-----------------------');
     var msg = {}; //仅对当前连接返回
-	//console.log("users: ", server.connections);
-	//用户进入消息
-    //msg.type = "sc_enter";
-    //msg.data = "进来啦"
-	//var jsonStr = JSON.stringify(msg);
-    //broadcast(jsonStr);
+	
+	console.log('---------------------创建一个新的连接-----------------------');
 	console.log("onlineCount: " + server.connections.length);
 	console.log('------------------------------------------------------------\n\n');
 
     //向客户端推送消息
     conn.on("text", function(json) {
-        //console.log("服务器收到：" + json);
-		//{\"type\":\"message\", \"data\":\"hello\"}
-		// 不规范字符处理
+		//收到客户端的包，不规范字符处理
 		var obj = null;
         try {
             obj = JSON.parse(json);
@@ -91,6 +89,9 @@ var server = ws.createServer(function(conn) {
 				conn.sendText(jsonStr);
 				break;
 			}
+			/*
+			 * Web登录
+			 */
 			case "cs_register": { //注册
 				console.log("[请求注册]用户名：" + obj.nick + "，密码：" + obj.pwd);
 				var response = {};
@@ -127,7 +128,7 @@ var server = ws.createServer(function(conn) {
 							var params = [obj.nick];
 							connection.query(sql, params, (err, rows)=> {
 								if(err) {
-									console.log('[INSER ERROR] - ', err.message);
+									console.log('[INSERT ERROR] - ', err.message);
 									throw err;
 									//connection.end();
 								}
@@ -195,7 +196,7 @@ var server = ws.createServer(function(conn) {
 				});
 				break;
 			}
-			case "cs_autoLogin": { //cookie自动登录
+			case "cs_autoLogin": { //web自动登录
 				console.log("[请求登录]账号：" + obj.uid + "，密码：" + obj.pwd);
 				var sql = "SELECT * FROM db_user where uid=? AND pwd=?";
 				var params = [obj.uid, obj.pwd];
@@ -235,6 +236,174 @@ var server = ws.createServer(function(conn) {
 				});
 				break;
 			}
+			/*
+			 * 微信登录
+			 */
+			case "cs_checkToken": { //检查token有效期
+				// 校验token
+				let jwt = new JwtUtil(obj.token);
+				let uid = jwt.verifyToken();
+				console.log("[校验结果]userid=", uid);
+				
+				//查询用户信息
+				var sql = 'SELECT * FROM db_user WHERE uid=?';
+				var params = [uid];
+				connection.query(sql, params, (err, rows, fields)=> {
+					if(err) { //查询失败
+						var response = {
+							"type": "sc_wxlogin_failed",
+							"code": 2
+						}
+						conn.sendText(JSON.stringify(response));
+						console.log('[SELECT ERROR] - ', err.message);
+						throw err;
+					}
+					//生成token验证，返回登录成功
+					console.log("查询用户信息：" + rows[0].uid);
+					
+					let token = refreshToken(rows[0].uid);
+					var response = {
+						"type": "sc_wxlogin_success",
+						"uid": rows[0].uid,
+						"gold": rows[0].gold,
+						//"nickname": rows[0].nickName,
+						//"avatar": data.avatarUrl,
+						"token": token
+					}
+					var jsonStr = JSON.stringify(response);
+					console.log(jsonStr);
+					conn.sendText(jsonStr);
+				});
+				break;
+			}
+			case "cs_wxAuth": { //微信授权
+				request('https://api.weixin.qq.com/sns/jscode2session?'+'appid='+appId+'&secret='+appSecret+'&js_code='+obj.code
+						+'&grant_type=authorization_code', function(error,response,body)
+				{
+					if(!error && response.statusCode === 200) {
+						console.log('获取sessionKey返回的信息', body); //o3tfN4hwThtlaQSXJ79PWD6WBDfA
+						var bodyJson = JSON.parse(body);
+						var sessionKey = bodyJson.session_key; //Icj\/O\/sP3xtipN0VamEcZA==
+						
+						if(bodyJson.unionid) {
+							console.log('用户如果有关注公众号可以直接获取到，不用再进行解密');
+							console.log('unionId:', bodyJson.unionid);
+							return ;
+						}
+						console.log('-----------------client-----------------');
+						console.log("[code]"+obj.code);
+						console.log("[encryptedData]"+obj.encryptedData);
+						console.log("[iv]"+obj.iv);
+						console.log('----------------------------------------');
+						//获取到sessionKey后，开始进行解密，获取openid
+						//var encryptedData = obj.encryptedData.replace(/ /g,'+'); //要把空格替换成+，不然会报错，因为前端数据传到后端时+号会被解析成空格，要再换回去
+						//var iv = obj.iv.replace(/ /g,'+');
+						var encryptedData = obj.encryptedData;
+						var iv = obj.iv;
+						
+						var pc = new WXBizDataCrypt(appId, sessionKey);
+						var data = pc.decryptData(encryptedData, iv);
+						//console.log('解密后: ', data);
+						
+						//该openId是否已注册
+						var sql = "SELECT count(*) AS count FROM db_user where openId=?";
+						var params = [data.openId];
+						connection.query(sql, params, (err, rows, fields)=> {
+							if(err) {
+								console.log('[SELECT ERROR 1] - ', err.message);
+								throw err;
+							}
+							console.log('--------------------------SELECT----------------------------');
+							console.log('是否已注册:', rows[0].count);
+							if(rows[0].count > 0) { //已注册
+								//查询用户信息，生成token，返回登录成功
+								
+								//生成token验证，返回登录成功
+								var sql = 'SELECT * FROM db_user WHERE openId=?';
+								var params = [data.openId];
+								connection.query(sql, params, (err, rows, fields)=> {
+									if(err) { //查询失败
+										var response = {
+											"type": "sc_wxlogin_failed",
+											"code": 2
+										}
+										conn.sendText(JSON.stringify(response));
+										console.log('[SELECT ERROR 3] - ', err.message);
+										throw err;
+									}
+									//生成token验证，返回登录成功
+									console.log("查询用户信息：" + rows[0].uid);
+									
+									let token = refreshToken(rows[0].uid);
+									var response = {
+										"type": "sc_wxlogin_success",
+										"uid": rows[0].uid,
+										"gold": rows[0].gold,
+										//"nickname": data.nickName,
+										//"avatar": data.avatarUrl,
+										"token": token
+									}
+									var jsonStr = JSON.stringify(response);
+									console.log(jsonStr);
+									conn.sendText(jsonStr);
+								});
+								
+							} else { // 未注册
+								let curtime = (new Date()).toLocaleString();
+								var sql = 'INSERT INTO db_user (openId,nickname,pwd,gold,createtime) VALUES(?,?,?,?,?)';
+								var params = [data.openId,data.nickName,"",0,curtime];
+								connection.query(sql, params, (err, rows, fields)=> {
+									if(err) { //写入SQL失败
+										var response = {
+											"type": "sc_wxlogin_failed",
+											"code": 2
+										}
+										conn.sendText(JSON.stringify(response));
+										console.log('[INSERT ERROR 2] - ', err.message);
+										throw err;
+									}
+									console.log('--------------------------INSERT----------------------------');
+									//console.log('INSERT ID:', rows);
+									//插入成功。查询用户信息
+									var sql = 'SELECT * FROM db_user WHERE openId=?';
+									var params = [data.openId];
+									connection.query(sql, params, (err, rows, fields)=> {
+										if(err) { //查询失败
+											var response = {
+												"type": "sc_wxlogin_failed",
+												"code": 2
+											}
+											conn.sendText(JSON.stringify(response));
+											console.log('[SELECT ERROR 3] - ', err.message);
+											throw err;
+										}
+										//生成token验证，返回登录成功
+										console.log("查询用户信息：" + rows[0].uid);
+										
+										let token = refreshToken(rows[0].uid);
+										var response = {
+											"type": "sc_wxlogin_success",
+											"uid": rows[0].uid,
+											"gold": rows[0].gold,
+											//"nickname": data.nickName,
+											//"avatar": data.avatarUrl,
+											"token": token
+										}
+										var jsonStr = JSON.stringify(response);
+										console.log(jsonStr);
+										conn.sendText(jsonStr);
+									});
+									console.log('------------------------------------------------------------\n\n');
+								});
+							}
+						});
+					}
+				});
+				break;
+			}
+			/*
+			 * 大厅逻辑
+			 */
 			case "cs_sign": { //签到
 				var curdate = (new Date()).toLocaleDateString();
 				console.log("今天是：" + curdate);
@@ -260,25 +429,6 @@ var server = ws.createServer(function(conn) {
 							if(err) {
 								return '开启事务失败';
 							} else {
-								/*
-								//事务
-								connection.query(`INSERT INTO ${tablename} SET ?`, vals, (e, rows, fields) => {
-									if(e) {
-										return connection.rollback(() => {
-											console.log('插入失败数据回滚');
-										})
-									} else {
-										connection.commit((error) => {
-											if(error) {
-												console.log('事务提交失败');
-											}
-										});
-										connection.release();  // 释放链接
-										return {rows, success: true}  // 返回数据库操作结果这里数据格式可根据个人或团队规范来定制
-									}
-								});
-								*/
-								
 								//1. 加钱
 								var sql = "UPDATE db_user SET gold=(gold+100) WHERE uid=?";
 								var params = [obj.uid];
@@ -293,7 +443,6 @@ var server = ws.createServer(function(conn) {
 										throw err;
 									}
 								});
-								
 								//2. 写入签到记录到SQL
 								var sql = "INSERT INTO db_sign (uid,date) VALUES (?,?)";
 								var params = [obj.uid, curdate];
@@ -308,7 +457,6 @@ var server = ws.createServer(function(conn) {
 										console.log('[INSERT ERROR 2] - ', err.message);
 										throw err;
 									}
-									///*
 									console.log('--------------------------INSERT----------------------------');
 									console.log('INSERT ID:', rows);
 									var response = {
@@ -317,7 +465,6 @@ var server = ws.createServer(function(conn) {
 									}
 									conn.sendText(JSON.stringify(response));
 									console.log('------------------------------------------------------------\n\n');
-									//*/
 								});
 							}
 						});
@@ -483,7 +630,7 @@ var server = ws.createServer(function(conn) {
 
 console.log('--- server is running ...');
 
-function broadcast(str) {
+function broadcast(str) { // 全服广播
 	console.log("广播给：" + server.connections.length + "人");
     server.connections.forEach(function(connection){
         connection.sendText(str);
@@ -491,7 +638,7 @@ function broadcast(str) {
 }
 
 var matchJob = null; //匹配定时任务
-function joinInMatch(player) { // 加入匹配
+function joinInMatch(player) {  // 加入匹配
 	waits.push(player);
 	player.state = (PlayerStatus.WAIT);
 	var curtime = (new Date()).toLocaleString();
@@ -543,7 +690,7 @@ function joinInMatch(player) { // 加入匹配
 		});
 	}
 }
-function cancelMatch(player) { // 取消匹配
+function cancelMatch(player) {  // 取消匹配
 	waits.splice(player);
 	player.state = PlayerStatus.FREE;
 	var response = {
@@ -555,7 +702,7 @@ function successMatch(player) { // 成功匹配
 	waits.splice(player);
 	player.state = PlayerStatus.GAME;
 }
-function arraySortByTime(arr) {
+function arraySortByTime(arr) { // 按时间排序
 	return arr.sort(function(lhs, rhs) {
 		if(lhs.time < rhs.time) {
 			return -1;
@@ -563,4 +710,18 @@ function arraySortByTime(arr) {
 			return 1;
 		}
 	});
+}
+function isEmpty(obj) { // 非空判断
+	if(typeof obj == "undefined" || obj == null || obj == "") {
+		return true;
+	} else {
+		return false;
+	}
+}
+function refreshToken(userid) {
+	let _id = userid.toString();
+	// 将用户id传入并生成token
+	let jwt = new JwtUtil(_id);
+	let token = jwt.generateToken();
+	return token;
 }

@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"Scene",
-    "selectedBox":78,
-    "selecteID":87,
+    "selectedBox":23,
+    "selecteID":89,
     "searchKey":"Scene,Lobby,Lobby",
     "props":{"width":1136,"var":"Lobby","sceneColor":"#000000","name":"Lobby","height":640},
     "nodeParent":-1,
-    "maxID":89,
+    "maxID":90,
     "label":"Lobby",
     "isOpen":true,
     "isDirectory":true,
@@ -52,25 +52,41 @@
             "props":{"width":1136,"var":"userPanel","name":"UserPanel","height":640,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"UserPanel",
-            "isOpen":false,
+            "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":22,
             "child":[
                 {
+                    "x":30,
                     "type":"Image",
-                    "searchKey":"Image,HeadImg,headImg",
-                    "props":{"y":60,"x":60,"width":80,"var":"headImg","skin":"comp/img_bg5.png","sizeGrid":"10,10,10,10","name":"HeadImg","height":80,"anchorY":0.5,"anchorX":0.5},
+                    "searchKey":"Image,HeadBg",
+                    "props":{"y":60,"x":60,"width":80,"skin":"comp/img_bg5.png","sizeGrid":"10,10,10,10","name":"HeadBg","height":80,"anchorY":0.5,"anchorX":0.5},
                     "nodeParent":22,
-                    "label":"HeadImg",
-                    "isOpen":false,
+                    "label":"HeadBg",
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":23,
                     "child":[
                         {
+                            "x":45,
+                            "type":"Sprite",
+                            "searchKey":"Sprite,HeadImg,headImg",
+                            "props":{"y":5,"x":5,"width":70,"var":"headImg","name":"HeadImg","height":70},
+                            "nodeParent":23,
+                            "label":"HeadImg",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":89,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,NickNameText,nickNameText",
                             "props":{"x":100,"var":"nickNameText","top":10,"text":"用户昵称","name":"NickNameText","fontSize":22,"color":"#ffffff","anchorY":0.5},
@@ -85,6 +101,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,CoinImage",
                             "props":{"width":24,"skin":"ui/status_coin.png","name":"CoinImage","left":100,"height":24,"bottom":10,"anchorY":0.5,"anchorX":0.5},
@@ -112,6 +129,7 @@
                         }]
                 },
                 {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,SignBtn,signBtn",
                     "props":{"y":200,"width":100,"var":"signBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"SignBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"签到","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -126,6 +144,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,RankBtn,rankBtn",
                     "props":{"y":300,"width":100,"var":"rankBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"RankBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"排行","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -140,6 +159,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,ShopBtn,shopBtn",
                     "props":{"y":400,"width":100,"var":"shopBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"ShopBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"商城","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -154,6 +174,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,SettingsBtn,settingsBtn",
                     "props":{"y":500,"width":100,"var":"settingsBtn","stateNum":"1","skin":"ui/UI_Button_Standard_Red.png","sizeGrid":"10,10,10,10","name":"SettingsBtn","left":50,"labelStrokeColor":"#ffffff","labelSize":22,"labelPadding":"-2","labelColors":"#ffffff","label":"设置","height":50,"anchorY":0.5,"anchorX":0.5},
@@ -168,6 +189,7 @@
                         ]
                 },
                 {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,LearnBtn,learnBtn",
                     "props":{"y":350,"width":300,"var":"learnBtn","stateNum":"1","skin":"ui/UI_Panel_Window.png","sizeGrid":"15,15,15,15","name":"LearnBtn","left":300,"labelStrokeColor":"#ffffff","labelSize":30,"labelPadding":"130","labelColors":"#ffffff","label":"教学模式","height":400,"anchorY":0.5,"anchorX":0.5},
@@ -194,6 +216,7 @@
                         }]
                 },
                 {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,MatchBtn,matchBtn",
                     "props":{"y":350,"width":300,"var":"matchBtn","stateNum":"1","skin":"ui/UI_Panel_Window.png","sizeGrid":"15,15,15,15","name":"MatchBtn","left":650,"labelStrokeColor":"#ffffff","labelSize":30,"labelPadding":"130","labelColors":"#ffffff","label":"匹配模式","height":400,"anchorY":0.5,"anchorX":0.5},
@@ -680,14 +703,13 @@
             "props":{"y":320,"x":568,"var":"wxPanel","top":0,"skin":"ui/mask_4x4_40%.png","right":0,"name":"WXPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},
             "nodeParent":2,
             "label":"WXPanel",
-            "isOpen":true,
+            "isOpen":false,
             "isDirectory":true,
             "isAniNode":true,
             "hasChild":true,
             "compId":77,
             "child":[
                 {
-                    "x":30,
                     "type":"Image",
                     "searchKey":"Image,Page",
                     "props":{"width":480,"skin":"ui/mask_4x4_40%.png","name":"Page","height":320,"centerY":0.5,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
@@ -700,7 +722,6 @@
                     "compId":78,
                     "child":[
                         {
-                            "x":45,
                             "type":"Label",
                             "searchKey":"Label,WXTitle,wxTitle",
                             "props":{"y":80,"var":"wxTitle","text":"微信授权登录","name":"WXTitle","fontSize":22,"color":"#ffffff","centerX":0.5,"align":"center"},
@@ -715,7 +736,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button,WXLoginBtn,wxLoginBtn",
                             "props":{"y":200,"width":160,"var":"wxLoginBtn","skin":"comp/button.png","sizeGrid":"10,10,10,10","name":"WXLoginBtn","labelStrokeColor":"#ffffff","labelSize":22,"labelColors":"#ffffff","label":"立即注册","height":40,"centerX":0.5,"anchorY":0.5,"anchorX":0.5},
