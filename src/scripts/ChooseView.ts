@@ -16,7 +16,7 @@ export default class ChooseView extends ui.ChooseUI {
     }
     
     public showDialog(msg,yes,no): void {
-        this.yesBtn.centerX = -80;
+        this.yesBtn.centerX = 80;
         this.noBtn.visible = true;
 
         Laya.stage.addChild(this);

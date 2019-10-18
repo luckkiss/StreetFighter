@@ -25,6 +25,8 @@ export default class LobbyView extends ui.LobbyUI {
     }
 
     onEnable(): void {
+        console.log("LobbyView.Enabled");
+
         // UI初始化
         this.wxPanel.visible = false;
         this.registerPanel.visible = false;
@@ -36,12 +38,23 @@ export default class LobbyView extends ui.LobbyUI {
         // 添加WebSocket
         WebSocketClient.getInstance().initSocket();
         Laya.stage.on("nethandle", this, this.handle);
+        
     }
 
     onDisable(): void {
         console.log("LobbyView.Disable");
         Laya.stage.offAll(); //关闭本地网络监听
 		Laya.timer.clearAll(this);
+    }
+
+    public updateUserData(): void {
+        this.initCommon();
+        this.nickNameText.text = UserData.getInstance().nickname;
+        this.goldText.text = UserData.getInstance().gold.toString();
+        this.userPanel.visible = true;
+        this.registerPanel.visible = false;
+        this.loginPanel.visible = false;
+        UserData.getInstance().playerStatus = PlayerStatus.FREE;
     }
 
     private handle(obj): void {
@@ -59,7 +72,6 @@ export default class LobbyView extends ui.LobbyUI {
                         this.sendAutoLogin();
                     }
                 }
-                this.initCommon();
         
                 Laya.SoundManager.playMusic("remote/audios/bgm.mp3");
                 Laya.SoundManager.autoStopMusic = true; //手机浏览器最小化，还有声音
@@ -82,10 +94,15 @@ export default class LobbyView extends ui.LobbyUI {
                 Laya.LocalStorage.setItem("token", obj.token);
                 UserData.getInstance().token = obj.token;
                 UserData.getInstance().uid = obj.uid;
-                this.goldText.text = obj.gold.toString();
+                UserData.getInstance().gold = obj.gold;
+
+                this.initCommon();
+                this.goldText.text = UserData.getInstance().gold.toString();
+                this.userPanel.visible = true;
+                this.registerPanel.visible = false;
+                this.loginPanel.visible = false;
                 // 通过微信获取昵称头像
                 this.getUserInfo();
-                this.userPanel.visible = true;
                 break;
             }
             case "sc_wxlogin_failed": { //微信登录失败
@@ -111,12 +128,14 @@ export default class LobbyView extends ui.LobbyUI {
                 Laya.LocalStorage.setItem("pwd", obj.pwd); //md5加密的
                 UserData.getInstance().uid = obj.uid;
                 UserData.getInstance().nickname = obj.nickname;
-                this.nickNameText.text = obj.nickname;
                 UserData.getInstance().gold = obj.gold;
-                this.goldText.text = obj.gold;
+
+                this.initCommon();
+                this.nickNameText.text = UserData.getInstance().nickname;
+                this.goldText.text = UserData.getInstance().gold.toString();
+                this.userPanel.visible = true;
                 this.registerPanel.visible = false;
                 this.loginPanel.visible = false;
-                this.userPanel.visible = true;
                 UserData.getInstance().playerStatus = PlayerStatus.FREE;
                 break;
             }
@@ -198,7 +217,7 @@ export default class LobbyView extends ui.LobbyUI {
 
     // 公共界面
     private initCommon(): void {
-        this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendSign);
+        this.signBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendSign); //不会监听2次
         this.closeAwardBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             this.awardPanel.visible = false;
         });
@@ -395,6 +414,7 @@ export default class LobbyView extends ui.LobbyUI {
             "uid": UserData.getInstance().uid,
         };
         WebSocketClient.getInstance().sendData(obj);
+        console.log("发送签到");
     }
 
     // 开始匹配

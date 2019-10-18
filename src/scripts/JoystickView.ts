@@ -1,7 +1,6 @@
 import {ui} from "../ui/layaMaxUI";
 
 export default class JoystickView extends ui.JoystickUI {
-    // public static instance: JoystickView;
     private static instance: JoystickView;
     public static getInstance(): JoystickView {
         if(this.instance == null) {
@@ -23,12 +22,19 @@ export default class JoystickView extends ui.JoystickUI {
 
     constructor() {
         super();
-        // JoystickView.instance = this;
+    }
 
+    onEnable(): void {
         this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
         Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
         Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
         Laya.timer.frameLoop(1, this, this.outputData);
+    }
+
+    onDisable(): void {
+        Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
+        Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+        Laya.timer.clear(this, this.outputData);
     }
     
     // 基于UI
@@ -36,7 +42,6 @@ export default class JoystickView extends ui.JoystickUI {
         this.myIndex = e.touchId;
         this.centerX = this.roundImage.x;
         this.centerY = this.roundImage.y;
-        // LogManager.instance.vConsole("新建触控点[" + e.touchId + "]" + this.touches[e.touchId].stageX + " * " + this.touches[e.touchId].stageY);
         Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
     }
 
@@ -51,7 +56,6 @@ export default class JoystickView extends ui.JoystickUI {
         } else {
 
             if(e.touchId != this.myIndex) {
-                // LogManager.instance.vConsole("无关的手指[" + e.touchId + "]");
                 return;
             }
             if(e.touches.length <= this.myIndex) {

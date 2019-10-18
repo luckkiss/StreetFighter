@@ -206,6 +206,7 @@ export default class PlayerController extends Laya.Script3D {
 
     // 基于UI
     mouseDown(e: Laya.Event): void {
+        // console.log("JoystickView.mouseDown");
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
             console.log("在播放其他动作");
             return;
@@ -218,6 +219,7 @@ export default class PlayerController extends Laya.Script3D {
 
     // 基于场景
     mouseMove(e: Laya.Event): void {
+        // console.log("JoystickView.mouseMove");
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
             return;
         }
@@ -236,6 +238,7 @@ export default class PlayerController extends Laya.Script3D {
     }
 
     mouseUp(e: Laya.Event): void {
+        // console.log("JoystickView.mouseUp");
         if(this.animLastTime > Laya.Browser.now() - this._clickTime) {
             console.log("在播放其他动作");
             return;

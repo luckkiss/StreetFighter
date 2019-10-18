@@ -256,16 +256,23 @@
             this.myIndex = -1;
             this.lastX = 0;
             this.lastY = 0;
-            this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
-            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
-            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
-            Laya.timer.frameLoop(1, this, this.outputData);
         }
         static getInstance() {
             if (this.instance == null) {
                 this.instance = new JoystickView();
             }
             return this.instance;
+        }
+        onEnable() {
+            this.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
+            Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+            Laya.timer.frameLoop(1, this, this.outputData);
+        }
+        onDisable() {
+            Laya.stage.off(Laya.Event.MOUSE_UP, this, this.mouseUp);
+            Laya.stage.off(Laya.Event.MOUSE_OUT, this, this.mouseOut);
+            Laya.timer.clear(this, this.outputData);
         }
         mouseDown(e) {
             this.myIndex = e.touchId;
@@ -570,6 +577,7 @@
             }
         }
         mouseDown(e) {
+            console.log("JoystickView.mouseDown");
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 console.log("在播放其他动作");
                 return;
@@ -580,6 +588,7 @@
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
         }
         mouseMove(e) {
+            console.log("JoystickView.mouseMove");
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 return;
             }
@@ -595,6 +604,7 @@
             }
         }
         mouseUp(e) {
+            console.log("JoystickView.mouseUp");
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 console.log("在播放其他动作");
                 return;
@@ -776,7 +786,7 @@
             Laya.timer.clearAll(this);
         }
         showDialog(msg, yes, no) {
-            this.yesBtn.centerX = -80;
+            this.yesBtn.centerX = 80;
             this.noBtn.visible = true;
             Laya.stage.addChild(this);
             this.msgText.text = msg;
@@ -892,11 +902,13 @@
                     if (obj.uid == UserData.getInstance().uid) {
                         this.removeSelf();
                         Laya.stage.addChild(LobbyView.getInstance());
+                        LobbyView.getInstance().updateUserData();
                     }
                     else {
                         ChooseView.getInstance().showConfirm("您的对手离开了比赛", () => {
                             this.removeSelf();
                             Laya.stage.addChild(LobbyView.getInstance());
+                            LobbyView.getInstance().updateUserData();
                         });
                     }
                     break;
@@ -1008,6 +1020,7 @@
             return this.instance;
         }
         onEnable() {
+            console.log("LobbyView.Enabled");
             this.wxPanel.visible = false;
             this.registerPanel.visible = false;
             this.loginPanel.visible = false;
@@ -1021,6 +1034,15 @@
             console.log("LobbyView.Disable");
             Laya.stage.offAll();
             Laya.timer.clearAll(this);
+        }
+        updateUserData() {
+            this.initCommon();
+            this.nickNameText.text = UserData.getInstance().nickname;
+            this.goldText.text = UserData.getInstance().gold.toString();
+            this.userPanel.visible = true;
+            this.registerPanel.visible = false;
+            this.loginPanel.visible = false;
+            UserData.getInstance().playerStatus = PlayerStatus.FREE;
         }
         handle(obj) {
             switch (obj.type) {
@@ -1037,7 +1059,6 @@
                             this.sendAutoLogin();
                         }
                     }
-                    this.initCommon();
                     Laya.SoundManager.playMusic("remote/audios/bgm.mp3");
                     Laya.SoundManager.autoStopMusic = true;
                     break;
@@ -1056,9 +1077,13 @@
                     Laya.LocalStorage.setItem("token", obj.token);
                     UserData.getInstance().token = obj.token;
                     UserData.getInstance().uid = obj.uid;
-                    this.goldText.text = obj.gold.toString();
-                    this.getUserInfo();
+                    UserData.getInstance().gold = obj.gold;
+                    this.initCommon();
+                    this.goldText.text = UserData.getInstance().gold.toString();
                     this.userPanel.visible = true;
+                    this.registerPanel.visible = false;
+                    this.loginPanel.visible = false;
+                    this.getUserInfo();
                     break;
                 }
                 case "sc_wxlogin_failed": {
@@ -1084,12 +1109,13 @@
                     Laya.LocalStorage.setItem("pwd", obj.pwd);
                     UserData.getInstance().uid = obj.uid;
                     UserData.getInstance().nickname = obj.nickname;
-                    this.nickNameText.text = obj.nickname;
                     UserData.getInstance().gold = obj.gold;
-                    this.goldText.text = obj.gold;
+                    this.initCommon();
+                    this.nickNameText.text = UserData.getInstance().nickname;
+                    this.goldText.text = UserData.getInstance().gold.toString();
+                    this.userPanel.visible = true;
                     this.registerPanel.visible = false;
                     this.loginPanel.visible = false;
-                    this.userPanel.visible = true;
                     UserData.getInstance().playerStatus = PlayerStatus.FREE;
                     break;
                 }
@@ -1333,6 +1359,7 @@
                 "uid": UserData.getInstance().uid,
             };
             WebSocketClient.getInstance().sendData(obj);
+            console.log("发送签到");
         }
         sendMatch() {
             this.matchPanel.visible = true;

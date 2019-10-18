@@ -131,10 +131,12 @@ export default class MatchView extends ui.MatchUI {
                 if(obj.uid == UserData.getInstance().uid) { //我自己离开
                     this.removeSelf();
                     Laya.stage.addChild(LobbyView.getInstance());
+                    LobbyView.getInstance().updateUserData();
                 } else { //对手离开
                     ChooseView.getInstance().showConfirm("您的对手离开了比赛", ()=> {
                         this.removeSelf();
                         Laya.stage.addChild(LobbyView.getInstance());
+                        LobbyView.getInstance().updateUserData();
                     });
                 }
                 break;
