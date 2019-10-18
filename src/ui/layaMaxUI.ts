@@ -27,18 +27,6 @@ export module ui {
         }
     }
     REG("ui.JoystickUI",JoystickUI);
-    export class LoadUI extends Laya.Scene {
-		public progressBar:Laya.ProgressBar;
-		public progressLabel:Laya.Label;
-		public versionText:Laya.Label;
-        public static  uiView:any ={"type":"Scene","props":{"width":1136,"name":"Load","height":640},"compId":2,"child":[{"type":"Script","props":{"top":0,"right":0,"left":0,"bottom":0,"runtime":"laya.ui.Widget"},"compId":4},{"type":"Image","props":{"zOrder":-1,"top":0,"skin":"ui/bg1.jpg","scaleY":2,"scaleX":2,"name":"Background","centerX":0.5,"bottom":0,"anchorY":0.5,"anchorX":0.5},"compId":9},{"type":"Image","props":{"top":0,"right":0,"name":"MainPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},"compId":11,"child":[{"type":"ProgressBar","props":{"y":505,"x":569,"width":600,"var":"progressBar","value":0,"skin":"comp/progress.png","sizeGrid":"0,10,0,10","name":"ProgressBar","height":30,"centerX":0.5,"bottom":120,"anchorY":0.5,"anchorX":0.5},"compId":5,"child":[{"type":"Label","props":{"var":"progressLabel","text":"0%","name":"ProgressLabel","fontSize":30,"font":"Arial","color":"#ffffff","centerX":0.5,"bottom":0,"anchorY":0.5,"anchorX":0.5},"compId":7}]},{"type":"Label","props":{"text":"© 2019 Setsuodu. All Rights Reserved.","name":"CopyRight","left":5,"fontSize":22,"color":"#ffffff","bottom":5,"anchorY":0.5,"anchorX":0},"compId":10},{"type":"Label","props":{"var":"versionText","text":"V0.0.1 Beta","right":5,"name":"VersionText","fontSize":22,"color":"#ffffff","bottom":5,"anchorY":0.5,"anchorX":1},"compId":13}]}],"loadList":["ui/bg1.jpg","comp/progress.png"],"loadList3D":[]};
-        constructor(){ super()}
-        createChildren():void {
-            super.createChildren();
-            this.createView(LoadUI.uiView);
-        }
-    }
-    REG("ui.LoadUI",LoadUI);
     export class LoadingUI extends Laya.Scene {
 		public loadingPanel:Laya.Image;
 		public loadingImage:Laya.Image;
@@ -118,6 +106,18 @@ export module ui {
         }
     }
     REG("ui.MatchUI",MatchUI);
+    export class StartLoadUI extends Laya.Scene {
+		public progressBar:Laya.ProgressBar;
+		public progressLabel:Laya.Label;
+		public versionText:Laya.Label;
+        public static  uiView:any ={"type":"Scene","props":{"width":1136,"name":"StartLoad","height":640},"compId":2,"child":[{"type":"Script","props":{"top":0,"right":0,"left":0,"bottom":0,"runtime":"laya.ui.Widget"},"compId":4},{"type":"Image","props":{"zOrder":-1,"top":0,"skin":"ui/bg1.jpg","scaleY":2,"scaleX":2,"name":"Background","centerX":0.5,"bottom":0,"anchorY":0.5,"anchorX":0.5},"compId":9},{"type":"Image","props":{"top":0,"right":0,"name":"MainPanel","left":0,"bottom":0,"anchorY":0.5,"anchorX":0.5},"compId":11,"child":[{"type":"ProgressBar","props":{"y":505,"x":569,"width":600,"var":"progressBar","value":0,"skin":"comp/progress.png","sizeGrid":"0,10,0,10","name":"ProgressBar","height":30,"centerX":0.5,"bottom":120,"anchorY":0.5,"anchorX":0.5},"compId":5,"child":[{"type":"Label","props":{"var":"progressLabel","text":"0%","name":"ProgressLabel","fontSize":30,"font":"Arial","color":"#ffffff","centerX":0.5,"bottom":0,"anchorY":0.5,"anchorX":0.5},"compId":7}]},{"type":"Label","props":{"text":"© 2019 Setsuodu. All Rights Reserved.","name":"CopyRight","left":5,"fontSize":22,"color":"#ffffff","bottom":5,"anchorY":0.5,"anchorX":0},"compId":10},{"type":"Label","props":{"var":"versionText","text":"V0.0.1 Beta","right":5,"name":"VersionText","fontSize":22,"color":"#ffffff","bottom":5,"anchorY":0.5,"anchorX":1},"compId":13}]}],"loadList":["ui/bg1.jpg","comp/progress.png"],"loadList3D":[]};
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.createView(StartLoadUI.uiView);
+        }
+    }
+    REG("ui.StartLoadUI",StartLoadUI);
     export class TipsUI extends Laya.Scene {
 		public bgImage:Laya.Image;
 		public messageText:Laya.Label;

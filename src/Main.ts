@@ -1,5 +1,5 @@
 import GameConfig from "./GameConfig";
-import LoadView from "./scripts/LoadView";
+import StartLoadView from "./scripts/StartLoadView";
 
 class Main {
 	constructor() {
@@ -48,28 +48,11 @@ class Main {
         ];
 		Laya.loader.load(res, Laya.Handler.create(this, this.onLoaded));
 		Laya.URL.basePath = "http://192.168.1.101/budokai/";
-		// if(Laya.Browser.onWeiXin) {
-		// 	console.log("微信浏览器");
-		// 	// Laya.MiniAdpter.init();
-		// 	// 远程动态资源，及本地白名单
-		// 	Laya.URL.basePath = "http://192.168.1.101/budokai/"; //设置这句，所有资源路径默认都走远程
-		// 	Laya.MiniAdpter.nativefiles = [ //通过白名单，让部分资源走本地
-		// 		"wxlocal",
-		// 		"ui.json",
-		// 		"res/atlas/comp.atlas",
-		// 		"res/atlas/comp.png",
-		// 		// "res/atlas/ui.atlas",
-		// 		// "res/atlas/ui.png",
-		// 	];
-		// 	console.log("本地白名单：", Laya.MiniAdpter.nativefiles);
-		// } else {
-		// 	console.log("普通浏览器");
-		// }
 	}
 
 	onLoaded(): void {
 		Laya.View.uiMap = Laya.Loader.getRes("ui.json"); //ui.json赋值
-		Laya.stage.addChild(LoadView.getInstance());
+		Laya.stage.addChild(StartLoadView.getInstance());
 	}
 }
 //激活启动类

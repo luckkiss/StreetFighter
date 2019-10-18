@@ -1,11 +1,11 @@
 import {ui} from "../ui/layaMaxUI";
 import LobbyView from "./LobbyView";
 
-export default class LoadView extends ui.LoadUI {
-    private static instance: LoadView;
-	public static getInstance(): LoadView {
+export default class StartLoadView extends ui.StartLoadUI {
+    private static instance: StartLoadView;
+	public static getInstance(): StartLoadView {
         if(this.instance == null) {
-            this.instance = new LoadView();
+            this.instance = new StartLoadView();
         }
         return this.instance;
 	}
