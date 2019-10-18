@@ -163,9 +163,9 @@ export default class LobbyView extends ui.LobbyUI {
 
     // 传统web渠道
     private initWeb(): void {
-        this.nicknameInput.on(Laya.Event.BLUR, this, ()=> {
-            console.log("网络校验昵称 3");
-        });
+        // this.nicknameInput.on(Laya.Event.BLUR, this, ()=> {
+        //     console.log("网络校验昵称 3");
+        // });
         this.goLoginBtn.on(Laya.Event.MOUSE_DOWN, this, ()=> {
             this.registerPanel.visible = false;
             this.loginPanel.visible = true;
@@ -430,8 +430,8 @@ export default class LobbyView extends ui.LobbyUI {
     private enterGame(): void {
         UserData.getInstance().playerStatus = PlayerStatus.GAME;
 		this.removeSelf();
-        console.log("确保先执行Disable，再执行到这里。");
-        console.log("跳转.MatchView");
+        // console.log("确保先执行Disable，再执行到这里。");
+        // console.log("跳转.MatchView");
         Laya.stage.addChild(MatchView.getInstance());
     }
 
