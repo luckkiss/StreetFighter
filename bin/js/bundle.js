@@ -400,7 +400,7 @@
             this.currentHP = 300;
             this.isDead = false;
             this.direction = 1;
-            this.myIndex = -1;
+            this.myFingerIndex = -1;
             this.motions = [
                 "Unarmed-Idle",
                 "Unarmed-Strafe-Forward",
@@ -419,7 +419,6 @@
             this.animLastTime = 0;
             this.posy = 0;
             this._posz = 0;
-            this.distance = 6;
         }
         get isLocalPlayer() {
             return (this.avatarID == UserData.getInstance().uid);
@@ -427,21 +426,7 @@
         get posz() {
             return this._posz;
         }
-        set posz(z) {
-            if (this.isLocalPlayer == false)
-                return;
-        }
-        getOtherPlayer() {
-            if (this == MatchView.getInstance().scriptA) {
-                return MatchView.getInstance().scriptB;
-            }
-            else if (this == MatchView.getInstance().scriptB) {
-                return MatchView.getInstance().scriptA;
-            }
-            return null;
-        }
         onEnable() {
-            this.distance = 6;
             this.currentHP = 300;
             this.isDead = false;
             Laya.stage.on("nethandle", this, this.handle);
@@ -462,7 +447,10 @@
             switch (obj.type) {
                 case "sc_fist": {
                     if (isDriven) {
-                        this.onFistCallback(this.touchEvent);
+                        this.currentMotion = obj.motion;
+                        console.log(this.avatarID + "出拳" + this.currentMotion);
+                        this.animator.play(this.motions[this.currentMotion]);
+                        Laya.timer.once(obj.waitTime, this, this.playIdle);
                     }
                     else {
                         if (obj.broken == 1) {
@@ -571,7 +559,7 @@
             this.animator.play(this.motions[this.currentMotion]);
             this._clickTime = 0;
             if (this.isLocalPlayer) {
-                MatchView.getInstance().fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendFist);
+                MatchView.getInstance().fistBtn.on(Laya.Event.MOUSE_DOWN, this, this.fistCombo);
                 MatchView.getInstance().kickBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendKick);
                 MatchView.getInstance().jumpBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendJump);
                 MatchView.getInstance().defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
@@ -580,15 +568,13 @@
                     JoystickView.getInstance().stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
                 }
             }
-            Laya.stage.frameLoop(1, this, () => {
-            });
         }
         mouseDown(e) {
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 console.log("在播放其他动作");
                 return;
             }
-            this.myIndex = e.touchId;
+            this.myFingerIndex = e.touchId;
             Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.mouseUp);
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
@@ -599,7 +585,7 @@
             }
             if (Laya.Browser.onPC) ;
             else {
-                if (e.touchId != this.myIndex) {
+                if (e.touchId != this.myFingerIndex) {
                     return;
                 }
             }
@@ -615,11 +601,11 @@
             }
             if (Laya.Browser.onPC) ;
             else {
-                if (e.touchId != this.myIndex) {
+                if (e.touchId != this.myFingerIndex) {
                     return;
                 }
             }
-            this.myIndex = -1;
+            this.myFingerIndex = -1;
             this.currentMotion = 0;
             this.animator.crossFade(this.motions[this.currentMotion], 0.2);
             Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.mouseMove);
@@ -630,23 +616,23 @@
             Laya.timer.clear(this, this.playOther);
             this.currentMotion = 0;
             this.animator.play(this.motions[this.currentMotion]);
-            console.log(this.avatarID + "播放待机动画");
         }
         ;
         playOther() {
             this.animator.play(this.motions[this.currentMotion]);
         }
         ;
-        sendFist(e) {
-            this.touchEvent = e;
+        sendFist(waitTime) {
             var obj = {
                 "type": "cs_fist",
                 "uid": UserData.getInstance().uid,
                 "damage": 10,
+                "motion": this.currentMotion,
+                "waitTime": waitTime,
             };
             WebSocketClient.getInstance().sendData(obj);
         }
-        onFistCallback(e) {
+        fistCombo() {
             this.animLastTime = 600;
             var waitTime = 0;
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
@@ -654,18 +640,14 @@
                 if (this.currentMotion == 5 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
                     this.currentMotion = 6;
-                    Laya.timer.once(waitTime, this, this.playOther);
-                    console.log("========> onFistBtn.重拳2，等待：", waitTime);
                     waitTime += this.animLastTime;
-                    if (this.distance > 2.5) ;
+                    this.sendFist(waitTime);
                 }
                 else if (this.currentMotion == 6 && waitTime < 200) {
                     this._clickTime = Laya.Browser.now();
                     this.currentMotion = 7;
-                    Laya.timer.once(waitTime, this, this.playOther);
-                    console.log("========> onFistBtn.重拳3");
                     waitTime += this.animLastTime;
-                    if (this.distance > 2.5) ;
+                    this.sendFist(waitTime);
                 }
                 else {
                     console.error("点击过快");
@@ -676,11 +658,10 @@
                 waitTime = this.animLastTime;
                 this._clickTime = Laya.Browser.now();
                 this.currentMotion = 5;
-                Laya.timer.once(0, this, this.playOther);
-                console.log("========> onFistHandler.重拳1");
-                if (this.distance > 2.5) ;
+                this.sendFist(waitTime);
             }
-            Laya.timer.once(waitTime, this, this.playIdle);
+        }
+        onFistCallback(waitTime) {
         }
         sendKick(e) {
             this.touchEvent = e;
@@ -704,7 +685,6 @@
                 this.currentMotion = 8;
                 Laya.timer.once(0, this, this.playOther);
                 console.log("========> onKickHandler.踢腿");
-                if (this.distance > 2) ;
             }
             Laya.timer.once(waitTime, this, this.playIdle);
         }

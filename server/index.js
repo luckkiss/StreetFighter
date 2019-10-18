@@ -39,10 +39,6 @@ function handleError() {
 }
 handleError();
 
-/*
-// (node:10908) [DEP0096] DeprecationWarning: timers.unenroll() is deprecated. Please use clearTimeout instead. 
-// nodejs 在运行时，报如上的警告，程序不影响执行，但是不清楚为什么有如些警告
-*/
 
 // 用户状态，由服务器控制
 var PlayerStatus = {};			//状态枚举	
@@ -530,7 +526,7 @@ var server = ws.createServer(function(conn) {
 				console.log('----------------------------------------');
 				break;
 			}
-			case "cs_fist": { //出拳2.5m
+			case "cs_fist": { //出拳2.5m，600ms内接上算combo
 				console.log(conn.uid + "[请求出拳]");
 				
 				var hit = 0; //是否命中
@@ -545,6 +541,12 @@ var server = ws.createServer(function(conn) {
 					broken = 0;
 				}
 				
+				// 出过拳，并且上一拳间隔小于600ms，威力增强
+				//var currTime = (new Date()).toLocaleString();
+				//console.log("出拳时间" + currTime);
+				//if(conn.lastFist != null && (conn.lastFist - currTime) < 600) {
+				//}
+				
 				//命中距离、防御都在客户端判定了，这里只做转发
 				var response = {
 					"type": "sc_fist",
@@ -553,11 +555,14 @@ var server = ws.createServer(function(conn) {
 					"hit": hit, 				//命中
 					"damage": damage,			//伤害
 					"broken": broken,			//破防
+					"motion": obj.motion,		//转发动作
+					"waitTime": obj.waitTime	//转发时间
 				}
 				var jsonStr = JSON.stringify(response);
 				console.log(conn.enemy.nickname + "挨打了" + obj.damage);
 				conn.sendText(jsonStr);
 				conn.enemy.sendText(jsonStr);
+				//conn.lastFist = currTime; //本次出拳时间
 				
 				break;
 			}
@@ -619,20 +624,6 @@ var server = ws.createServer(function(conn) {
 				var jsonStr = JSON.stringify(response);
 				console.log(conn.nickname + '移动后------>' + conn.posz);
 				//广播给房间内两人
-				conn.sendText(jsonStr);
-				conn.enemy.sendText(jsonStr);
-				break;
-			}
-			case "cs_hit": { //伤害
-				//命中距离、防御都在客户端判定了，这里只做转发
-				var response = {
-					"type": "sc_hit",
-					"uid": conn.enemy.uid, //受伤方
-					"damage": obj.damage,
-					"broken": obj.broken,
-				}
-				var jsonStr = JSON.stringify(response);
-				console.log(conn.enemy.nickname + "挨打了" + obj.damage);
 				conn.sendText(jsonStr);
 				conn.enemy.sendText(jsonStr);
 				break;
