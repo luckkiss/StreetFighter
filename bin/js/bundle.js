@@ -569,7 +569,7 @@
                 MatchView.getInstance().defendBtn.on(Laya.Event.MOUSE_DOWN, this, this.sendDefend);
                 Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
                 if (this.isLocalPlayer) {
-                    JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+                    JoystickView.getInstance().stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
                 }
             }
             Laya.stage.frameLoop(1, this, () => {
@@ -634,7 +634,7 @@
                 }
             }
             if (this.isLocalPlayer) {
-                this.posz = JoystickView.instance.Horizontal * 0.02 * this.direction;
+                this.posz = JoystickView.getInstance().Horizontal * 0.02 * this.direction;
                 this.currentMotion = (this.posz > 0) ? 1 : 2;
                 this.animator.play(this.motions[this.currentMotion]);
             }

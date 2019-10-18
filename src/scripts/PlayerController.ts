@@ -216,7 +216,7 @@ export default class PlayerController extends Laya.Script3D {
             // 全局
             Laya.stage.on(Laya.Event.MOUSE_UP, this, this.sendCancelDefend);
             if(this.isLocalPlayer) {
-                JoystickView.instance.stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
+                JoystickView.getInstance().stickImage.on(Laya.Event.MOUSE_DOWN, this, this.mouseDown);
             }
         }
 
@@ -295,7 +295,7 @@ export default class PlayerController extends Laya.Script3D {
         }
         // 检测到攻击动画，就覆盖移动动画，停止移动
         if(this.isLocalPlayer) {
-            this.posz = JoystickView.instance.Horizontal * 0.02 * this.direction;
+            this.posz = JoystickView.getInstance().Horizontal * 0.02 * this.direction;
             // 非本地的在FrameLoop()中处理
             this.currentMotion = (this.posz > 0)? 1 : 2;
             this.animator.play(this.motions[this.currentMotion]); //前进/后退

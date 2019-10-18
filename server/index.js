@@ -2,7 +2,7 @@ var ws = require("nodejs-websocket");
 var schedule = require('node-schedule');
 var mysql = require('mysql');
 var request = require('request');
-var WXBizDataCrypt = require('./WXBizDataCrypt'); //微信解码库
+const WXBizDataCrypt = require('./WXBizDataCrypt'); //微信解码库
 const JwtUtil = require('./jwt'); //引入jwt token工具
 
 var port = 3001;
@@ -499,27 +499,33 @@ var server = ws.createServer(function(conn) {
 			 * 游戏逻辑
 			 */
 			case "cs_gameReady": {
-				console.log("用户准备好了：" + conn.nickname + "(" + conn.side + ")" 
+				console.log("用户准备好了：" + conn.nickname + "(" + conn.side + ")"
 							+ " vs " + conn.enemy.nickname + "(" + conn.enemy.side + ")");
-				if(conn.side == 0) {
+				if(conn.side == 0) { //我在左边
 					var response = {
 						"type": "sc_ready",
 						"uid": conn.uid,
 						"user0": {"uid": conn.uid, "nickname": conn.nickname},
 						"user1": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname},
+						//"user0": {"uid": conn.uid, "nickname": conn.nickname, "posz": 3},
+						//"user1": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname, "posz": -3},
 					}
-				} else {
+					//conn.posz = 3;
+				} else { //我在右边
 					var response = {
 						"type": "sc_ready",
 						"uid": conn.uid,
 						"user0": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname},
 						"user1": {"uid": conn.uid, "nickname": conn.nickname},
+						//"user0": {"uid": conn.enemy.uid, "nickname": conn.enemy.nickname, "posz": 3},
+						//"user1": {"uid": conn.uid, "nickname": conn.nickname, "posz": -3},
 					}
+					//conn.posz = -3;
 				}
 				var jsonStr = JSON.stringify(response);
 				console.log(jsonStr);
 				conn.sendText(jsonStr);
-				//conn.enemy.sendText(JSON.stringify(response));
+				console.log('----------------------------------------');
 				break;
 			}
 			case "cs_fist": { //出拳
@@ -739,3 +745,6 @@ function refreshToken(userid) {
 	let token = jwt.generateToken();
 	return token;
 }
+
+
+
