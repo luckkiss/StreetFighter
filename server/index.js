@@ -550,12 +550,6 @@ var server = ws.createServer(function(conn) {
 					broken = 0;
 				}
 				
-				// 出过拳，并且上一拳间隔小于600ms，威力增强
-				//var currTime = (new Date()).toLocaleString();
-				//console.log("出拳时间" + currTime);
-				//if(conn.lastFist != null && (conn.lastFist - currTime) < 600) {
-				//}
-				
 				//命中距离、防御都在客户端判定了，这里只做转发
 				var response = {
 					"type": "sc_fist",
@@ -572,7 +566,6 @@ var server = ws.createServer(function(conn) {
 				conn.sendText(jsonStr);
 				conn.enemy.sendText(jsonStr);
 				//conn.lastFist = currTime; //本次出拳时间
-				
 				break;
 			}
 			case "cs_kick": { //踢脚2.0m
@@ -614,9 +607,14 @@ var server = ws.createServer(function(conn) {
 				break;
 			}
 			case "cs_move": { //移动
-				
 				console.log(conn.nickname + '(' + conn.posz + ')' + '---->' + obj.movez);
 				var distance = Math.abs(conn.posz + obj.movez - conn.enemy.posz);
+				
+				if(conn.posz + obj.movez >= 5 || conn.posz + obj.movez <= -5) {
+					console.log('超出地图范围');
+					return;
+				}
+				
 				console.log('距离对手：' + distance); //判断是否碰撞
 				if(distance >= 1) {
 					conn.posz += obj.movez;

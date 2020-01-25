@@ -577,7 +577,6 @@
             }
         }
         mouseDown(e) {
-            console.log("JoystickView.mouseDown");
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 console.log("在播放其他动作");
                 return;
@@ -588,7 +587,6 @@
             Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.mouseUp);
         }
         mouseMove(e) {
-            console.log("JoystickView.mouseMove");
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 return;
             }
@@ -604,7 +602,6 @@
             }
         }
         mouseUp(e) {
-            console.log("JoystickView.mouseUp");
             if (this.animLastTime > Laya.Browser.now() - this._clickTime) {
                 console.log("在播放其他动作");
                 return;
