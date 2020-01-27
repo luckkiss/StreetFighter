@@ -3,3 +3,5 @@ release
 .laya/chrome
 .laya/chrome/*
 /.laya/chrome
+
+*.js linguist-language=typescript
